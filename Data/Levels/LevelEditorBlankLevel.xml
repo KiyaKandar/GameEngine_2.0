@@ -1,0 +1,9 @@
+<Level>
+	<File>LevelEditorBlankLevel/Meshes.xml</File>
+	<File>LevelEditorBlankLevel/Details.xml</File>
+	<File>LevelEditorBlankLevel/Sounds.xml</File>
+	<File>LevelEditorBlankLevel/Lights.xml</File>
+	<UI>
+		<File>../Data/UserInterface/InGameMenu.xml</File>
+	</UI>
+</Level>

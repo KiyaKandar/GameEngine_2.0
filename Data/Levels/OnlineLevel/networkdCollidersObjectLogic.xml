@@ -1,0 +1,25 @@
+<GameObjectLogic>
+
+<Resources>
+	<resource>powerup</resource>
+	<resource>paintPool</resource>
+</Resources>
+
+<GameplayScript>
+    
+	
+	
+</GameplayScript>
+
+<PaintGameLogic>
+
+  <OnStart>
+    <TransmitCollider>
+      <resource>var</resource>
+    </TransmitCollider>
+  </OnStart>
+
+</PaintGameLogic>
+
+
+</GameObjectLogic>

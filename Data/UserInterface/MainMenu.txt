@@ -1,0 +1,6 @@
+MainMenuDetails/MainMenuMeshes.xml
+MainMenuDetails/MainMenuDetails.xml
+MainMenuDetails/MainMenuSounds.xml
+MainMenuDetails/MainMenuLights.xml
+../Data/UserInterface/MainMenu.xml
+../Data/Gameplay/mainMenuScript.xml

@@ -1,0 +1,42 @@
+<Config inputType="Keyboard">
+		<KeyMapping name="moveForward">
+			<KeyAssignedTo>KEYBOARD_I</KeyAssignedTo>
+			<Actions>
+				<Move>
+					<X>000</X>
+					<Y>000</Y>
+					<Z>50</Z>
+				</Move>
+			</Actions>
+		</KeyMapping>
+		<KeyMapping name="moveLeft">
+			<KeyAssignedTo>KEYBOARD_J</KeyAssignedTo>
+			<Actions>
+				<Move>
+					<X>50</X>
+					<Y>000</Y>
+					<Z>000</Z>
+				</Move>
+			</Actions>
+		</KeyMapping>
+		<KeyMapping name="moveBackwards">
+			<KeyAssignedTo>KEYBOARD_K</KeyAssignedTo>
+			<Actions>
+				<Move>
+					<X>000</X>
+					<Y>000</Y>
+					<Z>-50</Z>
+				</Move>
+			</Actions>
+		</KeyMapping>
+		<KeyMapping name="moveRight">
+			<KeyAssignedTo>KEYBOARD_L</KeyAssignedTo>
+			<Actions>
+				<Move>
+					<X>-50</X>
+					<Y>000</Y>
+					<Z>000</Z>
+				</Move>
+			</Actions>
+		</KeyMapping>
+</Config>

@@ -1,0 +1,9 @@
+<LevelMeshes>
+	<Meshes name="SphereMesh" >
+		<MeshFile>../Data/Resources/Meshes/sphere.obj</MeshFile>
+	</Meshes>
+	
+	<Meshes name="CubeMesh" >
+		<MeshFile>../Data/Resources/Meshes/centeredcube.obj</MeshFile>
+	</Meshes>
+</LevelMeshes>

@@ -1,0 +1,18 @@
+<Level>
+	<File>OnlineLevel/Meshes.xml</File>
+	<File>OnlineLevel/Details.xml</File>
+	<File>OnlineLevel/Sounds.xml</File>
+	<File>OnlineLevel/Lights.xml</File>
+	 <UI>
+		<File>../Data/UserInterface/InGameMenu.xml</File>
+	</UI>
+	<GamePlay>
+		<File>OnlineLevel/gameplay.xml</File>
+	</GamePlay>
+	<GameLogic>
+		<File>OnlineLevel/networkdCollidersObjectLogic.xml</File>
+		<File>OnlineLevel/aiObjectLogic.xml</File>
+		<File>OnlineLevel/playerObjectLogic.xml</File>
+	  	<File>OnlineLevel/meteorObjectLogic.xml</File>
+	</GameLogic>
+</Level>

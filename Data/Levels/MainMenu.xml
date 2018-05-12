@@ -1,0 +1,12 @@
+<Level>
+	<File>Main Menu/Meshes.xml</File>
+	<File>Main Menu/Details.xml</File>
+	<File>Main Menu/Sounds.xml</File>
+	<File>Main Menu/Lights.xml</File>
+	<UI>
+		<File>../Data/UserInterface/MainMenu.xml</File>
+	</UI>
+	<GamePlay>
+		<File>Main Menu/mainMenuScript.xml</File>
+	</GamePlay>
+</Level>

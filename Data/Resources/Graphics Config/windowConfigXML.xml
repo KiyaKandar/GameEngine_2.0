@@ -1,0 +1,7 @@
+<Config inputType="WindowConfig">
+	<Settings name="Resolution">
+		<X>1920</X>
+		<Y>1080</Y>
+	</Settings>
+	<Settings name="Fullscreen">Enabled</Settings>
+</Config>

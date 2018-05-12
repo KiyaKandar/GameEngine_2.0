@@ -1,0 +1,21 @@
+<LevelMeshes>
+	<Meshes name="CubeMesh" >
+		<MeshFile>../Data/Resources/Meshes/cube.obj</MeshFile>
+    <Texture>../Data/Resources/Textures/rainbow.jpg</Texture>
+	</Meshes>
+
+	<Meshes name="SphereMesh" >
+		<MeshFile>../Data/Resources/Meshes/sphere.obj</MeshFile>
+	</Meshes>
+	
+	
+   <UIMeshes name="UIQuad">
+     <MeshFile>../Data/Resources/Meshes/centeredcube.obj</MeshFile>
+     <Colour>
+       <R>1</R>
+       <G>1</G>
+       <B>1</B>
+       <A>1</A>
+     </Colour>
+   </UIMeshes>
+</LevelMeshes>

@@ -1,0 +1,280 @@
+<GameObjectLogic>
+
+	<Resources>
+
+		<resource>player0</resource>
+	</Resources>
+
+
+	<GameplayScript>
+		
+
+	
+		<ReceiveMessage type="CollisionMessage">
+		<Action>
+			<Condition>
+				<objectIdentifier>var</objectIdentifier>
+			</Condition>
+			<Condition type="OR">
+				<colliderIdentifier>player0</colliderIdentifier>
+				<colliderIdentifier>AI</colliderIdentifier>
+				<colliderIdentifier>AI2</colliderIdentifier>
+				<colliderIdentifier>enemy</colliderIdentifier>
+			</Condition>
+
+			
+			<SendMessage type="MOVING_SOUND">
+				<destination>AudioSystem</destination>
+				<priority>SOUNDPRIORITY_HIGH</priority>
+				<volume>0.5</volume>
+				<radius>1.0</radius>
+				<pitch>1.0</pitch>
+				<isLooping>false</isLooping>
+				<isGlobal>true</isGlobal>
+				<sound>smack1</sound>
+				<soundNodeID>collision</soundNodeID>
+			</SendMessage>
+			
+		</Action>
+	 </ReceiveMessage>
+	 
+		
+	</GameplayScript>
+
+	<PaintGameLogic>
+
+		<OnStart>
+			<CreateMeteorPool>
+				<resource>var</resource>
+				<amount>10</amount>
+				<Mesh>MeteorMesh</Mesh>
+				<Size>20</Size>
+			</CreateMeteorPool>
+
+			<SetMaxPaint>
+				<resource>var</resource>
+				<paint>100</paint>
+			</SetMaxPaint>
+		</OnStart>
+
+
+		<ReceiveMessage type="InputMessage">
+			<Action>
+				<Condition type="AND">
+					<playerName>var</playerName>
+					<key>32</key>
+				</Condition>
+
+				<Jump>
+					<resource>var</resource>
+					<impulse>30</impulse>
+				</Jump>
+			</Action>
+		</ReceiveMessage>
+
+		<!-- OBJECTS WHERE THE PLAYER CAN JUMP FROM -->
+		<ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition>
+					<objectIdentifier>var</objectIdentifier>
+				</Condition>
+				<Condition type="OR">
+					<colliderIdentifier>floor</colliderIdentifier>
+					<colliderIdentifier>paintPool</colliderIdentifier>
+					<colliderIdentifier>secondfloor1</colliderIdentifier>
+					<colliderIdentifier>secondfloor2</colliderIdentifier>
+					<colliderIdentifier>secondfloor3</colliderIdentifier>
+					<colliderIdentifier>secondfloor4</colliderIdentifier>
+				</Condition>
+
+				<LetJump>
+					<resource>var</resource>
+				</LetJump>
+			</Action>
+		</ReceiveMessage>
+
+
+		<!-- OBJECTS WHERE THE PLAYER CAN PAINT -->
+		<ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition>
+					<objectIdentifier>var</objectIdentifier>
+				</Condition>
+				<Condition type="OR">
+					<colliderIdentifier>floor</colliderIdentifier>
+					<colliderIdentifier>paintPool</colliderIdentifier>
+					<colliderIdentifier>secondfloor1</colliderIdentifier>
+					<colliderIdentifier>secondfloor2</colliderIdentifier>
+					<colliderIdentifier>secondfloor3</colliderIdentifier>
+					<colliderIdentifier>secondfloor4</colliderIdentifier>
+				</Condition>
+
+				<CheckPaint>
+					<resource>var</resource>
+					<SendMessage type="PAINT_TRAIL_FOR_GAMEOBJECT">
+						<destination>RenderingSystem</destination>
+						<resource>var</resource>
+					</SendMessage>
+				</CheckPaint>
+			</Action>
+		</ReceiveMessage>
+
+		<ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition type="AND">
+					<objectIdentifier>var</objectIdentifier>
+					<colliderIdentifier>paintPool</colliderIdentifier>
+				</Condition>
+
+				<RegainPaint>
+					<resource>var</resource>
+				</RegainPaint>
+			</Action>
+		</ReceiveMessage>
+
+
+		<ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition type="AND">
+					<objectIdentifier>var</objectIdentifier>					
+					<colliderIdentifier>AI</colliderIdentifier>
+				</Condition>
+
+				<PaintMinion>
+					<resource>var</resource>
+					<minion>AI</minion>
+				</PaintMinion>
+			</Action>
+		</ReceiveMessage>
+
+		<ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition type="AND">
+					<objectIdentifier>var</objectIdentifier>					
+					<colliderIdentifier>AI2</colliderIdentifier>
+				</Condition>
+
+				<PaintMinion>
+					<resource>var</resource>
+					<minion>AI2</minion>
+				</PaintMinion>
+			</Action>
+		</ReceiveMessage>
+
+
+		<!-- <ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition type="AND">
+					<objectIdentifier>var</objectIdentifier>
+					<colliderIdentifier>powerup</colliderIdentifier>
+				</Condition>
+
+				<ScalePlayer>
+					<resource>var</resource>
+					<multiplier>1.25</multiplier>
+					<powerupObj>powerup</powerupObj>
+					<duration>5</duration>
+				</ScalePlayer>
+			</Action>
+		</ReceiveMessage> 
+
+		<ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition type="AND">
+					<objectIdentifier>var</objectIdentifier>
+					<colliderIdentifier>powerup</colliderIdentifier>
+				</Condition>
+
+				<DecreaseMass>
+					<resource>var</resource>
+					<multiplier>3</multiplier>
+					<powerupObj>powerup</powerupObj>
+					<duration>5</duration>
+				</DecreaseMass>
+			</Action>
+		</ReceiveMessage>
+
+		<ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition type="AND">
+					<objectIdentifier>var</objectIdentifier>
+					<colliderIdentifier>powerup</colliderIdentifier>
+				</Condition>
+
+				<MeteorStrike>
+					<resource>var</resource>
+					<multiplier>3</multiplier>
+					<powerupObj>powerup</powerupObj>
+					<duration>5</duration>
+				</MeteorStrike>
+			</Action>
+		</ReceiveMessage>-->
+
+		<ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition type="AND">
+					<objectIdentifier>var</objectIdentifier>
+					<colliderIdentifier>powerup</colliderIdentifier>
+				</Condition>
+
+				<RandomPowerUp>
+					<resource>var</resource>
+					<multiplier>2</multiplier>
+					<powerupObj>powerup</powerupObj>
+					<duration>10</duration>
+				</RandomPowerUp>
+			</Action>
+		</ReceiveMessage>
+		<ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition type="AND">
+					<objectIdentifier>var</objectIdentifier>
+					<colliderIdentifier>powerup1</colliderIdentifier>
+				</Condition>
+
+				<RandomPowerUp>
+					<resource>var</resource>
+					<multiplier>2</multiplier>
+					<powerupObj>powerup1</powerupObj>
+					<duration>10</duration>
+				</RandomPowerUp>
+			</Action>
+		</ReceiveMessage>
+        <ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition type="AND">
+					<objectIdentifier>var</objectIdentifier>
+					<colliderIdentifier>powerup2</colliderIdentifier>
+				</Condition>
+
+				<RandomPowerUp>
+					<resource>var</resource>
+					<multiplier>2</multiplier>
+					<powerupObj>powerup2</powerupObj>
+					<duration>10</duration>
+				</RandomPowerUp>
+			</Action>
+		</ReceiveMessage>
+		<ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition type="AND">
+					<objectIdentifier>var</objectIdentifier>
+					<colliderIdentifier>powerup3</colliderIdentifier>
+				</Condition>
+
+				<RandomPowerUp>
+					<resource>var</resource>
+					<multiplier>2</multiplier>
+					<powerupObj>powerup3</powerupObj>
+					<duration>10</duration>
+				</RandomPowerUp>
+			</Action>
+		</ReceiveMessage>
+		<Timed interval="0.5">
+			<ReducePaint>
+				<resource>var</resource>
+			</ReducePaint>
+		</Timed>
+	</PaintGameLogic>
+
+</GameObjectLogic>

@@ -1,0 +1,15 @@
+<LevelMeshes>
+	<Meshes name="CubeMesh" >
+		<MeshFile>../Data/Meshes/centeredcube.obj</MeshFile>
+	</Meshes>
+
+   <UIMeshes name="UIQuad">
+     <MeshFile>../Data/Meshes/centeredcube.obj</MeshFile>
+     <Colour>
+       <R>1</R>
+       <G>1</G>
+       <B>1</B>
+       <A>1</A>
+     </Colour>
+   </UIMeshes>
+</LevelMeshes>

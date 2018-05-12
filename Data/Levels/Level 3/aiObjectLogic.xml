@@ -1,0 +1,101 @@
+<GameObjectLogic>
+
+<Resources>
+	<resource>AI</resource>
+	<resource>AI2</resource>
+	<resource>enemy</resource>
+	<resource>enemy1</resource>
+	<resource>enemy2</resource>
+	<resource>enemy3</resource>
+	<resource>enemy4</resource>
+	<resource>enemy5</resource>
+</Resources>
+
+<GameplayScript>
+
+	<ReceiveMessage type="CollisionMessage">
+		<Action>
+			<Condition type="AND">
+				<objectIdentifier>var</objectIdentifier>
+				<colliderIdentifier>floor</colliderIdentifier>
+			</Condition>
+			
+			<SendMessage type="APPLY_IMPULSE">
+				<destination>Physics</destination>
+				<resource>var</resource>
+				<impulse>
+					<X>0</X>
+					<Y>0</Y>
+					<Z>0</Z>
+				</impulse>
+			</SendMessage>
+		</Action>
+	</ReceiveMessage>
+    
+	<ReceiveMessage type="CollisionMessage">
+		<Action>
+			<Condition>
+					<objectIdentifier>var</objectIdentifier>
+			</Condition>
+			<Condition type="OR">
+				<colliderIdentifier>floor</colliderIdentifier>
+				<colliderIdentifier>paintPool</colliderIdentifier>
+				<colliderIdentifier>secondfloor1</colliderIdentifier>
+				<colliderIdentifier>secondfloor2</colliderIdentifier>
+				<colliderIdentifier>secondfloor3</colliderIdentifier>
+				<colliderIdentifier>secondfloor4</colliderIdentifier>
+			</Condition>
+
+			<SendMessage type="PAINT_TRAIL_FOR_GAMEOBJECT">
+				<destination>RenderingSystem</destination>
+				<resource>var</resource>
+			</SendMessage>
+		</Action>
+	</ReceiveMessage>
+	
+	<Timed interval="0.5">
+		<SendMessage type="APPLY_FORCE">
+			<destination>Physics</destination>
+			<resource>var</resource>
+			<isRandom>True</isRandom>
+			<force>
+				<random>
+					<min>-10</min>
+					<max>10</max>
+				</random>
+				<Y>0</Y>
+				<random>
+					<min>-10</min>
+					<max>10</max>
+				</random>
+			</force>
+		</SendMessage>
+		
+		<!--<DecreasePaint>var</DecreasePaint>-->
+	</Timed>
+	
+	
+	<Timed interval="0.5">
+		<SendMessage type="MOVING_SOUND">
+			<destination>AudioSystem</destination>
+			<priority>SOUNDPRIORITY_HIGH</priority>
+			<volume>0.8</volume>
+			<radius>200.0</radius>
+			<pitch>1.0</pitch>
+			<isLooping>true</isLooping>
+			<isGlobal>false</isGlobal>
+			<sound>bounce</sound>
+			<soundNodeID>crap</soundNodeID>
+			<gameObjectID>enemy</gameObjectID>
+		</SendMessage>
+    </Timed>
+	
+</GameplayScript>
+
+<HardCodedLogic>
+
+
+</HardCodedLogic>
+
+
+</GameObjectLogic>

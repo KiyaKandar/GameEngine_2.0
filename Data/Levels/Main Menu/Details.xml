@@ -1,0 +1,30 @@
+<LevelDetails>
+<GameObjects name="player0" >
+     <SceneNode>
+		  <Mesh>CubeMesh</Mesh>
+		  <Colour>
+		    <R>1</R>
+		    <G>0</G>
+		    <B>0</B>
+		    <A>1</A>
+		  </Colour>
+		</SceneNode>
+		<Enabled>True/False</Enabled>
+		<Position>
+			<X>100</X>
+			<Y>100</Y>
+			<Z>250</Z>
+		</Position>
+		<Rotation>
+			<X>000</X>
+			<Y>000</Y>
+			<Z>000</Z>
+			<W>000</W>
+		</Rotation>
+		<Scale>
+			<X>50</X>
+			<Y>50</Y>
+			<Z>50</Z>
+		</Scale>
+</GameObjects>
+</LevelDetails>

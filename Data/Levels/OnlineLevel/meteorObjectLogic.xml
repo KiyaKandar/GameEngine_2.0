@@ -1,0 +1,88 @@
+<GameObjectLogic>
+
+	<Resources>
+
+		<resource>player0Meteor0</resource>
+		<resource>player0Meteor1</resource>
+		<resource>player0Meteor2</resource>
+		<resource>player0Meteor3</resource>
+		<resource>player0Meteor4</resource>
+		<resource>player0Meteor5</resource>
+		<resource>player0Meteor6</resource>
+		<resource>player0Meteor7</resource>
+		<resource>player0Meteor8</resource>
+		<resource>player0Meteor9</resource>
+		
+		<resource>player1Meteor0</resource>
+		<resource>player1Meteor1</resource>
+		<resource>player1Meteor2</resource>
+		<resource>player1Meteor3</resource>
+		<resource>player1Meteor4</resource>
+		<resource>player1Meteor5</resource>
+		<resource>player1Meteor6</resource>
+		<resource>player1Meteor7</resource>
+		<resource>player1Meteor8</resource>
+		<resource>player1Meteor9</resource>
+		
+		<resource>player2Meteor0</resource>
+		<resource>player2Meteor1</resource>
+		<resource>player2Meteor2</resource>
+		<resource>player2Meteor3</resource>
+		<resource>player2Meteor4</resource>
+		<resource>player2Meteor5</resource>
+		<resource>player2Meteor6</resource>
+		<resource>player2Meteor7</resource>
+		<resource>player2Meteor8</resource>
+		<resource>player2Meteor9</resource>
+		
+		<resource>player3Meteor0</resource>
+		<resource>player3Meteor1</resource>
+		<resource>player3Meteor2</resource>
+		<resource>player3Meteor3</resource>
+		<resource>player3Meteor4</resource>
+		<resource>player3Meteor5</resource>
+		<resource>player3Meteor6</resource>
+		<resource>player3Meteor7</resource>
+		<resource>player3Meteor8</resource>
+		<resource>player3Meteor9</resource>
+	</Resources>
+
+
+	<GameplayScript>
+		
+		<ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition type="AND">
+					<objectIdentifier>var</objectIdentifier>
+					<colliderIdentifier>floor</colliderIdentifier>
+				</Condition>
+
+				
+				<SendMessage type="PAINT_TRAIL_FOR_GAMEOBJECT">
+					<destination>RenderingSystem</destination>
+					<resource>var</resource>
+				</SendMessage>
+
+				<SendMessage type="TOGGLE_GAMEOBJECT">
+					<destination>RenderingSystem</destination>
+					<resource>var</resource>
+					<enabled>false</enabled>
+				</SendMessage>
+			  <SendMessage type="TOGGLE_GAMEOBJECT">
+			    <destination>Physics</destination>
+			    <resource>var</resource>
+			    <enabled>false</enabled>
+			  </SendMessage>
+
+			</Action>
+		</ReceiveMessage>
+		
+	</GameplayScript>
+
+	<PaintGameLogic>
+		
+
+		
+	</PaintGameLogic>
+
+</GameObjectLogic>

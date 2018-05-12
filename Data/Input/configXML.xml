@@ -1,0 +1,54 @@
+<Config inputType="Keyboard">
+		<KeyMapping name="moveForward">
+			<KeyAssignedTo>KEYBOARD_W</KeyAssignedTo>
+			<Actions>
+				<Move>
+					<X>000</X>
+					<Y>000</Y>
+					<Z>50</Z>
+				</Move>
+			</Actions>
+		</KeyMapping>
+		<KeyMapping name="moveLeft">
+			<KeyAssignedTo>KEYBOARD_A</KeyAssignedTo>
+			<Actions>
+				<Move>
+					<X>50</X>
+					<Y>000</Y>
+					<Z>000</Z>
+				</Move>
+			</Actions>
+		</KeyMapping>
+		<KeyMapping name="moveBackwards">
+			<KeyAssignedTo>KEYBOARD_S</KeyAssignedTo>
+			<Actions>
+				<Move>
+					<X>000</X>
+					<Y>000</Y>
+					<Z>-50</Z>
+				</Move>
+			</Actions>
+		</KeyMapping>
+		<KeyMapping name="moveRight">
+			<KeyAssignedTo>KEYBOARD_D</KeyAssignedTo>
+			<Actions>
+				<Move>
+					<X>-50</X>
+					<Y>000</Y>
+					<Z>000</Z>
+				</Move>
+			</Actions>
+		</KeyMapping>
+
+		<!--PLAYER OBJECT LOGIC IS HANDLING IT-->
+		<KeyMapping name="jump">
+			<KeyAssignedTo>KEYBOARD_SPACE</KeyAssignedTo>
+			<Actions>
+				<Impulse>
+					<X>0</X>
+					<Y>0</Y>
+					<Z>0</Z>
+				</Impulse>
+			</Actions>
+		</KeyMapping>
+</Config>

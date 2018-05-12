@@ -1,0 +1,34 @@
+<LevelMeshes>
+	<Meshes name="SphereMesh" >
+		<MeshFile>../Data/Resources/Meshes/sphere.obj</MeshFile>
+	</Meshes>
+	
+	<Meshes name="CubeMesh" >
+		<MeshFile>../Data/Resources/Meshes/centeredcube.obj</MeshFile>
+	</Meshes>
+
+	<Meshes name="player0Mesh">
+		<MeshFile>../Data/Resources/Meshes/sphere.obj</MeshFile>
+		<texture>../Data/Resources/Meshes/box/Crate/crate_1.jpg</texture>
+	</Meshes>
+
+	<Meshes name="CrateMesh" >
+		<MeshFile>../Data/Resources/Meshes/box/Crate/Crate1.obj</MeshFile>
+	</Meshes>
+
+  <Meshes name="MeteorMesh" >
+    <MeshFile>../Data/Resources/Meshes/Rock.obj</MeshFile>
+    <texture>../Data/Resources/Textures/hell.jpg</texture>
+  </Meshes>
+
+	<Meshes name = "HeightMap">
+		<MeshType>HeightMap</MeshType>
+		<Texture>../Data/Resources/Textures/rainbow.jpg</Texture>
+		<Perlin>1</Perlin>
+	</Meshes> 
+	
+	<Meshes name="PowerUp" >
+		<MeshFile>../Data/Resources/Meshes/cube.obj</MeshFile>
+		<texture>../Data/Resources/Textures/mario.jpg</texture>
+	</Meshes>
+</LevelMeshes>

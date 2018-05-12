@@ -1,0 +1,63 @@
+<GameObjectLogic>
+
+	<Resources>
+
+		<resource>player0Meteor0</resource>
+		<resource>player0Meteor1</resource>
+		<resource>player0Meteor2</resource>
+		<resource>player0Meteor3</resource>
+		<resource>player0Meteor4</resource>
+		<resource>player0Meteor5</resource>
+		<resource>player0Meteor6</resource>
+		<resource>player0Meteor7</resource>
+		<resource>player0Meteor8</resource>
+		<resource>player0Meteor9</resource>
+		
+	</Resources>
+
+
+	<GameplayScript>
+		
+		<ReceiveMessage type="CollisionMessage">
+			<Action>
+				<Condition>
+				<objectIdentifier>var</objectIdentifier>
+				</Condition>
+				<Condition type="OR">
+					<colliderIdentifier>thirdfloor3</colliderIdentifier>
+					<colliderIdentifier>floor</colliderIdentifier>
+					<colliderIdentifier>thirdfloor4</colliderIdentifier>
+					<colliderIdentifier>thirdfloor5</colliderIdentifier>
+					<colliderIdentifier>Crossing3f</colliderIdentifier>
+					
+				</Condition>
+
+				
+				<SendMessage type="PAINT_TRAIL_FOR_GAMEOBJECT">
+					<destination>RenderingSystem</destination>
+					<resource>var</resource>
+				</SendMessage>
+
+				<SendMessage type="TOGGLE_GAMEOBJECT">
+					<destination>RenderingSystem</destination>
+					<resource>var</resource>
+					<enabled>false</enabled>
+				</SendMessage>
+			  <SendMessage type="TOGGLE_GAMEOBJECT">
+			    <destination>Physics</destination>
+			    <resource>var</resource>
+			    <enabled>false</enabled>
+			  </SendMessage>
+
+			</Action>
+		</ReceiveMessage>
+		
+	</GameplayScript>
+
+	<PaintGameLogic>
+		
+
+		
+	</PaintGameLogic>
+
+</GameObjectLogic>

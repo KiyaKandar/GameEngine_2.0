@@ -1,0 +1,9 @@
+<GameplayScript>
+  <OnStart>
+    <SendMessage type="TEXT">
+      <destination>GameLoop</destination>
+      <resource>player0</resource>
+      <text>deltatime disable</text>
+    </SendMessage>
+  </OnStart>
+</GameplayScript>

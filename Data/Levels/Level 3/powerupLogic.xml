@@ -1,0 +1,29 @@
+<GameObjectLogic>
+
+	<Resources>
+		<resource>powerup</resource>
+    <resource>powerup1</resource>
+    <resource>powerup2</resource>
+	  <resource>powerup3</resource>
+	</Resources>
+
+	<GameplayScript>
+	  <Timed interval="0.01">
+	    <SendMessage type="ROTATE_GAMEOBJECT">
+	      <destination>Physics</destination>
+	      <rotation>
+	        <x>0</x>
+	        <y>1</y>
+	        <z>0</z>
+	        <w>1</w>
+	      </rotation>
+        <relative>True</relative>
+	      <resource>var</resource>
+	    </SendMessage>
+	  </Timed>
+	</GameplayScript>
+
+	<PaintGameLogic>
+	</PaintGameLogic>
+
+</GameObjectLogic>

@@ -1,0 +1,17 @@
+<Level>
+	<File>Level 1/Meshes.xml</File>
+	<File>Level 1/Details.xml</File>
+	<File>Level 1/Sounds.xml</File>
+	<File>Level 1/Lights.xml</File>
+	<UI>
+		<File>../Data/UserInterface/InGameMenu.xml</File>
+	</UI>
+	<GamePlay>
+		<File>Level 1/gameplay.xml</File>
+	</GamePlay>
+	<GameLogic>
+		<File>Level 1/aiObjectLogic.xml</File>
+		<File>Level 1/playerObjectLogic.xml</File>
+		<File>Level 1/meteorObjectLogic.xml</File>
+	</GameLogic>
+</Level>

@@ -1,0 +1,6 @@
+<LevelSounds>
+	<SoundObjects name="bounce">../Data/SoundFiles/bounce.wav</sound>
+	<SoundObjects name="strawberries">../Data/SoundFiles/strawberries.wav</sound>
+	<SoundObjects name="bob">../Data/SoundFiles/bob.wav</sound>
+	<SoundObjects name="mirrorsedge">../Data/SoundFiles/mirrorsedge.wav</sound>
+</LevelSounds>
