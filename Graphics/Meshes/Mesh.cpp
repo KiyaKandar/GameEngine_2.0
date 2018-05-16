@@ -22,6 +22,9 @@ void Mesh::LoadModel(std::string path)
 		throw runtime_error("Mesh not found");
 	}
 
+	globalInverseTransform = scene->mRootNode->mTransformation;
+	globalInverseTransform.Inverse();
+
 	directory = path.substr(0, path.find_last_of('/'));
 
 	ProcessNode(scene->mRootNode, scene);
@@ -41,8 +44,9 @@ void Mesh::ProcessNode(aiNode *node, const aiScene *scene)
 	//Process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
+		++meshCounter;
 		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-		SubMesh* model = ProcessMesh(mesh, scene);
+		SubMesh* model = ProcessMesh(meshCounter, mesh, scene);
 		meshes.push_back(model);
 		meshesByName.insert({ static_cast<string>(mesh->mName.C_Str()), model });
 	}
@@ -54,12 +58,13 @@ void Mesh::ProcessNode(aiNode *node, const aiScene *scene)
 	}
 }
 
-SubMesh* Mesh::ProcessMesh(aiMesh *mesh, const aiScene *scene)
+SubMesh* Mesh::ProcessMesh(unsigned int meshIndex, aiMesh* mesh, const aiScene *scene)
 {
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
 	vector<Texture> textures;
 	vector<Texture> heights;
+	vector<VertexBoneData> bones;
 
 	const float maxFloat = (std::numeric_limits<float>::max)();
 	const float minFloat = (std::numeric_limits<float>::lowest());
@@ -68,6 +73,15 @@ SubMesh* Mesh::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 	NCLVector3 maxBounds(minFloat, minFloat, minFloat);
 
 	BoundingBox AABB;
+
+	int baseVertex = 0;
+	int numVertices = 0;
+
+	for (int i = 0; i < meshIndex; ++i)
+	{
+		baseVertex = numVertices;
+		numVertices += scene->mMeshes[i]->mNumVertices;
+	}
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -124,6 +138,8 @@ SubMesh* Mesh::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 		vertices.push_back(vertex);
 	}
 
+	bones = LoadBones(meshIndex, mesh);
+
 	//Process indices
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 	{
@@ -165,6 +181,8 @@ SubMesh* Mesh::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 		modelMesh->hasTexture = 1;
 		hasTexture = 1;
 	}
+
+	modelMesh->baseVertex = baseVertex;
 
 	return modelMesh;
 }
@@ -318,10 +336,45 @@ void Mesh::SetbackupColourAttributeForAllSubMeshes(NCLVector4 colour)
 
 void Mesh::Draw(Shader& shader, NCLMatrix4 worldTransform)
 {
-		for (SubMesh* submesh : meshes)
+	for (SubMesh* submesh : meshes)
+	{
+		submesh->Draw(shader, worldTransform);
+	}
+}
+
+vector<VertexBoneData> Mesh::LoadBones(unsigned int meshIndex, const aiMesh * mesh)
+{
+	std::vector<VertexBoneData> bones;
+
+	for (unsigned int i = 0; i < mesh->mNumBones; i++)
+	{
+		unsigned int boneIndex = 0;
+		string boneName(mesh->mBones[i]->mName.data);
+
+		if (boneMapping.find(boneName) == boneMapping.end())
 		{
-			submesh->Draw(shader, worldTransform);
+			// Allocate an index for a new bone
+			boneIndex = numBones;
+			numBones++;
+			BoneInfo bi;
+			boneInfo.push_back(bi);
+			boneInfo[boneIndex].boneOffset = mesh->mBones[i]->mOffsetMatrix;
+			boneMapping[boneName] = boneIndex;
 		}
+		else
+		{
+			boneIndex = boneMapping[boneName];
+		}
+
+		for (unsigned int j = 0; j < mesh->mBones[i]->mNumWeights; j++) 
+		{
+			unsigned int VertexID = meshes[meshIndex]->baseVertex + mesh->mBones[i]->mWeights[j].mVertexId;
+			float Weight = mesh->mBones[i]->mWeights[j].mWeight;
+			bones[VertexID].AddBoneData(boneIndex, Weight);
+		}
+	}
+
+	return bones;
 }
 
 void Mesh::loadTexture(std::string textureFile)

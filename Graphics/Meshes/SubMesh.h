@@ -117,7 +117,7 @@ public:
 
 	void SetupMesh();
 
-
+	int baseVertex;
 protected:
 	NCLMatrix4 transform;
 	unsigned int VAO, VBO, EBO; //Render data

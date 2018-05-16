@@ -16,6 +16,34 @@
 
 #include <unordered_map>
 #include <Simple OpenGL Image Library\src\stb_image_aug.h>
+#include <map>
+
+struct VertexBoneData
+{
+	unsigned int ids[NUM_BONES_PER_VEREX];
+	float weights[NUM_BONES_PER_VEREX];
+
+	void AddBoneData(unsigned int boneID, float weight)
+	{
+		int arraySize = sizeof(ids) / sizeof(ids[0]);
+
+		for (unsigned int i = 0; i < arraySize; i++) 
+		{
+			if (weights[i] == 0.0) 
+			{
+				ids[i] = boneID;
+				weights[i] = weight;
+				return;
+			}
+		}
+	}
+};
+
+struct BoneInfo
+{
+	aiMatrix4x4 boneOffset;
+	aiMatrix4x4 finalTransformation;
+};
 
 class Mesh : public Resource
 {
@@ -54,6 +82,7 @@ public:
 	};
 
 	void LoadModel(std::string path);
+
 	void setupMesh()
 	{
 		for (SubMesh* submesh : meshes)
@@ -69,7 +98,7 @@ public:
 	void SetTransformForAllSubMeshes(NCLMatrix4 transform);
 
 	void ProcessNode(aiNode *node, const aiScene *scene);
-	SubMesh* ProcessMesh(aiMesh *mesh, const aiScene *scene);
+	SubMesh* ProcessMesh(unsigned int meshIndex, aiMesh *mesh, const aiScene *scene);
 
 
 	static Mesh* GenerateHeightMap(int width, int height);
@@ -89,6 +118,7 @@ public:
 		return this->meshes[0]->GetBoundingRadius();
 	}
 	
+	std::vector<VertexBoneData> LoadBones(unsigned int meshIndex, const aiMesh* mesh);
 
 	void loadTexture(std::string filepath);
 	void setTextureFile(std::string textureFile)
@@ -108,11 +138,17 @@ public:
 	Assimp::Importer import;
 	const aiScene* scene;
 
+	aiMatrix4x4 globalInverseTransform;
+	map<string, unsigned  int> boneMapping; // maps a bone name to its index
+	unsigned int numBones = 0;
+	vector<BoneInfo> boneInfo;
+
 	int hasTexture = 0;
 	int numModels;
 
 	float radius;
 
+	unsigned int meshCounter = 0;
 	bool perlin = false;
 };
 

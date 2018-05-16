@@ -62,6 +62,7 @@ std::vector<SceneNode*>** SceneManager::getAllNodes()
 	return &sceneNodes;
 }
 
+//TODO ORDER MESHES
 void SceneManager::allocateSubNodesToNodeLists(SceneNode* node)
 {
 	if (camera->sceneNodeIsInCameraView(node) && node->isEnabled)
