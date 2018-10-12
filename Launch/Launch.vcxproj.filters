@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Launch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Systems\System.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameLoop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Startup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Networking\NetworkClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Networking\DeadReckoning.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Networking\NetworkMessageProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Profiler\FPSCounter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Profiler\MemoryWatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Profiler\Profiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Systems\Subsystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DevConsole\Console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DevConsole\LevelEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Threading\ThreadPool\ThreadPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Networking\MinionDeadReckoning.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Systems\Subsystem.h" />
+    <ClInclude Include="Systems\System.h" />
+    <ClInclude Include="Game\GameLoop.h" />
+    <ClInclude Include="Startup.h" />
+    <ClInclude Include="Networking\NetworkClient.h" />
+    <ClInclude Include="Networking\DeadReckoning.h" />
+    <ClInclude Include="Networking\NetworkMessageProcessor.h" />
+    <ClInclude Include="Profiler\FPSCounter.h" />
+    <ClInclude Include="Profiler\MemoryWatcher.h" />
+    <ClInclude Include="Profiler\Profiler.h" />
+    <ClInclude Include="DevConsole\Console.h" />
+    <ClInclude Include="DevConsole\LevelEditor.h" />
+    <ClInclude Include="Threading\ThreadPool\ThreadPool.h" />
+    <ClInclude Include="Threading\ThreadPool\ThreadQueue.h" />
+    <ClInclude Include="Threading\Tasks\Task.h" />
+    <ClInclude Include="Threading\Tasks\TaskFuture.h" />
+    <ClInclude Include="Threading\Tasks\ThreadTask.h" />
+    <ClInclude Include="Networking\MinionDeadReckoning.h" />
+  </ItemGroup>
+</Project>
