@@ -41,11 +41,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Data\Meshes\box\Crate\Crate1.obj = Data\Meshes\box\Crate\Crate1.obj
 		Data\Resources\Meshes\cube.obj = Data\Resources\Meshes\cube.obj
 		Resources\Gameplay\gameplay.xml = Resources\Gameplay\gameplay.xml
+		GLEW\lib\Release\glew32.lib = GLEW\lib\Release\glew32.lib
+		GLEW\lib\Debug\glew32.lib = GLEW\lib\Debug\glew32.lib
 		Release\OpenAL32.lib = Release\OpenAL32.lib
 		Debug\OpenAL32.lib = Debug\OpenAL32.lib
 		Data\Resources\Meshes\Raptor.obj = Data\Resources\Meshes\Raptor.obj
 		Data\Resources\Meshes\Rock.obj = Data\Resources\Meshes\Rock.obj
 		Data\Resources\Textures\sleepyboi.png = Data\Resources\Textures\sleepyboi.png
+		SOIL\Debug\SOIL.lib = SOIL\Debug\SOIL.lib
+		SOIL\Release\SOIL.lib = SOIL\Release\SOIL.lib
 		Data\Resources\Meshes\sphere.obj = Data\Resources\Meshes\sphere.obj
 	EndProjectSection
 EndProject
