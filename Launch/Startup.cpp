@@ -1,9 +1,22 @@
 #include "Startup.h"
-#include "Resource Management/Database/Database.h"
+
 #include "Networking/NetworkClient.h"
 #include "Profiler/FPSCounter.h"
 #include "DevConsole\Console.h"
 #include "DevConsole/LevelEditor.h"
+
+#include "Resource Management/Database/Database.h"
+#include "Resource Management/Level.h"
+#include "Resource Management/Database/TableCreation.h"
+
+#include "Rendering/RenderingSystem.h"
+#include "../Graphics/Animation/AnimationManager.h"
+#include "../Graphics/Animation/AnimationPlayer.h"
+#include "../Input/InputManager.h"
+#include "GameplaySystem.h"
+#include "../../Audio/AudioSystem.h"
+#include "../../Input/Recorders/KeyboardMouseRecorder.h"
+#include "Profiler/Profiler.h"
 
 #include "../Utilities/FilePaths.h"
 #include "../Gameplay/Scripting/PaintGameActionBuilder.h"
@@ -27,7 +40,6 @@ Startup::~Startup()
 	delete loopTimer;
 	delete window;
 	delete camera;
-
 }
 
 void Startup::renderLoadingScreen()
@@ -39,6 +51,8 @@ void Startup::initialiseSubsystems()
 {
 	initialiseDatabaseAndTables();
 	initialiseAudioSystem();
+	animationPlayer = new AnimationManager();
+	AnimationPlayer::provide(animationPlayer);
 	physics = new PhysicsEngine(database, window->getKeyboard());
 	userInterface = new UserInterface(window->getKeyboard(), resolution);
 	initialiseLevelSystem();
@@ -128,6 +142,7 @@ void Startup::addSystemsToEngine()
 	engine->addSubsystem(rendering);
 	engine->addSubsystem(audio);
 	engine->addConcurrentSubsystem(userInterface);
+	engine->addConcurrentSubsystem(animationPlayer);
 	engine->addConcurrentSubsystem(physics);
 	engine->addConcurrentSubsystem(profiler);
 	engine->addConcurrentSubsystem(new Console(window->getKeyboard(), camera, window->getMouse()));
@@ -175,6 +190,9 @@ void Startup::switchLevel()
 	rendering->clearPainters();
 
 	audio->clearSoundNodesWhenUnloadingLevel();
+
+	animationPlayer->clearAnimations();
+
 	level->unloadLevelWhileKeepingUserInterface();
 
 	XMLParser::deleteAllParsedXML();

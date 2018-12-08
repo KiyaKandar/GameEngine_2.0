@@ -72,11 +72,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>..\Interface\;..\Input\;..\ASSIMP\include\assimp;..\Utilities\;..\SOIL\;..\GLEW\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\SOIL\Debug\;..\GLEW\lib\Debug\;</LibraryPath>
+    <LibraryPath>..\SOIL\Debug\;..\ASSIMP\lib\Debug;..\GLEW\lib\Debug\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>..\Interface\;..\Input\;..\ASSIMP\include\assimp;..\Utilities\;..\SOIL\;..\GLEW\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\SOIL\Release\;..\GLEW\lib\Release\</LibraryPath>
+    <LibraryPath>..\SOIL\Release\;..\GLEW\lib\Release\;..\ASSIMP\lib\Debug</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -90,7 +90,7 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>SOIL.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SOIL.lib;glew32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -121,7 +121,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>SOIL.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SOIL.lib;glew32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -144,6 +144,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation\AnimationTransformHelper.h" />
+    <ClInclude Include="Animation\AnimationPlayer.h" />
+    <ClInclude Include="Animation\Animation.h" />
+    <ClInclude Include="Animation\AnimationManager.h" />
+    <ClInclude Include="Animation\AnimationService.h" />
     <ClInclude Include="Graphics Pipeline\Graphics Settings\Wireframe.h" />
     <ClInclude Include="Graphics Pipeline\Graphics Settings\GameText.h" />
     <ClInclude Include="Graphics Pipeline\Graphics Settings\UIModule.h" />
@@ -177,6 +182,10 @@
     <ClInclude Include="Shaders\Shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animation\AnimationPlayer.cpp" />
+    <ClCompile Include="Animation\Animation.cpp" />
+    <ClCompile Include="Animation\AnimationManager.cpp" />
+    <ClCompile Include="Animation\AnimationTransformHelper.cpp" />
     <ClCompile Include="Graphics Pipeline\Graphics Settings\Wireframe.cpp" />
     <ClCompile Include="Graphics Pipeline\Graphics Settings\GameText.cpp" />
     <ClCompile Include="Graphics Pipeline\Graphics Settings\PaintTrail.cpp" />

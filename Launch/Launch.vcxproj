@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>..\Tuts_Network_Server\;..\ENET\include;..\Interface\;..\Physics\;..\Audio\;..\Gameplay\;..\Graphics\;..\Input\;..\Utilities\;..\ASSIMP\include\assimp;..\SOIL\;..\GLEW\include;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>..\ENET\lib;..\Interface\$(Configuration);..\Physics\$(Configuration);..\Audio\$(Configuration);..\Gameplay\$(Configuration);..\Graphics\$(Configuration);..\Input\$(Configuration);..\Utilities\$(Configuration);..\ASSIMP\lib;..\GLEW\lib;$(SolutionDir)$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\ENET\lib;..\Interface\$(Configuration);..\Physics\$(Configuration);..\Audio\$(Configuration);..\Gameplay\$(Configuration);..\Graphics\$(Configuration);..\Input\$(Configuration);..\Utilities\$(Configuration);..\ASSIMP\lib\Debug;..\GLEW\lib;$(SolutionDir)$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -81,7 +81,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>..\Tuts_Network_Server\;..\ENET\include;..\Interface\;..\Physics\;..\Audio\;..\Gameplay\;..\Graphics\;..\Input\;..\Utilities\;..\ASSIMP\include\assimp;..\SOIL\;..\GLEW\include;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>..\ENET\lib;..\Interface\$(Configuration);..\Physics\$(Configuration);..\Audio\$(Configuration);..\Gameplay\$(Configuration);..\Graphics\$(Configuration);..\Input\$(Configuration);..\Utilities\$(Configuration);..\ASSIMP\lib;..\GLEW\lib;$(SolutionDir)$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\ENET\lib;..\Interface\$(Configuration);..\Physics\$(Configuration);..\Audio\$(Configuration);..\Gameplay\$(Configuration);..\Graphics\$(Configuration);..\Input\$(Configuration);..\Utilities\$(Configuration);..\ASSIMP\lib\Debug;..\GLEW\lib;$(SolutionDir)$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

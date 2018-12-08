@@ -3,6 +3,7 @@
 #include "../Input/Devices/Window.h"
 #include "../../GraphicsUtility.h"
 #include "../../GraphicsCommon.h"
+#include "../../Animation/AnimationPlayer.h"
 
 GBuffer::GBuffer(const std::string identifier, const NCLVector2 resolution, 
 	Window* window, Camera* camera, std::vector<SceneNode*>* nodesInFrame)
@@ -136,12 +137,10 @@ void GBuffer::renderGeometry(std::vector<SceneNode*>* nodesInFrame)
 	glUniformMatrix4fv(glGetUniformLocation(geometryPass->GetProgram(), "paintTrailTextureMatrix"), 1, false, (float*)paintTextureMatrix);
 	currentShader->ApplyTexture(6, *paintTrailTexture);
 
-
 	//Perlin noise
 	glUniform1f(loc_time, time);
 	glUniform1i(glGetUniformLocation(geometryPass->GetProgram(), "perlinTex"), 7);
 	currentShader->ApplyTexture(7, noiseTexture);
-
 
 	glUniform3fv(loc_cameraPos, 1, (float*)&camera->getPosition());
 	glActiveTexture(GL_TEXTURE8);
@@ -150,13 +149,40 @@ void GBuffer::renderGeometry(std::vector<SceneNode*>* nodesInFrame)
 
 	for (unsigned int i = 0; i < nodesInFrame->size(); ++i)
 	{
-		glUniform1i(loc_perlin, nodesInFrame->at(i)->GetMesh()->perlin);
-		glUniform1i(glGetUniformLocation(geometryPass->GetProgram(), "hasTexture"), nodesInFrame->at(i)->GetMesh()->hasTexture);
-		glUniform1i(glGetUniformLocation(geometryPass->GetProgram(), "isPaintSurface"), nodesInFrame->at(i)->isPaintSurface);
-		glUniform1i(glGetUniformLocation(geometryPass->GetProgram(), "isReflective"), nodesInFrame->at(i)->isReflective);
-		glUniform1f(glGetUniformLocation(geometryPass->GetProgram(), "reflectiveStrength"), nodesInFrame->at(i)->reflectiveStrength);
-		glUniform4fv(loc_baseColour, 1, (float*)&nodesInFrame->at(i)->getColour()); 
-		nodesInFrame->at(i)->Draw(*currentShader);
+		SceneNode* node = nodesInFrame->at(i);
+		Mesh* mesh = node->GetMesh();
+		UploadSurfaceData(mesh, node);
+		UploadAnimationData(mesh);
+
+		node->Draw(*currentShader);
+	}
+}
+
+void GBuffer::UploadSurfaceData(Mesh* mesh, SceneNode* node)
+{
+	glUniform1i(loc_perlin, mesh->perlin);
+	glUniform1i(glGetUniformLocation(geometryPass->GetProgram(), "hasTexture"), mesh->hasTexture);
+	glUniform1i(glGetUniformLocation(geometryPass->GetProgram(), "isPaintSurface"), node->isPaintSurface);
+	glUniform1i(glGetUniformLocation(geometryPass->GetProgram(), "isReflective"), node->isReflective);
+	glUniform1f(glGetUniformLocation(geometryPass->GetProgram(), "reflectiveStrength"), node->reflectiveStrength);
+	glUniform4fv(loc_baseColour, 1, (float*)&node->getColour());
+}
+
+void GBuffer::UploadAnimationData(Mesh* mesh)
+{
+	bool hasAnimations = mesh->scene == nullptr ? false : mesh->scene->HasAnimations();
+	glUniform1i(glGetUniformLocation(geometryPass->GetProgram(), "anim"), hasAnimations ? 1 : 0);
+
+	if (hasAnimations)
+	{
+		std::vector<aiMatrix4x4> transforms;
+		AnimationPlayer::getAnimationService()->readAnimationStateForMesh(mesh->getName(), transforms);
+
+		for (int i = 0; i < transforms.size(); i++)
+		{
+			const string name = "gBones[" + std::to_string(i) + "]";
+			glUniformMatrix4fv(glGetUniformLocation(geometryPass->GetProgram(), name.c_str()), 1, GL_TRUE, (const GLfloat*)&transforms[i]);
+		}
 	}
 }
 

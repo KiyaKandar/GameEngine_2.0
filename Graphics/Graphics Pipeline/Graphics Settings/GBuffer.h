@@ -49,6 +49,8 @@ private:
 	void initAttachments();
 
 	void renderGeometry(std::vector<SceneNode*>* nodesInFrame);
+	void UploadSurfaceData(Mesh* mesh, SceneNode* node);
+	void UploadAnimationData(Mesh* mesh);
 
 	GLuint gPosition;
 	GLuint gNormal;

@@ -7618,7 +7618,7 @@ mesh {
 
 mesh {
 	// meshes: salivamesh
-	shader "models/monsters/hellknight/gob2"
+	shader "models/monsters/hellknight/gob2_h"
 
 	numverts 14
 	vert 0 ( 0.6911731958 0.0044568777 ) 5 1
@@ -7677,7 +7677,7 @@ mesh {
 
 mesh {
 	// meshes: droolmesh
-	shader "models/monsters/hellknight/gob"
+	shader "models/monsters/hellknight/gob_s"
 
 	numverts 33
 	vert 0 ( 0.715780139 0.2972531319 ) 4 1

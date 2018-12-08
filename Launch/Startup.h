@@ -1,19 +1,21 @@
 #pragma once
 
 #include "Scene Management/SceneManager.h"
-#include "Rendering/RenderingSystem.h"
-#include "../Input/InputManager.h"
-#include "GameplaySystem.h"
-#include "../../Audio/AudioSystem.h"
 #include "../Launch/Game/GameLoop.h"
-#include "Resource Management/Database/TableCreation.h"
-#include "Resource Management/Level.h"
-#include "../../Input/Recorders/KeyboardMouseRecorder.h"
-#include "Profiler/Profiler.h"
+#include "../Utilities/Maths/Vector2.h"
 
+class RenderingSystem;
+class AnimationManager;
+class InputManager;
+class GameplaySystem;
+class AudioSystem;
 class NetworkClient;
 class Database;
 class ThreadPool;
+class Level;
+class TableCreation;
+class Keyboard;
+class Profiler;
 
 class Startup
 {
@@ -56,6 +58,7 @@ private:
 	Level* level;
 
 	RenderingSystem* rendering;
+	AnimationManager* animationPlayer;
 	InputManager* inputManager;
 	GameplaySystem* gameplay;
 	AudioSystem* audio;

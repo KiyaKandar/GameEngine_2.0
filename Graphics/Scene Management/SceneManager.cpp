@@ -67,6 +67,8 @@ void SceneManager::allocateSubNodesToNodeLists(SceneNode* node)
 {
 	if (camera->sceneNodeIsInCameraView(node) && node->isEnabled)
 	{
+		node->GetMesh()->onScreen = true;
+
 		if (node->getColour().w < 1.0f)
 		{
 			transparentSceneNodesInFrustum->push_back(node);
@@ -75,5 +77,9 @@ void SceneManager::allocateSubNodesToNodeLists(SceneNode* node)
 		{
 			sceneNodesInFrustum->push_back(node);
 		}
+	}
+	else
+	{
+		node->GetMesh()->onScreen = false;
 	}
 }

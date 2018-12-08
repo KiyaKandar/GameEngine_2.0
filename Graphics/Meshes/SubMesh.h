@@ -5,12 +5,36 @@
 #include "../Shaders/Shader.h"
 #include "../Utilities/Maths/Matrix4.h"
 
+#include <scene.h>
 #include <sstream>
 #include <string>
 #include <vector>
 #include <matrix4x4.h>
 
-const int NUM_BONES_PER_VEREX = 10;
+const int NUM_BONES_PER_VEREX = 20;
+
+struct VertexBoneData
+{
+	unsigned int ids[NUM_BONES_PER_VEREX];
+	float weights[NUM_BONES_PER_VEREX];
+
+	void AddBoneData(unsigned int boneID, float weight)
+	{
+		int arraySize = sizeof(ids) / sizeof(ids[0]);
+
+		for (unsigned int i = 0; i < arraySize; i++)
+		{
+			if (weights[i] == 0.0)
+			{
+				ids[i] = boneID;
+				weights[i] = weight;
+				return;
+			}
+		}
+
+		assert(0);
+	}
+};
 
 struct Vertex
 {
@@ -38,7 +62,7 @@ class SubMesh
 {
 public:
 	SubMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
-		std::vector<Texture> textures, std::vector<Texture> heights,
+		std::vector<Texture> textures, std::vector<Texture> heights, std::vector<VertexBoneData> bones,
 		BoundingBox AABB, int numTransforms);
 	SubMesh();
 	~SubMesh();
@@ -105,6 +129,7 @@ public:
 	std::vector<unsigned int> indices;
 	std::vector<Texture> textures;
 	std::vector<Texture> heights;
+	vector<VertexBoneData> bones;
 
 	BoundingBox box;
 
@@ -120,7 +145,7 @@ public:
 	int baseVertex;
 protected:
 	NCLMatrix4 transform;
-	unsigned int VAO, VBO, EBO; //Render data
+	unsigned int VAO, VBO, EBO, BBO; //Render data
 
 	float boundingRadius;
 	float distanceFromCamera;

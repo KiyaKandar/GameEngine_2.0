@@ -39,6 +39,11 @@ void main(void) {
 		col = texture(texture_diffuse, TexCoords);
 	}
 
+	if (col.a < 0.01f)
+	{
+		discard;
+	}
+
 	if (isPaintSurface == 1)
 	{
 		vec4 paintTrailProjection = (paintTrailTextureMatrix * inverse(viewMatrix) *
@@ -88,8 +93,6 @@ void main(void) {
 		col.rgb += reflectioncolour.rgb * reflectiveStrength;
 		col /= 2;
 	}
-
-	//col.rgb = normalize(reflectionPos);
 
 	gAlbedo = vec4(col.rgb, 1.0);
 }

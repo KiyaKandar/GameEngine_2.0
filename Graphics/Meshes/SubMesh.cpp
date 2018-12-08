@@ -1,13 +1,14 @@
 #include "SubMesh.h"
 
 SubMesh::SubMesh(vector<Vertex> vertices, vector<unsigned int> indices,
-	vector<Texture> textures, vector<Texture> heights,
+	vector<Texture> textures, vector<Texture> heights, std::vector<VertexBoneData> bones,
 	BoundingBox AABB, int numTransforms)
 {
 	this->vertices = vertices;
 	this->indices = indices;
 	this->textures = textures;
 	this->heights = heights;
+	this->bones = bones;
 
 	box = AABB;
 	boundingRadius = 1.0f;
@@ -34,18 +35,19 @@ void SubMesh::SetupMesh()
 {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &BBO);
 	glGenBuffers(1, &EBO);
 
 	glBindVertexArray(VAO);
 
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	//VERTEX DATA
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices.at(0), GL_STATIC_DRAW);
 
 	//Vertex positions
 	glEnableVertexAttribArray(0);
-	
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-	
 	
 	//Vertex normals
 	glEnableVertexAttribArray(1);
@@ -63,12 +65,19 @@ void SubMesh::SetupMesh()
 	glEnableVertexAttribArray(4);
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	//ANIMATION DATA
+	glBindBuffer(GL_ARRAY_BUFFER, BBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(bones[0]) * bones.size(), &bones[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(5);
+	glVertexAttribIPointer(5, 4, GL_INT, sizeof(VertexBoneData), (const GLvoid*)0);
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (const GLvoid*)(NUM_BONES_PER_VEREX * 4));
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	//INDICES
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
-			&indices[0], GL_STATIC_DRAW);
-
-	
-
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
 }

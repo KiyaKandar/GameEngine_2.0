@@ -4,6 +4,8 @@
 
 #include "SOIL.h"
 #include "SubMesh.h"
+#include "../Animation/Animation.h"
+#include "../Animation/AnimationPlayer.h"
 #include "../../Resource Management/Resources/Resource.h"
 
 #include <Importer.hpp>
@@ -18,33 +20,6 @@
 #include <Simple OpenGL Image Library\src\stb_image_aug.h>
 #include <map>
 
-struct VertexBoneData
-{
-	unsigned int ids[NUM_BONES_PER_VEREX];
-	float weights[NUM_BONES_PER_VEREX];
-
-	void AddBoneData(unsigned int boneID, float weight)
-	{
-		int arraySize = sizeof(ids) / sizeof(ids[0]);
-
-		for (unsigned int i = 0; i < arraySize; i++) 
-		{
-			if (weights[i] == 0.0) 
-			{
-				ids[i] = boneID;
-				weights[i] = weight;
-				return;
-			}
-		}
-	}
-};
-
-struct BoneInfo
-{
-	aiMatrix4x4 boneOffset;
-	aiMatrix4x4 finalTransformation;
-};
-
 class Mesh : public Resource
 {
 public:
@@ -58,8 +33,10 @@ public:
 		setSize(sizeof(*this));
 	}
 
-	Mesh(const string path, int numModels)
+	Mesh(const string path, int numModels, const string name = "")
 	{
+		setName(name);
+
 		this->numModels = numModels;
 		LoadModel(path);
 
@@ -88,6 +65,11 @@ public:
 		for (SubMesh* submesh : meshes)
 		{
 			submesh->SetupMesh();
+
+			for (Texture& texture : submesh->textures)
+			{
+				texture.id = TextureFromFile(texture.path.c_str(), directory);
+			}
 		}
 
 		if (textureFile != "")
@@ -95,6 +77,7 @@ public:
 			loadTexture(textureFile);
 		}
 	}
+
 	void SetTransformForAllSubMeshes(NCLMatrix4 transform);
 
 	void ProcessNode(aiNode *node, const aiScene *scene);
@@ -103,8 +86,7 @@ public:
 
 	static Mesh* GenerateHeightMap(int width, int height);
 
-	std::vector<Texture> LoadMaterialTextures(aiMaterial *mat, aiTextureType type,
-		string typeName);
+	vector<Texture> PrepareMaterialTextureLoading(aiMaterial *mat, aiTextureType type, string typeName);
 
 	static unsigned int TextureFromFile(const char *path, const string &directory);
 
@@ -118,7 +100,7 @@ public:
 		return this->meshes[0]->GetBoundingRadius();
 	}
 	
-	std::vector<VertexBoneData> LoadBones(unsigned int meshIndex, const aiMesh* mesh);
+	std::vector<VertexBoneData> LoadBones(int baseVertex, const aiMesh* mesh, vector<BoneInfo>& boneInfo);
 
 	void loadTexture(std::string filepath);
 	void setTextureFile(std::string textureFile)
@@ -126,7 +108,10 @@ public:
 		this->textureFile = textureFile;
 	}
 
+	bool onScreen = false;
+
 	//Model Data 
+	vector<BoneInfo> boneInfo;
 	std::vector<SubMesh*> meshes;
 	Mesh* mesh;
 	unordered_map<string, SubMesh*> meshesByName;
@@ -141,13 +126,11 @@ public:
 	aiMatrix4x4 globalInverseTransform;
 	map<string, unsigned  int> boneMapping; // maps a bone name to its index
 	unsigned int numBones = 0;
-	vector<BoneInfo> boneInfo;
 
 	int hasTexture = 0;
 	int numModels;
 
 	float radius;
-
 	unsigned int meshCounter = 0;
 	bool perlin = false;
 };

@@ -58,14 +58,12 @@ void TableCreation::addMeshesTable() const
 		}
 		else
 		{
-			mesh = new Mesh(node->children[0]->value, 1);
+			mesh = new Mesh(node->children[0]->value, 1, node->name);
 
 			if (node->children.size() > 1)
 			{
 				mesh->setTextureFile(node->children[1]->value);
 			}
-
-			mesh->setName(node->name);
 		}
 
 		return mesh;

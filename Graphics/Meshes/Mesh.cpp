@@ -19,7 +19,10 @@ void Mesh::LoadModel(std::string path)
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		throw runtime_error("Mesh not found");
+		const char* error = import.GetErrorString();
+		std::cout << error << std::endl;
+
+		throw runtime_error(error);
 	}
 
 	globalInverseTransform = scene->mRootNode->mTransformation;
@@ -29,6 +32,10 @@ void Mesh::LoadModel(std::string path)
 
 	ProcessNode(scene->mRootNode, scene);
 
+	if (scene->HasAnimations())
+	{
+		AnimationPlayer::getAnimationService()->addAnimation(this, scene->mAnimations[0], scene->mRootNode, globalInverseTransform, &boneInfo);
+	}
 }
 
 void Mesh::SetTransformForAllSubMeshes(NCLMatrix4 transform)
@@ -138,7 +145,7 @@ SubMesh* Mesh::ProcessMesh(unsigned int meshIndex, aiMesh* mesh, const aiScene *
 		vertices.push_back(vertex);
 	}
 
-	bones = LoadBones(meshIndex, mesh);
+	bones = LoadBones(baseVertex, mesh, boneInfo);
 
 	//Process indices
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -156,20 +163,20 @@ SubMesh* Mesh::ProcessMesh(unsigned int meshIndex, aiMesh* mesh, const aiScene *
 	{
 		aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
-		vector<Texture> diffuseMaps = LoadMaterialTextures(material,
+		vector<Texture> diffuseMaps = PrepareMaterialTextureLoading(material,
 			aiTextureType_DIFFUSE, "texture_diffuse");
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-		vector<Texture> specularMaps = LoadMaterialTextures(material,
+		vector<Texture> specularMaps = PrepareMaterialTextureLoading(material,
 			aiTextureType_SPECULAR, "texture_specular");
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
-		vector<Texture> heightMaps = LoadMaterialTextures(material,
+		vector<Texture> heightMaps = PrepareMaterialTextureLoading(material,
 			aiTextureType_HEIGHT, "texture_height");
 		heights.insert(heights.end(), heightMaps.begin(), heightMaps.end());
 	}
 
-	SubMesh* modelMesh = new SubMesh(vertices, indices, textures, heights, AABB, numModels);
+	SubMesh* modelMesh = new SubMesh(vertices, indices, textures, heights, bones, AABB, numModels);
 
 	if (textures.size() == 0)
 	{
@@ -232,6 +239,7 @@ Mesh * Mesh::GenerateHeightMap(int width, int height)
 
 		}
 	}
+	heightMap->bones.resize(heightMap->vertices.size());
 	heightMap->SetupMesh();
 	Mesh* mesh = new Mesh();
 	mesh->radius = 100;
@@ -241,7 +249,7 @@ Mesh * Mesh::GenerateHeightMap(int width, int height)
 	return mesh;
 }
 
-vector<Texture> Mesh::LoadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName)
+vector<Texture> Mesh::PrepareMaterialTextureLoading(aiMaterial * mat, aiTextureType type, string typeName)
 {
 	vector<Texture> textures;
 
@@ -249,23 +257,21 @@ vector<Texture> Mesh::LoadMaterialTextures(aiMaterial *mat, aiTextureType type, 
 	{
 		aiString str;
 		mat->GetTexture(type, i, &str);
-		bool skip = false;
+		bool exists = false;
 
 		for (unsigned int j = 0; j < loadedTextures.size(); j++)
 		{
 			if (std::strcmp(loadedTextures[j].path.c_str(), str.C_Str()) == 0)
 			{
 				textures.push_back(loadedTextures[j]);
-				skip = true;
+				exists = true;
 				break;
 			}
 		}
 
-		//If texture hasn't been loaded already, load it
-		if (!skip)
+		if (!exists)
 		{
 			Texture texture;
-			texture.id = TextureFromFile(str.C_Str(), directory);
 			texture.type = typeName;
 			texture.path = str.C_Str();
 			textures.push_back(texture);
@@ -342,9 +348,10 @@ void Mesh::Draw(Shader& shader, NCLMatrix4 worldTransform)
 	}
 }
 
-vector<VertexBoneData> Mesh::LoadBones(unsigned int meshIndex, const aiMesh * mesh)
+vector<VertexBoneData> Mesh::LoadBones(int baseVertex, const aiMesh * mesh, vector<BoneInfo>& boneInfo)
 {
 	std::vector<VertexBoneData> bones;
+	bones.resize(mesh->mNumVertices);
 
 	for (unsigned int i = 0; i < mesh->mNumBones; i++)
 	{
@@ -358,17 +365,18 @@ vector<VertexBoneData> Mesh::LoadBones(unsigned int meshIndex, const aiMesh * me
 			numBones++;
 			BoneInfo bi;
 			boneInfo.push_back(bi);
-			boneInfo[boneIndex].boneOffset = mesh->mBones[i]->mOffsetMatrix;
-			boneMapping[boneName] = boneIndex;
 		}
 		else
 		{
 			boneIndex = boneMapping[boneName];
 		}
 
+		boneMapping[boneName] = boneIndex;
+		boneInfo[boneIndex].boneOffset = mesh->mBones[i]->mOffsetMatrix;
+
 		for (unsigned int j = 0; j < mesh->mBones[i]->mNumWeights; j++) 
 		{
-			unsigned int VertexID = meshes[meshIndex]->baseVertex + mesh->mBones[i]->mWeights[j].mVertexId;
+			unsigned int VertexID = /*baseVertex + */mesh->mBones[i]->mWeights[j].mVertexId;
 			float Weight = mesh->mBones[i]->mWeights[j].mWeight;
 			bones[VertexID].AddBoneData(boneIndex, Weight);
 		}
@@ -379,11 +387,6 @@ vector<VertexBoneData> Mesh::LoadBones(unsigned int meshIndex, const aiMesh * me
 
 void Mesh::loadTexture(std::string textureFile)
 {
-	//unsigned int texId = SOIL_load_OGL_texture(filepath.c_str(),SOIL_LOAD_AUTO,SOIL_CREATE_NEW_ID,SOIL_FLAG_MIPMAPS);
-	//for (SubMesh *subMesh : this->meshes) {
-	//	subMesh->addTexture(texId);
-	//}
-
 	Texture texture;
 
 	this->textureFile = textureFile;

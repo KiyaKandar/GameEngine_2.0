@@ -48,10 +48,12 @@ public:
 
 	void deleteResource(std::string identifier)
 	{
-		if ((T* resource = resourceBuffer.find(identifier)) != resourceBuffer.end())
+		auto iterator = resourceBuffer.find(identifier);
+
+		if (iterator != resourceBuffer.end())
 		{
-			currentSize -= resource->GetSize();	//getSize() is the memberfunction of the Resource.h
-			delete resource;
+			currentSize -= iterator->second->getSize();
+			delete iterator->second;
 			resourceBuffer.erase(identifier);
 		}
 	}
