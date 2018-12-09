@@ -95,9 +95,11 @@ void main(void)
 	if (anim == 1)
 	{
 		animTransform = gBones[BoneIDs[0]] * Weights[0];
-		animTransform += gBones[BoneIDs[1]] * Weights[1];
-		animTransform += gBones[BoneIDs[2]] * Weights[2];
-		animTransform += gBones[BoneIDs[3]] * Weights[3];
+
+		for (int i = 1; i < 4; ++i)
+		{
+			animTransform += gBones[BoneIDs[i]] * Weights[i];
+		}
 	}
 	
 	vec4 viewPos = viewMatrix * modelMatrix * animTransform * vec4(newPos, 1.0);

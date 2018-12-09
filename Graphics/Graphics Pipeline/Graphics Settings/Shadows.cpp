@@ -99,7 +99,8 @@ void Shadows::drawShadowScene()
 			{
 				if (m->isEnabled)
 				{
-					m->Draw(*shadowShader);
+					UploadAnimationData(m->GetMesh(), currentShader);
+					m->DrawShadow(*shadowShader);
 				}
 				
 			}

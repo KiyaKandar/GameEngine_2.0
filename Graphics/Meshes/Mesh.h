@@ -25,6 +25,7 @@ class Mesh : public Resource
 public:
 	Mesh(char *path, int numModels)
 	{
+		scene = nullptr;
 		this->numModels = numModels;
 		LoadModel(path);
 
@@ -35,6 +36,7 @@ public:
 
 	Mesh(const string path, int numModels, const string name = "")
 	{
+		scene = nullptr;
 		setName(name);
 
 		this->numModels = numModels;
@@ -47,7 +49,7 @@ public:
 
 	Mesh()
 	{
-
+		scene = nullptr;
 	}
 
 	~Mesh()

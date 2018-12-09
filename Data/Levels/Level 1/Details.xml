@@ -35,7 +35,7 @@
 			<Mass>1</Mass>	 
 			<isCollision>True</isCollision>			
 			<Elasticity>0.5</Elasticity>
-			<Friction>0.995</Frition>
+			<Friction>0.995</Friction>
       <Damping>0.995</Damping>
       <isStatic>False</isStatic>
 		</PhysicsNode>
@@ -275,7 +275,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -313,7 +313,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -351,7 +351,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -389,7 +389,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -427,7 +427,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -466,7 +466,7 @@
 		<Mass>0</Mass>	  
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -505,7 +505,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -544,7 +544,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -583,7 +583,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -622,7 +622,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -661,7 +661,7 @@
 		<Mass>0</Mass>	  
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -700,7 +700,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -739,7 +739,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -778,7 +778,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -817,7 +817,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -856,7 +856,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -895,7 +895,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -934,7 +934,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -973,7 +973,7 @@
 		<Mass>0</Mass>	  
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1012,7 +1012,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1051,7 +1051,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1090,7 +1090,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1129,7 +1129,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1168,7 +1168,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1207,7 +1207,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1246,7 +1246,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1285,7 +1285,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1324,7 +1324,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1363,7 +1363,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1402,7 +1402,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1441,7 +1441,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1480,7 +1480,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1519,7 +1519,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1558,7 +1558,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1597,7 +1597,7 @@
 		<Mass>0</Mass>	  
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1636,7 +1636,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1675,7 +1675,7 @@
 		<Mass>0</Mass>	  
 		<isCollision>True</isCollision>
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1714,7 +1714,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1753,7 +1753,7 @@
 		<Mass>0</Mass>	  
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1792,7 +1792,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1831,7 +1831,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1870,7 +1870,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1909,7 +1909,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1947,7 +1947,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -1985,7 +1985,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2023,7 +2023,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2061,7 +2061,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2100,7 +2100,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2139,7 +2139,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2177,7 +2177,7 @@
 		<Mass>0</Mass>	  
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2215,7 +2215,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2253,7 +2253,7 @@
 		<Mass>0</Mass>	  
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2292,7 +2292,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2331,7 +2331,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2370,7 +2370,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2409,7 +2409,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2448,7 +2448,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2487,7 +2487,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2526,7 +2526,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2565,7 +2565,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2604,7 +2604,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2643,7 +2643,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2681,7 +2681,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2719,7 +2719,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2757,7 +2757,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2796,7 +2796,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2834,7 +2834,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2872,7 +2872,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2910,7 +2910,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2949,7 +2949,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -2988,7 +2988,7 @@
 		<Mass>0</Mass>	  
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -3027,7 +3027,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -3066,7 +3066,7 @@
 		<Mass>0</Mass>	  
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -3105,7 +3105,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -3144,7 +3144,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -3183,7 +3183,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -3223,7 +3223,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -3262,7 +3262,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -3301,7 +3301,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -3341,7 +3341,7 @@
 		<Mass>0</Mass>	
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -3380,7 +3380,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -3419,7 +3419,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -3458,7 +3458,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>
@@ -3497,7 +3497,7 @@
 		<Mass>0</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
-		<Friction>0.995</Frition>
+		<Friction>0.995</Friction>
 	  <isStatic>True</isStatic>
 		</PhysicsNode>
 </GameObjects>

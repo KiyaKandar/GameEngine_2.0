@@ -11,7 +11,7 @@
 #include <vector>
 #include <matrix4x4.h>
 
-const int NUM_BONES_PER_VEREX = 20;
+const int NUM_BONES_PER_VEREX = 4;
 
 struct VertexBoneData
 {

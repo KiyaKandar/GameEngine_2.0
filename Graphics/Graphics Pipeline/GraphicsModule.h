@@ -11,6 +11,7 @@
 #include "../Utilities/Maths/Matrix4.h"
 #include "../Utilities/Maths/Vector2.h"
 #include "../GraphicsCommon.h"
+#include "../Meshes/Mesh.h"
 
 struct ShadowData
 {
@@ -125,6 +126,24 @@ protected:
 		glBindVertexArray(quadVAO);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glBindVertexArray(0);
+	}
+
+	void UploadAnimationData(Mesh* mesh, Shader* shader)
+	{
+		bool hasAnimations = mesh->scene == nullptr ? false : mesh->scene->HasAnimations();
+		glUniform1i(glGetUniformLocation(shader->GetProgram(), "anim"), hasAnimations ? 1 : 0);
+
+		if (hasAnimations)
+		{
+			std::vector<aiMatrix4x4> transforms;
+			AnimationPlayer::getAnimationService()->readAnimationStateForMesh(mesh->getName(), transforms);
+
+			for (int i = 0; i < transforms.size(); i++)
+			{
+				const string name = "gBones[" + std::to_string(i) + "]";
+				glUniformMatrix4fv(glGetUniformLocation(shader->GetProgram(), name.c_str()), 1, GL_TRUE, (const GLfloat*)&transforms[i]);
+			}
+		}
 	}
 
 	unsigned int quadVAO = 0;
