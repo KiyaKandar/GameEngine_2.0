@@ -130,7 +130,7 @@ protected:
 
 	void UploadAnimationData(Mesh* mesh, Shader* shader)
 	{
-		bool hasAnimations = mesh->scene == nullptr ? false : mesh->scene->HasAnimations();
+		bool hasAnimations = mesh->hasAnimations;
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "anim"), hasAnimations ? 1 : 0);
 
 		if (hasAnimations)

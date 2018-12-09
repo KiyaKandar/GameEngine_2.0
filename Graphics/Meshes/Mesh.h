@@ -25,7 +25,7 @@ class Mesh : public Resource
 public:
 	Mesh(char *path, int numModels)
 	{
-		scene = nullptr;
+		meshScene = nullptr;
 		this->numModels = numModels;
 		LoadModel(path);
 
@@ -36,7 +36,7 @@ public:
 
 	Mesh(const string path, int numModels, const string name = "")
 	{
-		scene = nullptr;
+		meshScene = nullptr;
 		setName(name);
 
 		this->numModels = numModels;
@@ -49,7 +49,7 @@ public:
 
 	Mesh()
 	{
-		scene = nullptr;
+		meshScene = nullptr;
 	}
 
 	~Mesh()
@@ -61,6 +61,8 @@ public:
 	};
 
 	void LoadModel(std::string path);
+	void LoadMesh(std::string path);
+	void LoadMD5ProxyFile(std::string path);
 
 	void setupMesh()
 	{
@@ -102,7 +104,7 @@ public:
 		return this->meshes[0]->GetBoundingRadius();
 	}
 	
-	std::vector<VertexBoneData> LoadBones(int baseVertex, const aiMesh* mesh, vector<BoneInfo>& boneInfo);
+	vector<VertexBoneData> LoadBones(const aiMesh* mesh, vector<BoneInfo>& boneInfo);
 
 	void loadTexture(std::string filepath);
 	void setTextureFile(std::string textureFile)
@@ -123,7 +125,11 @@ public:
 	std::vector<Texture> loadedTextures;
 
 	Assimp::Importer import;
-	const aiScene* scene;
+	Assimp::Importer animationImporters[10];
+	int lastUsedAnimationImporter = 0;
+	std::vector<const aiScene*> importedAnimations;
+	bool hasAnimations = false;
+	const aiScene* meshScene;
 
 	aiMatrix4x4 globalInverseTransform;
 	map<string, unsigned  int> boneMapping; // maps a bone name to its index

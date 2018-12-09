@@ -31,8 +31,6 @@ struct VertexBoneData
 				return;
 			}
 		}
-
-		assert(0);
 	}
 };
 
@@ -141,8 +139,6 @@ public:
 	GLuint modelMatricesSSBO;
 
 	void SetupMesh();
-
-	int baseVertex;
 protected:
 	NCLMatrix4 transform;
 	unsigned int VAO, VBO, EBO, BBO; //Render data

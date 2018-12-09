@@ -1,6 +1,11 @@
 #include "Mesh.h"
+
 #include <limits>
 #include <algorithm>
+#include <fstream>
+#include <shlwapi.h>
+
+#pragma comment(lib,"shlwapi.lib")
 
 typedef SubMesh* (*processmeshFunc)(aiMesh*, aiScene*);
 
@@ -13,11 +18,24 @@ const aiMatrix4x4	conversion(
 
 void Mesh::LoadModel(std::string path)
 {
-	scene = import.ReadFile(path,
+	const char* extension = PathFindExtensionA(path.c_str());
+	if (strcmp(extension, ".md5proxy") == 0)
+	{
+		LoadMD5ProxyFile(path);
+	}
+	else
+	{
+		LoadMesh(path);
+	}
+}
+
+void Mesh::LoadMesh(std::string path)
+{
+	meshScene = import.ReadFile(path,
 		aiProcess_Triangulate | aiProcess_FlipUVs |
 		aiProcess_GenSmoothNormals | aiProcess_OptimizeMeshes | aiProcess_CalcTangentSpace);
 
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	if (!meshScene || meshScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !meshScene->mRootNode)
 	{
 		const char* error = import.GetErrorString();
 		std::cout << error << std::endl;
@@ -25,16 +43,35 @@ void Mesh::LoadModel(std::string path)
 		throw runtime_error(error);
 	}
 
-	globalInverseTransform = scene->mRootNode->mTransformation;
+	globalInverseTransform = meshScene->mRootNode->mTransformation;
 	globalInverseTransform.Inverse();
 
 	directory = path.substr(0, path.find_last_of('/'));
 
-	ProcessNode(scene->mRootNode, scene);
+	ProcessNode(meshScene->mRootNode, meshScene);
+}
 
-	if (scene->HasAnimations())
+void Mesh::LoadMD5ProxyFile(std::string path)
+{
+	std::ifstream infile(path.c_str());
+
+	std::string line;
+	while (std::getline(infile, line))
 	{
-		AnimationPlayer::getAnimationService()->addAnimation(this, scene->mAnimations[0], scene->mRootNode, globalInverseTransform, &boneInfo);
+		const char* extension = PathFindExtensionA(line.c_str());
+		if (strcmp(extension, ".md5mesh") == 0)
+		{
+			LoadMesh(line);
+		}
+		else if (strcmp(extension, ".md5anim") == 0)
+		{
+			importedAnimations.push_back(animationImporters[lastUsedAnimationImporter].ReadFile(line,
+				aiProcess_Triangulate | aiProcess_FlipUVs |
+				aiProcess_GenSmoothNormals | aiProcess_OptimizeMeshes | aiProcess_CalcTangentSpace));
+			lastUsedAnimationImporter++;
+			AnimationPlayer::getAnimationService()->addAnimation(this, importedAnimations.back()->mAnimations[0], meshScene->mRootNode, globalInverseTransform, &boneInfo);
+			hasAnimations = true;
+		}
 	}
 }
 
@@ -53,7 +90,7 @@ void Mesh::ProcessNode(aiNode *node, const aiScene *scene)
 	{
 		++meshCounter;
 		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-		SubMesh* model = ProcessMesh(meshCounter, mesh, scene);
+		SubMesh* model = ProcessMesh(i, mesh, scene);
 		meshes.push_back(model);
 		meshesByName.insert({ static_cast<string>(mesh->mName.C_Str()), model });
 	}
@@ -70,8 +107,8 @@ SubMesh* Mesh::ProcessMesh(unsigned int meshIndex, aiMesh* mesh, const aiScene *
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
 	vector<Texture> textures;
+	std::vector<VertexBoneData> localBones;
 	vector<Texture> heights;
-	vector<VertexBoneData> bones;
 
 	const float maxFloat = (std::numeric_limits<float>::max)();
 	const float minFloat = (std::numeric_limits<float>::lowest());
@@ -80,15 +117,6 @@ SubMesh* Mesh::ProcessMesh(unsigned int meshIndex, aiMesh* mesh, const aiScene *
 	NCLVector3 maxBounds(minFloat, minFloat, minFloat);
 
 	BoundingBox AABB;
-
-	int baseVertex = 0;
-	int numVertices = 0;
-
-	for (int i = 0; i < meshIndex; ++i)
-	{
-		baseVertex = numVertices;
-		numVertices += scene->mMeshes[i]->mNumVertices;
-	}
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -145,7 +173,7 @@ SubMesh* Mesh::ProcessMesh(unsigned int meshIndex, aiMesh* mesh, const aiScene *
 		vertices.push_back(vertex);
 	}
 
-	bones = LoadBones(baseVertex, mesh, boneInfo);
+	localBones = LoadBones(mesh, boneInfo);
 
 	//Process indices
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -176,7 +204,7 @@ SubMesh* Mesh::ProcessMesh(unsigned int meshIndex, aiMesh* mesh, const aiScene *
 		heights.insert(heights.end(), heightMaps.begin(), heightMaps.end());
 	}
 
-	SubMesh* modelMesh = new SubMesh(vertices, indices, textures, heights, bones, AABB, numModels);
+	SubMesh* modelMesh = new SubMesh(vertices, indices, textures, heights, localBones, AABB, numModels);
 
 	if (textures.size() == 0)
 	{
@@ -188,8 +216,6 @@ SubMesh* Mesh::ProcessMesh(unsigned int meshIndex, aiMesh* mesh, const aiScene *
 		modelMesh->hasTexture = 1;
 		hasTexture = 1;
 	}
-
-	modelMesh->baseVertex = baseVertex;
 
 	return modelMesh;
 }
@@ -348,10 +374,10 @@ void Mesh::Draw(Shader& shader, NCLMatrix4 worldTransform)
 	}
 }
 
-vector<VertexBoneData> Mesh::LoadBones(int baseVertex, const aiMesh * mesh, vector<BoneInfo>& boneInfo)
+vector<VertexBoneData> Mesh::LoadBones(const aiMesh * mesh, vector<BoneInfo>& boneInfo)
 {
-	std::vector<VertexBoneData> bones;
-	bones.resize(mesh->mNumVertices);
+	vector<VertexBoneData> localBoneData;
+	localBoneData.resize(mesh->mNumVertices);
 
 	for (unsigned int i = 0; i < mesh->mNumBones; i++)
 	{
@@ -365,24 +391,23 @@ vector<VertexBoneData> Mesh::LoadBones(int baseVertex, const aiMesh * mesh, vect
 			numBones++;
 			BoneInfo bi;
 			boneInfo.push_back(bi);
+
+			boneInfo[boneIndex].boneOffset = mesh->mBones[i]->mOffsetMatrix;
+			boneMapping[boneName] = boneIndex;
 		}
 		else
 		{
 			boneIndex = boneMapping[boneName];
 		}
 
-		boneMapping[boneName] = boneIndex;
-		boneInfo[boneIndex].boneOffset = mesh->mBones[i]->mOffsetMatrix;
-
 		for (unsigned int j = 0; j < mesh->mBones[i]->mNumWeights; j++) 
 		{
-			unsigned int VertexID = /*baseVertex + */mesh->mBones[i]->mWeights[j].mVertexId;
 			float Weight = mesh->mBones[i]->mWeights[j].mWeight;
-			bones[VertexID].AddBoneData(boneIndex, Weight);
+			localBoneData[mesh->mBones[i]->mWeights[j].mVertexId].AddBoneData(boneIndex, Weight);
 		}
 	}
 
-	return bones;
+	return localBoneData;
 }
 
 void Mesh::loadTexture(std::string textureFile)
