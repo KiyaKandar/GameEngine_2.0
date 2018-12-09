@@ -125,6 +125,9 @@
     <ClInclude Include="Messages\MoveGameObjectMessage.h" />
     <ClInclude Include="Messages\ScaleGameObjectMessage.h" />
     <ClInclude Include="Messages\RotateGameObjectMessage.h" />
+    <ClInclude Include="Messages\PlayAnimationMessage.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="SendMessageActionBuilder.h" />
     <ClInclude Include="Messages\AddScoreHolderMessage.h" />
     <ClInclude Include="Messages\CollisionMessage.h" />
@@ -159,6 +162,7 @@
     <ClCompile Include="Messages\MoveGameObjectMessage.cpp" />
     <ClCompile Include="Messages\ScaleGameObjectMessage.cpp" />
     <ClCompile Include="Messages\RotateGameObjectMessage.cpp" />
+    <ClCompile Include="Messages\PlayAnimationMessage.cpp" />
     <ClCompile Include="SendMessageActionBuilder.cpp" />
     <ClCompile Include="Messages\AddScoreHolderMessage.cpp" />
     <ClCompile Include="Messages\CollisionMessage.cpp" />

@@ -1,5 +1,7 @@
 #include "Mesh.h"
 
+#include "../Animation/AnimationComponents.h"
+
 #include <limits>
 #include <algorithm>
 #include <fstream>
@@ -69,7 +71,7 @@ void Mesh::LoadMD5ProxyFile(std::string path)
 				aiProcess_Triangulate | aiProcess_FlipUVs |
 				aiProcess_GenSmoothNormals | aiProcess_OptimizeMeshes | aiProcess_CalcTangentSpace));
 			lastUsedAnimationImporter++;
-			AnimationPlayer::getAnimationService()->addAnimation(this, importedAnimations.back()->mAnimations[0], meshScene->mRootNode, globalInverseTransform, &boneInfo);
+			AnimationPlayer::getAnimationService()->addAnimation(line, this, importedAnimations.back()->mAnimations[0], meshScene->mRootNode, globalInverseTransform, &boneInfo);
 			hasAnimations = true;
 		}
 	}

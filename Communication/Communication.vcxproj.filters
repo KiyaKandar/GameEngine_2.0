@@ -111,6 +111,9 @@
     <ClInclude Include="Messages\DebugSphereMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Messages\PlayAnimationMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Message.cpp">
@@ -198,6 +201,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Messages\DebugSphereMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Messages\PlayAnimationMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

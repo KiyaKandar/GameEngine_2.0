@@ -1,22 +1,13 @@
 #pragma once
 
-#include <matrix4x4.h>
-#include <anim.h>
-#include <vector3.h>
-#include <quaternion.h>
 #include <scene.h>
 #include <vector>
-#include <functional>
 #include <string.h>
 #include <unordered_map>
 
 class Mesh;
-
-struct BoneInfo
-{
-	aiMatrix4x4 boneOffset;
-	aiMatrix4x4 finalTransformation;
-};
+struct BoneInfo;
+struct NodeAnimation;
 
 struct MeshNode
 {
@@ -28,36 +19,19 @@ struct MeshNode
 	bool hasAnimation = false;
 };
 
-struct NodeAnimation
-{
-	NodeAnimation(const aiNodeAnim* animation)
-	{
-		this->animation = animation;
-		ResetKeyFrameIndexes();
-	}
-
-	void ResetKeyFrameIndexes()
-	{
-		lastScalingKeyFrameIndex = 0;
-		lastRotationKeyFrameIndex = 0;
-		lastPositionKeyFrameIndex = 0;
-	}
-
-	const aiNodeAnim* animation;
-
-	unsigned int lastScalingKeyFrameIndex;
-	unsigned int lastRotationKeyFrameIndex;
-	unsigned int lastPositionKeyFrameIndex;
-};
-
 class Animation
 {
 public:
-	Animation(Mesh* mesh, const aiAnimation* animation, const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo);
+	Animation(const std::string& animationName, Mesh* mesh, const aiAnimation* animation, 
+		const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo);
 	~Animation();
 
-	bool hasIdMatch(const size_t& id) const;
+	bool hasMeshIdMatchOnly(const size_t& meshId) const;
+	bool hasAnimationIdMatchOnly(const size_t& animationId) const;
+	bool hasIdMatch(const size_t& meshId, const size_t& animationId) const;
+
 	void incrementTimer(const double& deltaTime);
+	void SetDurationToLerpFromPreviousAniamtion(const double& lerpDuration);
 	bool meshIsOnScreen() const;
 
 	void updateAnimationTransformState();
@@ -73,10 +47,14 @@ private:
 	void transformBones(std::vector<aiMatrix4x4>& transforms);
 	void updateNode(const MeshNode& node, const aiMatrix4x4& parentTransform);
 	void UpdateBoneTransformation(const MeshNode& meshNode, const aiMatrix4x4& childTransformation);
+	void InterpolateNodeToFirstKeyFrameFromCurrentBoneTransform(const aiMatrix4x4& currentNodeTransform, const unsigned int boneIndex);
 
 	const Mesh* mesh;
 	double elapsedTime;
 	double animationTime;
+	double totalLerpDurationFromPreviousTransformation;
+	double remainingLerpDurationFromPreviousTransformation;
+	float interpolationFactor;
 
 	std::vector<aiMatrix4x4> animationState;
 	std::vector<BoneInfo>* boneInfo;
@@ -86,6 +64,7 @@ private:
 
 	const aiMatrix4x4 globalInverseTransform;
 	const aiAnimation* animation;
+	const size_t owningMeshId;
 	const size_t animationId;
 };
 

@@ -20,6 +20,8 @@
 #include <Simple OpenGL Image Library\src\stb_image_aug.h>
 #include <map>
 
+struct BoneInfo;
+
 class Mesh : public Resource
 {
 public:

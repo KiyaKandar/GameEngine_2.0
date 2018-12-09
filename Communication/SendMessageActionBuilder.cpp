@@ -180,6 +180,16 @@ void SendMessageActionBuilder::initialiseNodeBuilders()
 		};
 	} });
 
+	builders.insert({ "PLAY_ANIMATION" , [](Node* node)
+	{
+		PlayAnimationMessage message = PlayAnimationMessage::builder(node);
+
+		return [message = message]()
+		{
+			DeliverySystem::getPostman()->insertMessage(message);
+		};
+	} });
+
 	builders.insert({ "PLAY_SOUND" , [](Node* node)
 	{
 		PlaySoundMessage message = PlaySoundMessage::builder(node);

@@ -1,6 +1,6 @@
 #include "AnimationTransformHelper.h"
 
-#include "Animation.h"
+#include "AnimationComponents.h"
 
 #include <anim.h>
 
@@ -21,6 +21,34 @@ void AnimationTransformHelper::calculateNodeTransformation(aiMatrix4x4& transfor
 	aiMatrix4x4::Scaling(scale, scalingTransform);
 
 	transformation = translationTransform * rotationTransform * scalingTransform;
+}
+
+void AnimationTransformHelper::interpolateVector3(aiVector3D& result, const aiVector3D& start, const aiVector3D& end, const float factor)
+{
+	aiVector3D delta = end - start;
+	result = start + (float)factor * delta;
+}
+
+void AnimationTransformHelper::interpolateDecomposedMatrices(DecomposedMatrix& result, const DecomposedMatrix& start, 
+	const DecomposedMatrix& end, const float factor)
+{
+	AnimationTransformHelper::interpolateVector3(result.translation, start.translation, end.translation, factor);
+	AnimationTransformHelper::interpolateVector3(result.scale, start.scale, end.scale, factor);
+	aiQuaternion::Interpolate(result.rotation, start.rotation, end.rotation, factor);
+	result.rotation = result.rotation.Normalize();
+}
+
+void AnimationTransformHelper::composeMatrix(aiMatrix4x4& result, const DecomposedMatrix& decomposedMatrix)
+{
+	aiMatrix4x4 lerpTranslationTransform;
+	aiMatrix4x4::Translation(decomposedMatrix.translation, lerpTranslationTransform);
+
+	aiMatrix4x4 lerpRotationTransform = aiMatrix4x4(decomposedMatrix.rotation.GetMatrix());
+
+	aiMatrix4x4 lerpScalingTransform;
+	aiMatrix4x4::Scaling(decomposedMatrix.scale, lerpScalingTransform);
+
+	result = lerpTranslationTransform * lerpRotationTransform * lerpScalingTransform;
 }
 
 void AnimationTransformHelper::calculateInterpolatedKeyFrameTranslation(aiVector3D& translation, NodeAnimation& nodeAnimation, const double& animationTime)
@@ -120,10 +148,4 @@ unsigned int AnimationTransformHelper::findScalingKeyFrameIndex(NodeAnimation& n
 	}
 
 	return 0;
-}
-
-void AnimationTransformHelper::interpolateVector3(aiVector3D& result, const aiVector3D& start, const aiVector3D& end, const float factor)
-{
-	aiVector3D delta = end - start;
-	result = start + (float)factor * delta;
 }

@@ -1,13 +1,16 @@
 #include "Animation.h"
 
-#include "../Meshes/Mesh.h"
 #include "AnimationTransformHelper.h"
+#include "AnimationComponents.h"
+#include "../Meshes/Mesh.h"
 
 #include <map>
 
-Animation::Animation(Mesh* mesh, const aiAnimation* animation, const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo)
-	: mesh(mesh)
-	, animationId(std::hash<std::string>{}(mesh->getName()))
+Animation::Animation(const std::string& animationName, Mesh* mesh, const aiAnimation* animation, 
+	const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo)
+	: animationId(Hash{}(animationName))
+	, mesh(mesh)
+	, owningMeshId(Hash{}(mesh->getName()))
 	, globalInverseTransform(globalInverseTransform)
 {
 	this->animation = animation;
@@ -15,6 +18,9 @@ Animation::Animation(Mesh* mesh, const aiAnimation* animation, const aiNode* roo
 
 	elapsedTime = 0.0;
 	animationTime = 0.0;
+	totalLerpDurationFromPreviousTransformation = 0.0;
+	remainingLerpDurationFromPreviousTransformation = 0.0;
+	interpolationFactor = 0.0f;
 
 	for (unsigned int i = 0; i < animation->mNumChannels; i++)
 	{
@@ -36,14 +42,39 @@ Animation::~Animation()
 	nodeAnimations.clear();
 }
 
-bool Animation::hasIdMatch(const size_t& id) const
+bool Animation::hasMeshIdMatchOnly(const size_t& meshId) const
 {
-	return animationId == id;
+	return owningMeshId == meshId;
+}
+
+bool Animation::hasAnimationIdMatchOnly(const size_t & animationId) const
+{
+	return this->animationId == animationId;
+}
+
+bool Animation::hasIdMatch(const size_t& meshId, const size_t& animationId) const
+{
+	return hasMeshIdMatchOnly(meshId) && hasAnimationIdMatchOnly(animationId);
 }
 
 void Animation::incrementTimer(const double& deltaTime)
 {
-	elapsedTime += deltaTime * 0.001f;
+	const double deltaTimeInSeconds = deltaTime * 0.001f;
+
+	if (remainingLerpDurationFromPreviousTransformation > 0.0)
+	{
+		remainingLerpDurationFromPreviousTransformation -= deltaTimeInSeconds;
+		interpolationFactor = 1.0f - (float)(remainingLerpDurationFromPreviousTransformation
+			/ totalLerpDurationFromPreviousTransformation);
+	}
+
+	elapsedTime += deltaTimeInSeconds;
+}
+
+void Animation::SetDurationToLerpFromPreviousAniamtion(const double& lerpDuration)
+{
+	totalLerpDurationFromPreviousTransformation = lerpDuration;
+	remainingLerpDurationFromPreviousTransformation = lerpDuration;
 }
 
 bool Animation::meshIsOnScreen() const
@@ -155,7 +186,37 @@ void Animation::UpdateBoneTransformation(const MeshNode& meshNode, const aiMatri
 	if (meshNode.mapsToBone)
 	{
 		unsigned int boneIndex = mesh->boneMapping.at(meshNode.nodeName);
-		(*boneInfo)[boneIndex].finalTransformation = globalInverseTransform * childTransformation *
-			(*boneInfo)[boneIndex].boneOffset;
+
+		if (remainingLerpDurationFromPreviousTransformation > 0.0)
+		{
+			InterpolateNodeToFirstKeyFrameFromCurrentBoneTransform(childTransformation, boneIndex);
+		}
+		else
+		{
+			(*boneInfo)[boneIndex].finalTransformation = globalInverseTransform * childTransformation *
+				(*boneInfo)[boneIndex].boneOffset;
+			(*boneInfo)[boneIndex].rawNodeTransform = childTransformation;
+		}
 	}
+}
+
+void Animation::InterpolateNodeToFirstKeyFrameFromCurrentBoneTransform(const aiMatrix4x4& currentNodeTransform, const unsigned int boneIndex)
+{
+	DecomposedMatrix decomposedPreviousTransform;
+	DecomposedMatrix decomposedCurrentTransform;
+
+	(*boneInfo)[boneIndex].rawNodeTransform.Decompose(decomposedPreviousTransform.scale, decomposedPreviousTransform.rotation,
+		decomposedPreviousTransform.translation);
+	currentNodeTransform.Decompose(decomposedCurrentTransform.scale, decomposedCurrentTransform.rotation, 
+		decomposedCurrentTransform.translation);
+
+	DecomposedMatrix decomposedInterpolatedTransform;
+	AnimationTransformHelper::interpolateDecomposedMatrices(decomposedInterpolatedTransform, decomposedPreviousTransform, 
+		decomposedCurrentTransform, interpolationFactor);
+
+	aiMatrix4x4 interpolatedTransform;
+	AnimationTransformHelper::composeMatrix(interpolatedTransform, decomposedInterpolatedTransform);
+
+	(*boneInfo)[boneIndex].finalTransformation = globalInverseTransform * interpolatedTransform *
+		(*boneInfo)[boneIndex].boneOffset;
 }

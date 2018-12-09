@@ -15,6 +15,7 @@
 #include "Messages/PaintTrailForGameObjectMessage.h"
 #include "Messages/UpdatePositionMessage.h"
 #include "Messages/ToggleGameObjectMessage.h"
+#include "Messages/PlayAnimationMessage.h"
 #include "ThreadSafeMessageBuffer.h"
 #include "Messages/DebugLineMessage.h"
 
@@ -49,6 +50,7 @@ public:
 	void insertMessage(ScaleGameObjectMessage message) override;
 	void insertMessage(RotateGameObjectMessage message) override;
 	void insertMessage(ToggleGameObjectMessage message) override;
+	void insertMessage(PlayAnimationMessage message) override;
 	void insertMessage(DebugLineMessage message) override;
 	void insertMessage(DebugSphereMessage message) override;
 
@@ -81,6 +83,7 @@ private:
 	MessageBuffer<ScaleGameObjectMessage> scaleGameObjectBuffer;
 	MessageBuffer<RotateGameObjectMessage> rotateGameObjectBuffer;
 	MessageBuffer<ToggleGameObjectMessage> toggleGameObjectBuffer;
+	MessageBuffer<PlayAnimationMessage> playAnimationBuffer;
 	MessageBuffer<DebugLineMessage> debugLineBuffer;
 	MessageBuffer<DebugSphereMessage> debugCircleBuffer;
 };

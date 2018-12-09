@@ -51,7 +51,7 @@ void Startup::initialiseSubsystems()
 {
 	initialiseDatabaseAndTables();
 	initialiseAudioSystem();
-	animationPlayer = new AnimationManager();
+	animationPlayer = new AnimationManager(database);
 	AnimationPlayer::provide(animationPlayer);
 	physics = new PhysicsEngine(database, window->getKeyboard());
 	userInterface = new UserInterface(window->getKeyboard(), resolution);
