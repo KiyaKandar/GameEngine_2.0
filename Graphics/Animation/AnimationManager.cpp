@@ -17,6 +17,8 @@ struct QueuedAnimation
 		this->lerpToTime = lerpToTime;
 	}
 
+	QueuedAnimation() = delete;
+
 	std::string gameObjectId;
 	std::string animationName;
 	double lerpToTime;
@@ -63,9 +65,10 @@ void AnimationManager::QueueAnimationPlay(Message* message)
 	animationsToAddtoPlayQueue.push_back(QueuedAnimation(playMessage->gameObjectID, playMessage->animationName, playMessage->lerpToTime));
 }
 
-void AnimationManager::addAnimation(const std::string& animationName, Mesh* mesh, const aiAnimation* animation, const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo)
+void AnimationManager::addAnimation(const std::string& animationName, const std::string& gameObjectId, Mesh* mesh, const aiAnimation* animation, 
+	const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo)
 {
-	animations.push_back(new Animation(animationName, mesh, animation, rootNode, globalInverseTransform, initialBoneInfo));
+	animations.push_back(new Animation(animationName, gameObjectId, mesh, animation, rootNode, globalInverseTransform, initialBoneInfo));
 }
 
 void AnimationManager::clearAnimations()
@@ -80,13 +83,13 @@ void AnimationManager::clearAnimations()
 	animationsToAddtoPlayQueue.clear();
 }
 
-void AnimationManager::readAnimationStateForMesh(const std::string& meshName, std::vector<aiMatrix4x4>& animationStates) const
+void AnimationManager::readAnimationStateForSceneNode(const std::string& gameObjectId, std::vector<aiMatrix4x4>& animationStates) const
 {
-	const size_t id = Hash{}(meshName);
+	const size_t id = Hash{}(gameObjectId);
 
 	for (const Animation* animation : activeAnimations)
 	{
-		if (animation->hasMeshIdMatchOnly(id))
+		if (animation->hasGameObjectIdMatchOnly(id))
 		{
 			animation->readAnimationState(animationStates);
 			break;
@@ -100,16 +103,13 @@ void AnimationManager::ActivateAnimationsInPlayQueue()
 	{
 		for (QueuedAnimation& queuedAnimation : animationsToAddtoPlayQueue)
 		{
-			Resource* resource = database->getTable("GameObjects")->getResource(queuedAnimation.gameObjectId);
-			GameObject* gameObject = static_cast<GameObject*>(resource);
-
-			const size_t meshId = Hash{}(gameObject->getSceneNode()->GetMesh()->getName());
+			const size_t gameObjectId = Hash{}(queuedAnimation.gameObjectId);
 			const size_t animationId = Hash{}(queuedAnimation.animationName);
-			const bool alreadyPlaying = RemoveActiveMeshAnimation(meshId, animationId);
+			const bool alreadyPlaying = RemoveActiveAnimation(gameObjectId, animationId);
 
 			if (!alreadyPlaying)
 			{
-				BeginPlayingAnimation(meshId, animationId, queuedAnimation.lerpToTime);
+				BeginPlayingAnimation(gameObjectId, animationId, queuedAnimation.lerpToTime);
 			}
 		}
 
@@ -117,12 +117,12 @@ void AnimationManager::ActivateAnimationsInPlayQueue()
 	}
 }
 
-bool AnimationManager::RemoveActiveMeshAnimation(const size_t& meshId, const size_t& animationId)
+bool AnimationManager::RemoveActiveAnimation(const size_t& gameObjectId, const size_t& animationId)
 {
 	std::vector<Animation*>::iterator animationIterator;
 	for (animationIterator = activeAnimations.begin(); animationIterator != activeAnimations.end(); ++animationIterator)
 	{
-		if ((*animationIterator)->hasMeshIdMatchOnly(meshId))
+		if ((*animationIterator)->hasGameObjectIdMatchOnly(gameObjectId))
 		{
 			if (!(*animationIterator)->hasAnimationIdMatchOnly(animationId))
 			{
@@ -142,11 +142,11 @@ bool AnimationManager::RemoveActiveMeshAnimation(const size_t& meshId, const siz
 	return false;
 }
 
-void AnimationManager::BeginPlayingAnimation(const size_t& meshId, const size_t& animationId, const double lerpToTime)
+void AnimationManager::BeginPlayingAnimation(const size_t& gameObjectId, const size_t& animationId, const double lerpToTime)
 {
 	for (Animation* animation : animations)
 	{
-		if (animation->hasIdMatch(meshId, animationId))
+		if (animation->hasIdMatch(gameObjectId, animationId))
 		{
 			activeAnimations.push_back(animation);
 			animation->SetDurationToLerpFromPreviousAniamtion(lerpToTime);

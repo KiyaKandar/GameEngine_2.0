@@ -99,6 +99,8 @@ public:
 		this->isEnabled = isEnabled;
 	}
 
+	void takeLocalCopyOfMeshAnimations();
+
 	std::vector<SceneNode*> getChildren();
 
 	const float getRadius();
@@ -112,7 +114,6 @@ public:
 	float reflectiveStrength = 0.0f;
 
 protected:
-	
 	SceneNode*	parent;
 	Mesh*		mesh;
 	NCLMatrix4		worldTransform;
@@ -124,5 +125,7 @@ protected:
 
 	std::vector<SceneNode*> children;
 	GameObject* parentObject;
+
+	vector<BoneInfo> boneInfo;
 };
 

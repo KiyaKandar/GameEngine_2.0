@@ -22,13 +22,13 @@ struct MeshNode
 class Animation
 {
 public:
-	Animation(const std::string& animationName, Mesh* mesh, const aiAnimation* animation, 
+	Animation(const std::string& animationName, const std::string& gameObjectId, Mesh* mesh, const aiAnimation* animation,
 		const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo);
 	~Animation();
 
-	bool hasMeshIdMatchOnly(const size_t& meshId) const;
+	bool hasGameObjectIdMatchOnly(const size_t& gameObjectId) const;
 	bool hasAnimationIdMatchOnly(const size_t& animationId) const;
-	bool hasIdMatch(const size_t& meshId, const size_t& animationId) const;
+	bool hasIdMatch(const size_t& gameObjectId, const size_t& animationId) const;
 
 	void incrementTimer(const double& deltaTime);
 	void SetDurationToLerpFromPreviousAniamtion(const double& lerpDuration);
@@ -64,7 +64,7 @@ private:
 
 	const aiMatrix4x4 globalInverseTransform;
 	const aiAnimation* animation;
-	const size_t owningMeshId;
+	const size_t owningGameObjectId;
 	const size_t animationId;
 };
 

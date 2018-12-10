@@ -152,7 +152,7 @@ void GBuffer::renderGeometry(std::vector<SceneNode*>* nodesInFrame)
 		SceneNode* node = nodesInFrame->at(i);
 		Mesh* mesh = node->GetMesh();
 		UploadSurfaceData(mesh, node);
-		UploadAnimationData(mesh, geometryPass);
+		UploadAnimationData(node, geometryPass);
 
 		node->Draw(*currentShader);
 	}

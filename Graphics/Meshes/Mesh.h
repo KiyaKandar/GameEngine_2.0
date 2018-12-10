@@ -128,6 +128,7 @@ public:
 
 	Assimp::Importer import;
 	Assimp::Importer animationImporters[10];
+	std::string animationFiles[10];
 	int lastUsedAnimationImporter = 0;
 	std::vector<const aiScene*> importedAnimations;
 	bool hasAnimations = false;

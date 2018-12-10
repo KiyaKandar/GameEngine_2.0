@@ -6,11 +6,11 @@
 
 #include <map>
 
-Animation::Animation(const std::string& animationName, Mesh* mesh, const aiAnimation* animation, 
+Animation::Animation(const std::string& animationName, const std::string& gameObjectId, Mesh* mesh, const aiAnimation* animation,
 	const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo)
 	: animationId(Hash{}(animationName))
+	, owningGameObjectId(Hash{}(gameObjectId))
 	, mesh(mesh)
-	, owningMeshId(Hash{}(mesh->getName()))
 	, globalInverseTransform(globalInverseTransform)
 {
 	this->animation = animation;
@@ -42,9 +42,9 @@ Animation::~Animation()
 	nodeAnimations.clear();
 }
 
-bool Animation::hasMeshIdMatchOnly(const size_t& meshId) const
+bool Animation::hasGameObjectIdMatchOnly(const size_t& gameObjectId) const
 {
-	return owningMeshId == meshId;
+	return owningGameObjectId == gameObjectId;
 }
 
 bool Animation::hasAnimationIdMatchOnly(const size_t & animationId) const
@@ -54,7 +54,7 @@ bool Animation::hasAnimationIdMatchOnly(const size_t & animationId) const
 
 bool Animation::hasIdMatch(const size_t& meshId, const size_t& animationId) const
 {
-	return hasMeshIdMatchOnly(meshId) && hasAnimationIdMatchOnly(animationId);
+	return hasGameObjectIdMatchOnly(meshId) && hasAnimationIdMatchOnly(animationId);
 }
 
 void Animation::incrementTimer(const double& deltaTime)

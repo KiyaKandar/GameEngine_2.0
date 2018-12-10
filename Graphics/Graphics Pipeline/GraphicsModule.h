@@ -12,6 +12,8 @@
 #include "../Utilities/Maths/Vector2.h"
 #include "../GraphicsCommon.h"
 #include "../Meshes/Mesh.h"
+#include "../Scene Management/SceneNode.h"
+#include "../../Gameplay/GameObject.h"
 
 struct ShadowData
 {
@@ -128,15 +130,15 @@ protected:
 		glBindVertexArray(0);
 	}
 
-	void UploadAnimationData(Mesh* mesh, Shader* shader)
+	void UploadAnimationData(SceneNode* sceneNode, Shader* shader)
 	{
-		bool hasAnimations = mesh->hasAnimations;
+		bool hasAnimations = sceneNode->GetMesh()->hasAnimations;
 		glUniform1i(glGetUniformLocation(shader->GetProgram(), "anim"), hasAnimations ? 1 : 0);
 
 		if (hasAnimations)
 		{
 			std::vector<aiMatrix4x4> transforms;
-			AnimationPlayer::getAnimationService()->readAnimationStateForMesh(mesh->getName(), transforms);
+			AnimationPlayer::getAnimationService()->readAnimationStateForSceneNode(sceneNode->getParent()->getName(), transforms);
 
 			for (int i = 0; i < transforms.size(); i++)
 			{

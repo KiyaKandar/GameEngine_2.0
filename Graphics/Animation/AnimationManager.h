@@ -17,15 +17,16 @@ public:
 	void updateNextFrame(const float& deltaTime) override;
 
 	void QueueAnimationPlay(Message* message);
-	void addAnimation(const std::string& animationName, Mesh* mesh, const aiAnimation* animation, const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo) override;
+	void addAnimation(const std::string& animationName, const std::string& gameObjectId, Mesh* mesh, const aiAnimation* animation,
+		const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo) override;
 	void clearAnimations();
 	
-	void readAnimationStateForMesh(const std::string& meshName, std::vector<aiMatrix4x4>& animationStates) const override;
+	void readAnimationStateForSceneNode(const std::string& gameObjectId, std::vector<aiMatrix4x4>& animationStates) const override;
 
 private:
 	void ActivateAnimationsInPlayQueue();
-	bool RemoveActiveMeshAnimation(const size_t& meshId, const size_t& animationId);
-	void BeginPlayingAnimation(const size_t& meshId, const size_t& animationId, const double lerpToTime);
+	bool RemoveActiveAnimation(const size_t& gameObjectId, const size_t& animationId);
+	void BeginPlayingAnimation(const size_t& gameObjectId, const size_t& animationId, const double lerpToTime);
 
 	std::vector<QueuedAnimation> animationsToAddtoPlayQueue;
 	std::vector<Animation*> activeAnimations;

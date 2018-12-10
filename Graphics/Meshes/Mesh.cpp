@@ -70,8 +70,8 @@ void Mesh::LoadMD5ProxyFile(std::string path)
 			importedAnimations.push_back(animationImporters[lastUsedAnimationImporter].ReadFile(line,
 				aiProcess_Triangulate | aiProcess_FlipUVs |
 				aiProcess_GenSmoothNormals | aiProcess_OptimizeMeshes | aiProcess_CalcTangentSpace));
+			animationFiles[lastUsedAnimationImporter] = line;
 			lastUsedAnimationImporter++;
-			AnimationPlayer::getAnimationService()->addAnimation(line, this, importedAnimations.back()->mAnimations[0], meshScene->mRootNode, globalInverseTransform, &boneInfo);
 			hasAnimations = true;
 		}
 	}

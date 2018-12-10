@@ -1,5 +1,7 @@
 #include "SceneNode.h"
 
+#include "../../Gameplay/GameObject.h"
+
 SceneNode::SceneNode(string meshFile, NCLVector4 colour)
 {
 	this->mesh = new Mesh(meshFile, 1);
@@ -63,6 +65,17 @@ void SceneNode::DrawShadow(Shader& shader)
 		{
 			submesh->DrawShadow(shader, worldTransform);
 		}
+	}
+}
+
+void SceneNode::takeLocalCopyOfMeshAnimations()
+{
+	boneInfo = mesh->boneInfo;
+	std::vector<const aiScene*>& importedAnimations = mesh->importedAnimations;
+	for (int i = 0; i < importedAnimations.size(); ++i)
+	{
+		AnimationPlayer::getAnimationService()->addAnimation(mesh->animationFiles[i], parentObject->getName(), mesh,
+			importedAnimations[i]->mAnimations[0], mesh->meshScene->mRootNode, mesh->globalInverseTransform, &boneInfo);
 	}
 }
 

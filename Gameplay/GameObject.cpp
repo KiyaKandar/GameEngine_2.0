@@ -24,6 +24,7 @@ void GameObject::setSceneNode(SceneNode * sceneNode)
 {
 	this->sceneNode = sceneNode;
 	sceneNode->setParent(this);
+	sceneNode->takeLocalCopyOfMeshAnimations();
 }
 
 void GameObject::setPhysicsNode(PhysicsNode * physicsNode)
