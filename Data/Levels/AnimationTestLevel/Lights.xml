@@ -1,0 +1,20 @@
+<LevelLights>
+  
+  <Lights name="light1">
+    <position>
+      <x>300</x>
+      <y>500</y>
+      <z>100</z>
+    </position>
+    <colour>
+      <r>1.0</r>
+      <g>1.0</g>
+      <b>1.0</b>
+      <a>1.0</a>
+    </colour>
+    <radius>800</radius>
+    <intensity>1.0</intensity>
+    <shadowcasting>enabled</shadowcasting>
+  </Lights>
+  
+</LevelLights>

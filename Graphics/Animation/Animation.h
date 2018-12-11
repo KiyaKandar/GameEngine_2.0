@@ -31,27 +31,32 @@ public:
 	bool hasIdMatch(const size_t& gameObjectId, const size_t& animationId) const;
 
 	void incrementTimer(const double& deltaTime);
-	void SetDurationToLerpFromPreviousAniamtion(const double& lerpDuration);
+	void reset();
+
+	void setDurationToLerpFromPreviousAniamtion(const double& lerpDuration);
+	void setLooping(const bool looping);
+	bool finishedPlaying() const;
 	bool meshIsOnScreen() const;
 
 	void updateAnimationTransformState();
 	void readAnimationState(std::vector<aiMatrix4x4>& animationState) const;
 
 private:
-	void validateElapsedTime();
 	void validateLastKeyFrames(const double timeInTicks);
+	void ResetAllKeyFrameIndexes();
 
 	void constructNodeList(const aiNode* rootNode);
 	void addNode(MeshNode& parentNode, const aiNode* node, const int childIndex);
 
 	void transformBones(std::vector<aiMatrix4x4>& transforms);
 	void updateNode(const MeshNode& node, const aiMatrix4x4& parentTransform);
-	void UpdateBoneTransformation(const MeshNode& meshNode, const aiMatrix4x4& childTransformation);
-	void InterpolateNodeToFirstKeyFrameFromCurrentBoneTransform(const aiMatrix4x4& currentNodeTransform, const unsigned int boneIndex);
+	void updateBoneTransformation(const MeshNode& meshNode, const aiMatrix4x4& childTransformation);
+	void interpolateNodeToFirstKeyFrameFromCurrentBoneTransform(const aiMatrix4x4& currentNodeTransform, const unsigned int boneIndex);
 
 	const Mesh* mesh;
 	double elapsedTime;
 	double animationTime;
+	bool looping;
 	double totalLerpDurationFromPreviousTransformation;
 	double remainingLerpDurationFromPreviousTransformation;
 	float interpolationFactor;
