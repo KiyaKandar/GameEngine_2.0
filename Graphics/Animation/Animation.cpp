@@ -16,11 +16,7 @@ Animation::Animation(const std::string& animationName, const std::string& gameOb
 	this->animation = animation;
 	boneInfo = initialBoneInfo;
 
-	elapsedTime = 0.0;
-	animationTime = 0.0;
-	totalLerpDurationFromPreviousTransformation = 0.0;
-	remainingLerpDurationFromPreviousTransformation = 0.0;
-	interpolationFactor = 0.0f;
+	reset();
 
 	for (unsigned int i = 0; i < animation->mNumChannels; i++)
 	{
@@ -71,10 +67,38 @@ void Animation::incrementTimer(const double& deltaTime)
 	elapsedTime += deltaTimeInSeconds;
 }
 
-void Animation::SetDurationToLerpFromPreviousAniamtion(const double& lerpDuration)
+void Animation::reset()
+{
+	elapsedTime = 0.0;
+	animationTime = 0.0;
+	totalLerpDurationFromPreviousTransformation = 0.0;
+	remainingLerpDurationFromPreviousTransformation = 0.0;
+	interpolationFactor = 0.0f;
+
+	ResetAllKeyFrameIndexes();
+}
+
+void Animation::setDurationToLerpFromPreviousAniamtion(const double& lerpDuration)
 {
 	totalLerpDurationFromPreviousTransformation = lerpDuration;
 	remainingLerpDurationFromPreviousTransformation = lerpDuration;
+}
+
+void Animation::setLooping(const bool looping)
+{
+	this->looping = looping;
+}
+
+bool Animation::finishedPlaying() const
+{
+	if (looping)
+	{
+		return true;
+	}
+	else
+	{
+		return elapsedTime * animation->mTicksPerSecond >= animation->mDuration;
+	}
 }
 
 bool Animation::meshIsOnScreen() const
@@ -95,22 +119,19 @@ void Animation::readAnimationState(std::vector<aiMatrix4x4>& animationState) con
 	animationState = this->animationState;
 }
 
-void Animation::validateElapsedTime()
-{
-	if (elapsedTime >= animation->mDuration)
-	{
-		elapsedTime = 0.0;
-	}
-}
-
 void Animation::validateLastKeyFrames(const double timeInTicks)
 {
 	if (timeInTicks >= animation->mDuration)
 	{
-		for (NodeAnimation* nodeAnimation : nodeAnimationRawStorage)
-		{
-			nodeAnimation->ResetKeyFrameIndexes();
-		}
+		ResetAllKeyFrameIndexes();
+	}
+}
+
+void Animation::ResetAllKeyFrameIndexes()
+{
+	for (NodeAnimation* nodeAnimation : nodeAnimationRawStorage)
+	{
+		nodeAnimation->ResetKeyFrameIndexes();
 	}
 }
 
@@ -147,7 +168,6 @@ void Animation::addNode(MeshNode& parentNode, const aiNode* node, const int chil
 
 void Animation::transformBones(std::vector<aiMatrix4x4>& transforms)
 {
-	validateElapsedTime();
 	const double ticksPerSecond = animation->mTicksPerSecond != 0 ? animation->mTicksPerSecond : 25.0f;
 	const double timeInTicks = elapsedTime * ticksPerSecond;
 
@@ -173,7 +193,7 @@ void Animation::updateNode(const MeshNode& meshNode, const aiMatrix4x4& parentTr
 	}
 
 	aiMatrix4x4 childTransformation = parentTransform * nodeTransformation;
-	UpdateBoneTransformation(meshNode, childTransformation);
+	updateBoneTransformation(meshNode, childTransformation);
 
 	for (unsigned int i = 0; i < meshNode.node->mNumChildren; i++)
 	{
@@ -181,7 +201,7 @@ void Animation::updateNode(const MeshNode& meshNode, const aiMatrix4x4& parentTr
 	}
 }
 
-void Animation::UpdateBoneTransformation(const MeshNode& meshNode, const aiMatrix4x4& childTransformation)
+void Animation::updateBoneTransformation(const MeshNode& meshNode, const aiMatrix4x4& childTransformation)
 {
 	if (meshNode.mapsToBone)
 	{
@@ -189,7 +209,7 @@ void Animation::UpdateBoneTransformation(const MeshNode& meshNode, const aiMatri
 
 		if (remainingLerpDurationFromPreviousTransformation > 0.0)
 		{
-			InterpolateNodeToFirstKeyFrameFromCurrentBoneTransform(childTransformation, boneIndex);
+			interpolateNodeToFirstKeyFrameFromCurrentBoneTransform(childTransformation, boneIndex);
 		}
 		else
 		{
@@ -200,7 +220,7 @@ void Animation::UpdateBoneTransformation(const MeshNode& meshNode, const aiMatri
 	}
 }
 
-void Animation::InterpolateNodeToFirstKeyFrameFromCurrentBoneTransform(const aiMatrix4x4& currentNodeTransform, const unsigned int boneIndex)
+void Animation::interpolateNodeToFirstKeyFrameFromCurrentBoneTransform(const aiMatrix4x4& currentNodeTransform, const unsigned int boneIndex)
 {
 	DecomposedMatrix decomposedPreviousTransform;
 	DecomposedMatrix decomposedCurrentTransform;

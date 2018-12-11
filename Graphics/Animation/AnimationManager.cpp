@@ -8,22 +8,6 @@
 
 using namespace std::placeholders;
 
-struct QueuedAnimation
-{
-	QueuedAnimation(std::string gameObjectId, std::string animationName, double lerpToTime)
-	{
-		this->gameObjectId = gameObjectId;
-		this->animationName = animationName;
-		this->lerpToTime = lerpToTime;
-	}
-
-	QueuedAnimation() = delete;
-
-	std::string gameObjectId;
-	std::string animationName;
-	double lerpToTime;
-};
-
 AnimationManager::AnimationManager(Database* database)
 	: Subsystem("AnimationManager")
 {
@@ -32,7 +16,7 @@ AnimationManager::AnimationManager(Database* database)
 	incomingMessages = MessageProcessor(std::vector<MessageType> { MessageType::PLAY_ANIMATION },
 		DeliverySystem::getPostman()->getDeliveryPoint("AnimationManager"));
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::PLAY_ANIMATION, std::bind(&AnimationManager::QueueAnimationPlay, this, _1));
+	incomingMessages.addActionToExecuteOnMessage(MessageType::PLAY_ANIMATION, std::bind(&AnimationManager::queueAnimationPlay, this, _1));
 }
 
 AnimationManager::~AnimationManager()
@@ -44,25 +28,23 @@ void AnimationManager::updateNextFrame(const float& deltaTime)
 {
 	timer->beginTimedSection();
 
-	ActivateAnimationsInPlayQueue();
+	activateAnimationsInPlayQueue();
 
-	for (Animation* animation : activeAnimations)
+	for (ActiveAnimation& activeAnimation : activeAnimations)
 	{
-		animation->incrementTimer((double)deltaTime);
-
-		if (animation->meshIsOnScreen())
-		{
-			animation->updateAnimationTransformState();
-		}
+		updateActiveAnimationFrame(activeAnimation, deltaTime);
 	}
 
 	timer->endTimedSection();
 }
 
-void AnimationManager::QueueAnimationPlay(Message* message)
+void AnimationManager::queueAnimationPlay(Message* message)
 {
 	PlayAnimationMessage* playMessage = static_cast<PlayAnimationMessage*>(message);
-	animationsToAddtoPlayQueue.push_back(QueuedAnimation(playMessage->gameObjectID, playMessage->animationName, playMessage->lerpToTime));
+
+	QueuedAnimation newAnimation(playMessage->gameObjectID, playMessage->animationParams);
+	newAnimation.transitionParams = playMessage->transition;
+	animationsToAddtoPlayQueue.push_back(newAnimation);
 }
 
 void AnimationManager::addAnimation(const std::string& animationName, const std::string& gameObjectId, Mesh* mesh, const aiAnimation* animation, 
@@ -87,29 +69,51 @@ void AnimationManager::readAnimationStateForSceneNode(const std::string& gameObj
 {
 	const size_t id = Hash{}(gameObjectId);
 
-	for (const Animation* animation : activeAnimations)
+	for (const ActiveAnimation& activeAnimation : activeAnimations)
 	{
-		if (animation->hasGameObjectIdMatchOnly(id))
+		if (activeAnimation.animation->hasGameObjectIdMatchOnly(id))
 		{
-			animation->readAnimationState(animationStates);
+			activeAnimation.animation->readAnimationState(animationStates);
 			break;
 		}
 	}
 }
 
-void AnimationManager::ActivateAnimationsInPlayQueue()
+void AnimationManager::updateActiveAnimationFrame(ActiveAnimation & activeAnimation, const float deltaTime)
+{
+	activeAnimation.animation->incrementTimer((double)deltaTime);
+
+	bool transitioned = false;
+	if (activeAnimation.animation->finishedPlaying())
+	{
+		if (activeAnimation.hasTransition())
+		{
+			QueuedAnimation transitionalAnimation(activeAnimation.transition.gameObjectId, activeAnimation.transition.params);
+			animationsToAddtoPlayQueue.push_back(transitionalAnimation);
+			transitioned = true;
+		}
+	}
+
+	if (activeAnimation.animation->meshIsOnScreen() && !transitioned)
+	{
+		activeAnimation.animation->updateAnimationTransformState();
+	}
+}
+
+void AnimationManager::activateAnimationsInPlayQueue()
 {
 	if (!animationsToAddtoPlayQueue.empty())
 	{
 		for (QueuedAnimation& queuedAnimation : animationsToAddtoPlayQueue)
 		{
 			const size_t gameObjectId = Hash{}(queuedAnimation.gameObjectId);
-			const size_t animationId = Hash{}(queuedAnimation.animationName);
-			const bool alreadyPlaying = RemoveActiveAnimation(gameObjectId, animationId);
+			const size_t animationId = Hash{}(queuedAnimation.params.animationName);
+			const bool alreadyPlaying = removeActiveAnimation(gameObjectId, animationId);
 
 			if (!alreadyPlaying)
 			{
-				BeginPlayingAnimation(gameObjectId, animationId, queuedAnimation.lerpToTime);
+				beginPlayingAnimation(gameObjectId, animationId, queuedAnimation.params, 
+					QueuedAnimation(queuedAnimation.gameObjectId, queuedAnimation.transitionParams));
 			}
 		}
 
@@ -117,14 +121,14 @@ void AnimationManager::ActivateAnimationsInPlayQueue()
 	}
 }
 
-bool AnimationManager::RemoveActiveAnimation(const size_t& gameObjectId, const size_t& animationId)
+bool AnimationManager::removeActiveAnimation(const size_t& gameObjectId, const size_t& animationId)
 {
-	std::vector<Animation*>::iterator animationIterator;
+	std::vector<ActiveAnimation>::iterator animationIterator;
 	for (animationIterator = activeAnimations.begin(); animationIterator != activeAnimations.end(); ++animationIterator)
 	{
-		if ((*animationIterator)->hasGameObjectIdMatchOnly(gameObjectId))
+		if ((*animationIterator).animation->hasGameObjectIdMatchOnly(gameObjectId))
 		{
-			if (!(*animationIterator)->hasAnimationIdMatchOnly(animationId))
+			if (!(*animationIterator).animation->hasAnimationIdMatchOnly(animationId))
 			{
 				//Remove mesh's active animation
 				activeAnimations.erase(animationIterator);
@@ -142,14 +146,16 @@ bool AnimationManager::RemoveActiveAnimation(const size_t& gameObjectId, const s
 	return false;
 }
 
-void AnimationManager::BeginPlayingAnimation(const size_t& gameObjectId, const size_t& animationId, const double lerpToTime)
+void AnimationManager::beginPlayingAnimation(const size_t& gameObjectId, const size_t& animationId, const AnimationParams& params, const QueuedAnimation& transition)
 {
 	for (Animation* animation : animations)
 	{
 		if (animation->hasIdMatch(gameObjectId, animationId))
 		{
-			activeAnimations.push_back(animation);
-			animation->SetDurationToLerpFromPreviousAniamtion(lerpToTime);
+			activeAnimations.push_back(ActiveAnimation(animation, transition));
+			animation->reset();
+			animation->setDurationToLerpFromPreviousAniamtion(params.lerpToTime);
+			animation->setLooping(params.loop);
 			break;
 		}
 	}

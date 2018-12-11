@@ -6,17 +6,27 @@
 
 struct Node;
 
+struct AnimationParams
+{
+	std::string animationName = "";
+	double lerpToTime = 0.0;
+	bool loop = false;
+};
+
 class PlayAnimationMessage : public Message
 {
 public:
-	PlayAnimationMessage(const std::string& desinationName, std::string gameObjectID,
-		std::string animationName, const double lerpToTime);
+	PlayAnimationMessage(const std::string& desinationName, const std::string& gameObjectID,
+		AnimationParams animationParams, AnimationParams transition);
 	~PlayAnimationMessage();
 
 	static PlayAnimationMessage builder(Node* node);
 
 	std::string gameObjectID;
-	std::string animationName;
-	double lerpToTime;
+	AnimationParams animationParams;
+	AnimationParams transition;
+
+private:
+	static AnimationParams paramsBuilder(Node* node);
 };
 

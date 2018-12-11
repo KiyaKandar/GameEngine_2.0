@@ -1,0 +1,12 @@
+<Level>
+	<File>AnimationTestLevel/Meshes.xml</File>
+	<File>AnimationTestLevel/Details.xml</File>
+	<File>AnimationTestLevel/Sounds.xml</File>
+	<File>AnimationTestLevel/Lights.xml</File>
+	<UI>
+    <File>../Data/UserInterface/InGameMenu.xml</File>
+	</UI>
+	<GamePlay>
+		<File>AnimationTestLevel/animationScript.xml</File>
+	</GamePlay>
+</Level>

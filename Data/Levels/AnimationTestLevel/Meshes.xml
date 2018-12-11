@@ -1,0 +1,13 @@
+<LevelMeshes>
+	<Meshes name="HellknightMesh" >
+		<MeshFile>../Data/Resources/Meshes/Hellknight/hellknight.md5proxy</MeshFile>
+	</Meshes>
+  
+  <Meshes name="Floor" >
+    <MeshFile>../Data/Resources/Meshes/centeredcube.obj</MeshFile>
+  </Meshes>
+
+	<Meshes name="SphereMesh" >
+		<MeshFile>../Data/Resources/Meshes/sphere.obj</MeshFile>
+	</Meshes>
+</LevelMeshes>

@@ -2,13 +2,13 @@
 
 #include "../Resource Management/XMLParser.h"
 
-PlayAnimationMessage::PlayAnimationMessage(const std::string & desinationName, std::string gameObjectID,
-	std::string animationName, const double lerpToTime)
+PlayAnimationMessage::PlayAnimationMessage(const std::string& desinationName, const std::string& gameObjectID,
+	AnimationParams animationParams, AnimationParams transition)
 	: Message(desinationName, PLAY_ANIMATION)
 {
 	this->gameObjectID = gameObjectID;
-	this->animationName = animationName;
-	this->lerpToTime = lerpToTime;
+	this->animationParams = animationParams;
+	this->transition = transition;
 }
 
 PlayAnimationMessage::~PlayAnimationMessage()
@@ -19,8 +19,8 @@ PlayAnimationMessage PlayAnimationMessage::builder(Node* node)
 {
 	std::string destination = "";
 	std::string object = "";
-	std::string animation = "";
-	double lerpTime = 0.0;
+	AnimationParams animationParams;
+	AnimationParams transition;
 
 	for (Node* childNode : node->children)
 	{
@@ -32,15 +32,38 @@ PlayAnimationMessage PlayAnimationMessage::builder(Node* node)
 		{
 			object = childNode->value;
 		}
-		else if (childNode->nodeType == "animationName")
+		else if (childNode->nodeType == "animation")
 		{
-			animation = childNode->value;
+			animationParams = paramsBuilder(childNode);
 		}
-		else if (childNode->nodeType == "lerpToTime")
+		else if (childNode->nodeType == "transition")
 		{
-			lerpTime = std::stod(childNode->value);
+			transition = paramsBuilder(childNode);
 		}
 	}
 
-	return PlayAnimationMessage(destination, object, animation, lerpTime);
+	return PlayAnimationMessage(destination, object, animationParams, transition);
+}
+
+AnimationParams PlayAnimationMessage::paramsBuilder(Node * node)
+{
+	AnimationParams params;
+
+	for (Node* childNode : node->children)
+	{
+		if (childNode->nodeType == "animationName")
+		{
+			params.animationName = childNode->value;
+		}
+		else if (childNode->nodeType == "lerpToTime")
+		{
+			params.lerpToTime = std::stod(childNode->value);
+		}
+		else if (childNode->nodeType == "loop")
+		{
+			params.loop = childNode->value == "True" ? true : false;
+		}
+	}
+
+	return params;
 }

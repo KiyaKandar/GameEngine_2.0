@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../Communication/Messages/PlayAnimationMessage.h"
+
 #include <matrix4x4.h>
 #include <anim.h>
 #include <vector3.h>
@@ -8,6 +10,8 @@
 #include <functional>
 
 typedef std::hash<std::string> Hash;
+
+class Animation;
 
 struct BoneInfo
 {
@@ -43,4 +47,36 @@ struct DecomposedMatrix
 	aiVector3D translation;
 	aiQuaternion rotation;
 	aiVector3D scale;
+};
+
+struct QueuedAnimation
+{
+	QueuedAnimation(std::string gameObjectId, const AnimationParams& params)
+	{
+		this->gameObjectId = gameObjectId;
+		this->params = params;
+	}
+
+	QueuedAnimation() = default;
+
+	std::string gameObjectId;
+	AnimationParams params;
+	AnimationParams transitionParams;
+};
+
+struct ActiveAnimation
+{
+	ActiveAnimation(Animation* animation, const QueuedAnimation& transition)
+	{
+		this->animation = animation;
+		this->transition = transition;
+	}
+
+	bool hasTransition()
+	{
+		return transition.params.animationName != "";
+	}
+
+	Animation* animation;
+	QueuedAnimation transition;
 };
