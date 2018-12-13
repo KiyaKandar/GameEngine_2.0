@@ -27,6 +27,7 @@
 #include "Messages/PlayAnimationMessage.h"
 #include "Messages/DebugLineMessage.h"
 #include "Messages/DebugSphereMessage.h"
+#include "MessageRegistry.h"
 
 //exposed interface
 class MessagingService 
@@ -35,31 +36,7 @@ public:
 	virtual void addDeliveryPoint(const std::string& bufferName) = 0;
 	virtual std::queue<Message*>* getDeliveryPoint(const std::string& bufferName) = 0;
 
-	virtual void insertMessage(Message message) = 0;
-	virtual void insertMessage(PlayerInputMessage message) = 0;
-	virtual void insertMessage(TextMessage message) = 0;
-	virtual void insertMessage(RelativeTransformMessage message) = 0;	
-	virtual void insertMessage(PlaySoundMessage message) = 0;
-	virtual void insertMessage(PlayMovingSoundMessage message) = 0;
-	virtual void insertMessage(StopSoundMessage message) = 0;
-	virtual void insertMessage(ToggleGraphicsModuleMessage message) = 0;
-	virtual void insertMessage(ApplyForceMessage message) = 0;
-	virtual void insertMessage(ApplyImpulseMessage message) = 0;
-	virtual void insertMessage(MoveCameraRelativeToGameObjectMessage message) = 0;
-	virtual void insertMessage(CollisionMessage message) = 0;
-	virtual void insertMessage(PreparePaintSurfaceMessage message) = 0;
-	virtual void insertMessage(PaintTrailForGameObjectMessage message) = 0;
-	virtual void insertMessage(UpdatePositionMessage message) = 0;
-	virtual void insertMessage(TextMeshMessage message) = 0;
-	virtual void insertMessage(AddScoreHolderMessage message) = 0;
-	virtual void insertMessage(AbsoluteTransformMessage message) = 0;
-	virtual void insertMessage(MoveGameObjectMessage message) = 0;
-	virtual void insertMessage(ScaleGameObjectMessage message) = 0;
-	virtual void insertMessage(RotateGameObjectMessage message) = 0;
-	virtual void insertMessage(ToggleGameObjectMessage message) = 0;
-	virtual void insertMessage(PlayAnimationMessage message) = 0;
-	virtual void insertMessage(DebugLineMessage message) = 0;
-	virtual void insertMessage(DebugSphereMessage message) = 0;
+	REGISTER_PURE_VIRTUAL_SERVICE()
 
 	virtual void deliverAllMessages() = 0;
 	virtual void clearAllMessages() = 0;
