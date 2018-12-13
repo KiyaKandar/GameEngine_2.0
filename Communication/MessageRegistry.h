@@ -18,6 +18,15 @@ public: \
 		_##MESSAGE_TYPE.insertOutgoingMessage(message); \
 	}
 
+#define REGISTER_THREAD_SAFE_MESSAGE(MESSAGE_TYPE) \
+private: \
+	ThreadSafeMessageBuffer<##MESSAGE_TYPE> _##MESSAGE_TYPE; \
+public: \
+	void insertMessage(##MESSAGE_TYPE message) \
+	{ \
+		_##MESSAGE_TYPE.insertOutgoingMessage(message); \
+	}
+
 #define REGISTER_ALL_SENDER()\
 	REGISTER_MESSAGE_SENDER(Message)\
 	REGISTER_MESSAGE_SENDER(PlayerInputMessage)\
@@ -114,7 +123,7 @@ public: \
 	REGISTER_MESSAGE(PreparePaintSurfaceMessage)\
 	REGISTER_MESSAGE(PaintTrailForGameObjectMessage)\
 	REGISTER_MESSAGE(UpdatePositionMessage)\
-	REGISTER_MESSAGE(TextMeshMessage)\
+	REGISTER_THREAD_SAFE_MESSAGE(TextMeshMessage)\
 	REGISTER_MESSAGE(AddScoreHolderMessage)\
 	REGISTER_MESSAGE(ApplyImpulseMessage)\
 	REGISTER_MESSAGE(AbsoluteTransformMessage)\
