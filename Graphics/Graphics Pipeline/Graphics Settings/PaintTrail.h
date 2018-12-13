@@ -3,6 +3,7 @@
 #include "../GraphicsModule.h"
 
 #include <queue>
+#include <set>
 
 class Database;
 class GameObject;
@@ -27,22 +28,30 @@ public:
 		{
 			painters.pop();
 		}
+
+		existingPainters.clear();
 	}
 
 	GLuint paintTrailTexture;
 	NCLMatrix4 textureMatrices;
 
 private:
-	void locateUniforms() override {}
+	void locateUniforms() override;
 
 	Database* database;
 	std::queue<GameObject*> painters;
+	std::set<GameObject*> existingPainters;
 
 	Shader* paintTrailShader;
 
 	GLuint buffer;
 	GLuint rboDepth;
 	GLuint attachment[1] = { GL_COLOR_ATTACHMENT6 };
+	
+	GLint viewMatrixLocation;
+	GLint projMatrixLocation;
+
+	NCLMatrix4 localProj;
 
 	bool floorRendered = false;
 };

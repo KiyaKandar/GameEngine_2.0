@@ -6,11 +6,21 @@
 #include "../Resource Management/Database/Database.h"
 #include "../../Rendering/OGLRenderer.h"
 
+#include <iostream>
+#include <chrono>
+
+using namespace std;
+using namespace std::chrono;
+
 #define SHADOWSIZE 4096
 
 PaintTrail::PaintTrail(const std::string identifier, const NCLVector2 resolution, Database* database)
 	: GraphicsModule(identifier, resolution)
 {
+	viewMatrix = NCLMatrix4::buildViewMatrix(NCLVector3(1, 800, 1), NCLVector3(0, 0, 0));
+	textureMatrices = biasMatrix * (CommonGraphicsData::SHARED_PROJECTION_MATRIX * viewMatrix);
+	localProj = CommonGraphicsData::SHARED_PROJECTION_MATRIX;
+
 	paintTrailShader = new Shader(SHADERDIR"PaintTrail/paintTrailVert.glsl", SHADERDIR"PaintTrail/paintTrailFrag.glsl");
 	this->database = database;
 }
@@ -22,20 +32,19 @@ PaintTrail::~PaintTrail()
 
 void PaintTrail::preparePaintSurface(std::vector<GameObject*> surfaceObjects)
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, buffer);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	for (GameObject* surfaceObject : surfaceObjects)
 	{
 		surfaceObject->getSceneNode()->isPaintSurface = true;
 	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void PaintTrail::addPainterObjectForNextFrame(GameObject* painter)
 {
-	painters.push(painter);
+	if (std::find(existingPainters.begin(), existingPainters.end(), painter) == existingPainters.end())
+	{
+		painters.push(painter);
+		existingPainters.insert(painter);
+	}
 }
 
 void PaintTrail::linkShaders()
@@ -46,6 +55,13 @@ void PaintTrail::linkShaders()
 void PaintTrail::regenerateShaders()
 {
 	paintTrailShader->Regenerate();
+}
+
+void PaintTrail::locateUniforms()
+{
+	GLuint program = paintTrailShader->GetProgram();
+	viewMatrixLocation = glGetUniformLocation(program, "viewMatrix");
+	projMatrixLocation = glGetUniformLocation(program, "projMatrix");
 }
 
 void PaintTrail::initialise()
@@ -70,6 +86,8 @@ void PaintTrail::initialise()
 
 	GraphicsUtility::VerifyBuffer("RBO Depth Paint Trail", false);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	locateUniforms();
 }
 
 void PaintTrail::apply()
@@ -77,22 +95,24 @@ void PaintTrail::apply()
 	setCurrentShader(paintTrailShader);
 	glBindFramebuffer(GL_FRAMEBUFFER, buffer);
 
-	viewMatrix = NCLMatrix4::buildViewMatrix(NCLVector3(1, 800, 1), NCLVector3(0, 0, 0));
-	textureMatrices = biasMatrix * (CommonGraphicsData::SHARED_PROJECTION_MATRIX * viewMatrix);
-
-	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "viewMatrix"), 1, false, (float*)&viewMatrix);
-	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix"), 1, false, (float*)&CommonGraphicsData::SHARED_PROJECTION_MATRIX);
+	GLuint program = currentShader->GetProgram();
+	glUniformMatrix4fv(viewMatrixLocation, 1, false, (float*)&viewMatrix);
+	glUniformMatrix4fv(projMatrixLocation, 1, false, (float*)&localProj);
 
 	glDisable(GL_DEPTH_TEST);
+	
 	while (!painters.empty()) 
 	{
 		GameObject* painter = painters.front();
 		painters.pop();
 
-		glUniform4fv(glGetUniformLocation(paintTrailShader->GetProgram(), "baseColour"), 1, (float*)&painter->stats.colourToPaint);
-		painter->getSceneNode()->Draw(*paintTrailShader);
+		glUniform4fv(glGetUniformLocation(program, "baseColour"), 1, (float*)&painter->stats.colourToPaint);
+		painter->getSceneNode()->DrawShadow(*paintTrailShader);
 	}
+
+	existingPainters.clear();
 
 	glEnable(GL_DEPTH_TEST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 }

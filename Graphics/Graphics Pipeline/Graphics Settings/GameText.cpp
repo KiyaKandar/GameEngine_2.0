@@ -70,38 +70,34 @@ void GameText::apply()
 	bufferedOrthographicUsage.clear();
 	bufferedColours.clear();
 
-	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	textureMatrix.toIdentity();
-
-	setCurrentShader(textWithBackgrounShader);
-	updateShaderMatrices();
-
-	for (int i = 0; i < (int)bufferedBackgroundText.size(); ++i)
+	if (!bufferedBackgroundText.empty())
 	{
-		viewMatrix.toIdentity();
-		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "viewMatrix"), 1, false, (float*)&viewMatrix);
-		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix"), 1, false, (float*)&CommonGraphicsData::SHARED_ORTHOGRAPHIC_MATRIX);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		NCLVector3 colour(bufferedBackgroundColours[i].x, bufferedBackgroundColours[i].y, bufferedBackgroundColours[i].z);
-		glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "colour"), 1, (float*)&colour);
+		textureMatrix.toIdentity();
 
-		TextMesh textMesh(bufferedBackgroundText[i], *font);
-		textMesh.Draw(*currentShader, NCLMatrix4::translation(bufferedBackgroundPositions[i]) * NCLMatrix4::scale(bufferedBackgroundScales[i]));
+		setCurrentShader(textWithBackgrounShader);
+		updateShaderMatrices();
+
+		for (int i = 0; i < (int)bufferedBackgroundText.size(); ++i)
+		{
+			viewMatrix.toIdentity();
+			glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "viewMatrix"), 1, false, (float*)&viewMatrix);
+			glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix"), 1, false, (float*)&CommonGraphicsData::SHARED_ORTHOGRAPHIC_MATRIX);
+
+			NCLVector3 colour(bufferedBackgroundColours[i].x, bufferedBackgroundColours[i].y, bufferedBackgroundColours[i].z);
+			glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "colour"), 1, (float*)&colour);
+
+			TextMesh textMesh(bufferedBackgroundText[i], *font);
+			textMesh.Draw(*currentShader, NCLMatrix4::translation(bufferedBackgroundPositions[i]) * NCLMatrix4::scale(bufferedBackgroundScales[i]));
+		}
+
+		bufferedBackgroundText.clear();
+		bufferedBackgroundPositions.clear();
+		bufferedBackgroundScales.clear();
+		bufferedOBackgroundrthographicUsage.clear();
+		bufferedBackgroundColours.clear();
 	}
-
-	bufferedBackgroundText.clear();
-	bufferedBackgroundPositions.clear();
-	bufferedBackgroundScales.clear();
-	bufferedOBackgroundrthographicUsage.clear();
-	bufferedBackgroundColours.clear();
 
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
