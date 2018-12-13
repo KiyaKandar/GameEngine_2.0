@@ -33,10 +33,8 @@ enum MessageType
 	DEBUG_SPHERE
 };
 
-
 class Message
 {
-
 public:
 	Message(const std::string& destinationName, MessageType type);
 	

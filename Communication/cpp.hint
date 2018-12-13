@@ -1,0 +1,16 @@
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define REGISTER_INSERT_MESSAGE(MESSAGE_TYPE, MESSAGE_BUFFER_NAME) MessageBuffer<MESSAGE_TYPE> MESSAGE_BUFFER_NAME; void insertMessage(MESSAGE_TYPE message) { MESSAGE_BUFFER_NAME.insertOutgoingMessage(message); }
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define REGISTER_MESSAGE(MESSAGE_TYPE, MESSAGE_BUFFER_NAME) private: MessageBuffer<##MESSAGE_TYPE>##MESSAGE_BUFFER_NAME; public: void insertMessage(##MESSAGE_TYPE message) {##MESSAGE_BUFFER_NAME.insertOutgoingMessage(message); } REGISTER_MESSAGE_SENDER(MESSAGE_BUFFER_NAME) REGISTER_MESSAGE_CLEARER(MESSAGE_BUFFER_NAME) REGISTER_OUTGOING_MESSAGE_CANCEL(MESSAGE_BUFFER_NAME)
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define REGISTER_MESSAGE(MESSAGE_TYPE, MESSAGE_BUFFER_NAME) private: MessageBuffer<##MESSAGE_TYPE> _##MESSAGE_BUFFER_NAME; public: void insertMessage(##MESSAGE_TYPE message) { _##MESSAGE_BUFFER_NAME.insertOutgoingMessage(message); } REGISTER_MESSAGE_SENDER(MESSAGE_BUFFER_NAME) REGISTER_MESSAGE_CLEARER(MESSAGE_BUFFER_NAME) REGISTER_OUTGOING_MESSAGE_CANCEL(MESSAGE_BUFFER_NAME)
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define REGISTER_MESSAGE(MESSAGE_TYPE, MESSAGE_BUFFER_NAME) private: MessageBuffer<##MESSAGE_TYPE> _##MESSAGE_BUFFER_NAME; public: void insertMessage(##MESSAGE_TYPE message) { _##MESSAGE_BUFFER_NAME.insertOutgoingMessage(message); } REGISTER_MESSAGE_SENDER(MESSAGE_BUFFER_NAME) REGISTER_MESSAGE_CLEARER(MESSAGE_BUFFER_NAME) REGISTER_OUTGOING_MESSAGE_CANCEL(MESSAGE_BUFFER_NAME)

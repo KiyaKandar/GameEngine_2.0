@@ -118,6 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="MessageRegistry.h" />
     <ClInclude Include="Messages\DebugSphereMessage.h" />
     <ClInclude Include="Messages\DebugLineMessage.h" />
     <ClInclude Include="Messages\ToggleGameObjectMessage.h" />
@@ -185,6 +186,9 @@
     <ClCompile Include="Messages\PaintTrailForGameObjectMessage.cpp" />
     <ClCompile Include="Messages\UpdatePositionMessage.cpp" />
     <ClCompile Include="Messages\TextMeshMessage.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
