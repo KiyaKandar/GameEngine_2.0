@@ -26,7 +26,8 @@ public:
 	void readAnimationStateForSceneNode(const std::string& gameObjectId, std::vector<aiMatrix4x4>& animationStates) const override;
 
 private:
-	void updateActiveAnimationFrame(ActiveAnimation& activeAnimation, const float deltaTime);
+	void updateActiveAnimationFrame(std::vector<ActiveAnimation>::iterator& animationIterator, const float deltaTime);
+	void CompleteActiveAnimation(std::vector<ActiveAnimation>::iterator& animationIterator);
 
 	void activateAnimationsInPlayQueue();
 	bool removeActiveAnimation(const size_t& gameObjectId, const size_t& animationId);
@@ -36,6 +37,7 @@ private:
 	std::vector<QueuedAnimation> animationsToAddtoPlayQueue;
 	std::vector<ActiveAnimation> activeAnimations;
 	std::vector<Animation*> animations;
+	std::vector<size_t> activeAnimationsToStop;
 
 	Database* database;
 };

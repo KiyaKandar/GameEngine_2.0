@@ -53,6 +53,11 @@ bool Animation::hasIdMatch(const size_t& meshId, const size_t& animationId) cons
 	return hasGameObjectIdMatchOnly(meshId) && hasAnimationIdMatchOnly(animationId);
 }
 
+bool Animation::isLooping() const
+{
+	return looping;
+}
+
 void Animation::incrementTimer(const double& deltaTime)
 {
 	const double deltaTimeInSeconds = deltaTime * 0.001f;

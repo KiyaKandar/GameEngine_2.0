@@ -5,6 +5,11 @@
       <text>setmaxtime false</text>
     </SendMessage>
 
+    <SendMessage type="TEXT">
+      <destination>UserInterface</destination>
+      <text>Toggle</text>
+    </SendMessage>
+
     <SendMessage type="MOVE_CAMERA_RELATIVE_TO_GAMEOBJECT">
       <destination>RenderingSystem</destination>
       <resource>hellknight1</resource>
@@ -24,7 +29,7 @@
       <resource>hellknight1</resource>
       <animation>
         <lerpToTime>0.0</lerpToTime>
-        <loop>True</loop>
+        <loop>False</loop>
         <animationName>../Data/Resources/Meshes/Hellknight/idle.md5anim</animationName>
       </animation>
     </SendMessage>
@@ -34,12 +39,13 @@
       <resource>hellknight2</resource>
       <animation>
         <lerpToTime>0.0</lerpToTime>
-        <loop>True</loop>
+        <loop>False</loop>
         <animationName>../Data/Resources/Meshes/Hellknight/idle2.md5anim</animationName>
       </animation>
     </SendMessage>
   </OnStart>
 
+  
   <Timed interval =" 10.0">
     
     <SendMessage type="PLAY_ANIMATION">
@@ -73,4 +79,5 @@
     </SendMessage>
     
   </Timed>
+
 </GameplayScript>

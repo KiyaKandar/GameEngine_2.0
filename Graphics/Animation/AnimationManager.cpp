@@ -30,9 +30,10 @@ void AnimationManager::updateNextFrame(const float& deltaTime)
 
 	activateAnimationsInPlayQueue();
 
-	for (ActiveAnimation& activeAnimation : activeAnimations)
+	std::vector<ActiveAnimation>::iterator animationIterator;
+	for (animationIterator = activeAnimations.begin(); animationIterator != activeAnimations.end();)
 	{
-		updateActiveAnimationFrame(activeAnimation, deltaTime);
+		updateActiveAnimationFrame(animationIterator, deltaTime);
 	}
 
 	timer->endTimedSection();
@@ -79,24 +80,36 @@ void AnimationManager::readAnimationStateForSceneNode(const std::string& gameObj
 	}
 }
 
-void AnimationManager::updateActiveAnimationFrame(ActiveAnimation & activeAnimation, const float deltaTime)
+void AnimationManager::updateActiveAnimationFrame(std::vector<ActiveAnimation>::iterator& animationIterator, const float deltaTime)
 {
-	activeAnimation.animation->incrementTimer((double)deltaTime);
+	animationIterator->animation->incrementTimer((double)deltaTime);
 
-	bool transitioned = false;
-	if (activeAnimation.animation->finishedPlaying())
+	const bool animationFinished = animationIterator->animation->finishedPlaying()
+		&& (animationIterator->hasTransition() || !animationIterator->animation->isLooping());
+
+	if (animationFinished)
 	{
-		if (activeAnimation.hasTransition())
-		{
-			QueuedAnimation transitionalAnimation(activeAnimation.transition.gameObjectId, activeAnimation.transition.params);
-			animationsToAddtoPlayQueue.push_back(transitionalAnimation);
-			transitioned = true;
-		}
+		CompleteActiveAnimation(animationIterator);
 	}
-
-	if (activeAnimation.animation->meshIsOnScreen() && !transitioned)
+	else if (animationIterator->animation->meshIsOnScreen())
 	{
-		activeAnimation.animation->updateAnimationTransformState();
+		animationIterator->animation->updateAnimationTransformState();
+		++animationIterator;
+	}
+}
+
+void AnimationManager::CompleteActiveAnimation(std::vector<ActiveAnimation>::iterator & animationIterator)
+{
+	if (animationIterator->hasTransition())
+	{
+		QueuedAnimation transitionalAnimation(animationIterator->transition.gameObjectId, animationIterator->transition.params);
+		animationsToAddtoPlayQueue.push_back(transitionalAnimation);
+		++animationIterator;
+	}
+	else if (!animationIterator->animation->isLooping())
+	{
+		animationIterator->animation->reset();
+		animationIterator = activeAnimations.erase(animationIterator);
 	}
 }
 

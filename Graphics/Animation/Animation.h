@@ -29,6 +29,7 @@ public:
 	bool hasGameObjectIdMatchOnly(const size_t& gameObjectId) const;
 	bool hasAnimationIdMatchOnly(const size_t& animationId) const;
 	bool hasIdMatch(const size_t& gameObjectId, const size_t& animationId) const;
+	bool isLooping() const;
 
 	void incrementTimer(const double& deltaTime);
 	void reset();
