@@ -4,21 +4,23 @@
 
 #include <anim.h>
 
-void AnimationTransformHelper::calculateNodeTransformation(aiMatrix4x4& transformation, NodeAnimation& nodeAnimation, const double& animationTime)
+void AnimationTransformHelper::calculateNodeTransformation(aiMatrix4x4& transformation, NodeAnimation& nodeAnimation, 
+	const double& animationTime, const BlockedTransformComponents& blockedComponents)
 {
-	aiVector3D translation;
-	AnimationTransformHelper::calculateInterpolatedKeyFrameTranslation(translation, nodeAnimation, animationTime);
-	aiMatrix4x4 translationTransform;
-	aiMatrix4x4::Translation(translation, translationTransform);
+	DecomposedMatrix storedTransformation;
+	if (blockedComponents.hasAnyComponentBlocked())
+	{
+		transformation.Decompose(storedTransformation.scale, storedTransformation.rotation, storedTransformation.translation);
+	}
 
-	aiQuaternion rotation;
-	AnimationTransformHelper::calculateInterpolatedKeyFrameRotation(rotation, nodeAnimation, animationTime);
-	aiMatrix4x4 rotationTransform = aiMatrix4x4(rotation.GetMatrix());
+	aiMatrix4x4 translationTransform, rotationTransform, scalingTransform;
 
-	aiVector3D scale;
-	AnimationTransformHelper::calculateInterpolatedKeyFrameScale(scale, nodeAnimation, animationTime);
-	aiMatrix4x4 scalingTransform;
-	aiMatrix4x4::Scaling(scale, scalingTransform);
+	calculateKeyFrameTranslation(translationTransform, nodeAnimation, animationTime, 
+		blockedComponents.blockTranslation, storedTransformation.translation);
+	calculateKeyFrameRotation(rotationTransform, nodeAnimation, animationTime,
+		blockedComponents.blockRotation, storedTransformation.rotation);
+	calculateKeyFrameScale(scalingTransform, nodeAnimation, animationTime, 
+		blockedComponents.blockScale, storedTransformation.scale);
 
 	transformation = translationTransform * rotationTransform * scalingTransform;
 }
@@ -49,6 +51,51 @@ void AnimationTransformHelper::composeMatrix(aiMatrix4x4& result, const Decompos
 	aiMatrix4x4::Scaling(decomposedMatrix.scale, lerpScalingTransform);
 
 	result = lerpTranslationTransform * lerpRotationTransform * lerpScalingTransform;
+}
+
+void AnimationTransformHelper::calculateKeyFrameTranslation(aiMatrix4x4& translationTransform, NodeAnimation& nodeAnimation,
+	const double& animationTime, const bool blocked, const aiVector3D& defaultTranslation)
+{
+	if (blocked)
+	{
+		aiMatrix4x4::Translation(defaultTranslation, translationTransform);
+	}
+	else
+	{
+		aiVector3D translation;
+		AnimationTransformHelper::calculateInterpolatedKeyFrameTranslation(translation, nodeAnimation, animationTime);
+		aiMatrix4x4::Translation(translation, translationTransform);
+	}
+}
+
+void AnimationTransformHelper::calculateKeyFrameRotation(aiMatrix4x4& rotationTransform, NodeAnimation& nodeAnimation, 
+	const double& animationTime, const bool blocked, const aiQuaternion& defaultRotation)
+{
+	if (blocked)
+	{
+		rotationTransform = aiMatrix4x4(defaultRotation.GetMatrix());
+	}
+	else
+	{
+		aiQuaternion rotation;
+		AnimationTransformHelper::calculateInterpolatedKeyFrameRotation(rotation, nodeAnimation, animationTime);
+		rotationTransform = aiMatrix4x4(rotation.GetMatrix());
+	}
+}
+
+void AnimationTransformHelper::calculateKeyFrameScale(aiMatrix4x4& scalingTransform, NodeAnimation& nodeAnimation,
+	const double& animationTime, const bool blocked, const aiVector3D& defaultScale)
+{
+	if (blocked)
+	{
+		aiMatrix4x4::Scaling(defaultScale, scalingTransform);
+	}
+	else
+	{
+		aiVector3D scale;
+		AnimationTransformHelper::calculateInterpolatedKeyFrameScale(scale, nodeAnimation, animationTime);
+		aiMatrix4x4::Scaling(scale, scalingTransform);
+	}
 }
 
 void AnimationTransformHelper::calculateInterpolatedKeyFrameTranslation(aiVector3D& translation, NodeAnimation& nodeAnimation, const double& animationTime)

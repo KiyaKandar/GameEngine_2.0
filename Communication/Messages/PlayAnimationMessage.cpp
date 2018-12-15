@@ -63,11 +63,37 @@ AnimationParams PlayAnimationMessage::paramsBuilder(Node * node)
 		{
 			params.loop = childNode->value == "True" ? true : false;
 		}
-		else if (childNode->nodeType == "nodeToBlock")
+		else if (childNode->nodeType == "nodeTransformBlocker")
 		{
-			params.nodeToBlock = childNode->value;
+			params.transformBlocker = blockerBuilder(childNode);
 		}
 	}
 
 	return params;
+}
+
+NodeTransformBlocker PlayAnimationMessage::blockerBuilder(Node * node)
+{
+	NodeTransformBlocker transformBlocker;
+
+	for (Node* childNode : node->children)
+	{
+		if (childNode->nodeType == "nodeName")
+		{
+			transformBlocker.nodeName = childNode->value;
+		}
+		else if (childNode->nodeType == "rotation")
+		{
+			transformBlocker.blockedComponents.blockRotation = childNode->value == "True" ? true : false;
+		}
+		else if (childNode->nodeType == "translation")
+		{
+			transformBlocker.blockedComponents.blockTranslation = childNode->value == "True" ? true : false;
+		}
+		else if (childNode->nodeType == "scale")
+		{
+			transformBlocker.blockedComponents.blockScale = childNode->value == "True" ? true : false;
+		}
+	}
+	return transformBlocker;
 }

@@ -1,18 +1,11 @@
 #pragma once
 
 #include "../Communication/Message.h"
+#include "../../Graphics/Animation/AnimationComponents.h"
 
 #include <string>
 
 struct Node;
-
-struct AnimationParams
-{
-	std::string animationName = "";
-	double lerpToTime = 0.0;
-	bool loop = false;
-	std::string nodeToBlock = "";
-};
 
 class PlayAnimationMessage : public Message
 {
@@ -29,5 +22,6 @@ public:
 
 private:
 	static AnimationParams paramsBuilder(Node* node);
+	static NodeTransformBlocker blockerBuilder(Node* node);
 };
 

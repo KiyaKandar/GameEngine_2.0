@@ -6,25 +6,10 @@
 #include <unordered_map>
 
 class Mesh;
+struct MeshNode;
 struct BoneInfo;
 struct NodeAnimation;
-
-struct MeshNode
-{
-	const aiNode* node;
-	MeshNode* children;
-	MeshNode* parent;
-	std::string nodeName;
-
-	bool mapsToBone = false;
-	bool hasAnimation = false;
-	bool blockedTransform = false;
-
-	bool canTransform() const
-	{
-		return hasAnimation && !blockedTransform;
-	}
-};
+struct BlockedTransformComponents;
 
 class Animation
 {
@@ -43,7 +28,7 @@ public:
 
 	void setDurationToLerpFromPreviousAniamtion(const double& lerpDuration);
 	void setLooping(const bool looping);
-	void blockTransformationForNode(const std::string& nodeName);
+	void blockTransformationForNode(const std::string& nodeName, const BlockedTransformComponents& blockedComponents);
 
 	bool finishedPlaying() const;
 	bool meshIsOnScreen() const;
@@ -58,7 +43,7 @@ private:
 	void constructNodeList(const aiNode* rootNode);
 	void addNode(MeshNode& parentNode, const aiNode* node, const int childIndex);
 
-	void searchChildNodeToBlockNodeTransformation(MeshNode& childNode, const std::string& nodeName);
+	void searchChildNodeToBlockNodeTransformation(MeshNode& childNode, const std::string& nodeName, const BlockedTransformComponents& blockedComponents);
 	void unblockChildNodeTransformation(MeshNode& childNode);
 
 	void transformBones(std::vector<aiMatrix4x4>& transforms);
@@ -78,7 +63,7 @@ private:
 	std::vector<BoneInfo>* boneInfo;
 	std::unordered_map<std::string, NodeAnimation*> nodeAnimations;
 	std::vector<NodeAnimation*> nodeAnimationRawStorage;
-	MeshNode rootNode;
+	MeshNode* rootNode;
 
 	const aiMatrix4x4 globalInverseTransform;
 	const aiAnimation* animation;

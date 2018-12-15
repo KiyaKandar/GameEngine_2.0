@@ -6,11 +6,13 @@
 
 struct NodeAnimation;
 struct DecomposedMatrix;
+struct BlockedTransformComponents;
 
 class AnimationTransformHelper
 {
 public:
-	static void calculateNodeTransformation(aiMatrix4x4& transformation, NodeAnimation& nodeAnimation, const double& animationTime);
+	static void calculateNodeTransformation(aiMatrix4x4& transformation, NodeAnimation& nodeAnimation, 
+		const double& animationTime, const BlockedTransformComponents& blockedComponents);
 
 	static void interpolateVector3(aiVector3D& result, const aiVector3D& start, const aiVector3D& end, const float factor);
 	static void interpolateDecomposedMatrices(DecomposedMatrix& result, const DecomposedMatrix& start, 
@@ -18,6 +20,13 @@ public:
 	static void composeMatrix(aiMatrix4x4& result, const DecomposedMatrix& decomposedMatrix);
 
 private:
+	static void calculateKeyFrameTranslation(aiMatrix4x4& translationTransform, NodeAnimation& nodeAnimation,
+		const double& animationTime, const bool blocked, const aiVector3D& defaultTranslation);
+	static void calculateKeyFrameRotation(aiMatrix4x4& rotationTransform, NodeAnimation& nodeAnimation,
+		const double& animationTime, const bool blocked, const aiQuaternion& defaultRotation);
+	static void calculateKeyFrameScale(aiMatrix4x4& scalingTransform, NodeAnimation& nodeAnimation,
+		const double& animationTime, const bool blocked, const aiVector3D& defaultScale);
+
 	static void calculateInterpolatedKeyFrameTranslation(aiVector3D& translation, NodeAnimation& nodeAnimation, const double& animationTime);
 	static void calculateInterpolatedKeyFrameRotation(aiQuaternion& rotation, NodeAnimation& nodeAnimation, const double& animationTime);
 	static void calculateInterpolatedKeyFrameScale(aiVector3D& scale, NodeAnimation& nodeAnimation, const double& animationTime);

@@ -6,6 +6,18 @@
 
 #include <map>
 
+struct MeshNode
+{
+	const aiNode* node;
+	MeshNode* children;
+	MeshNode* parent;
+	std::string nodeName;
+
+	bool mapsToBone = false;
+	bool hasAnimation = false;
+	BlockedTransformComponents blockedComponents;
+};
+
 Animation::Animation(const std::string& animationName, const std::string& gameObjectId, Mesh* mesh, const aiAnimation* animation,
 	const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo)
 	: animationId(Hash{}(animationName))
@@ -15,6 +27,8 @@ Animation::Animation(const std::string& animationName, const std::string& gameOb
 {
 	this->animation = animation;
 	boneInfo = initialBoneInfo;
+
+	this->rootNode = new MeshNode();
 
 	reset();
 
@@ -36,6 +50,7 @@ Animation::~Animation()
 
 	nodeAnimationRawStorage.clear();
 	nodeAnimations.clear();
+	delete rootNode;
 }
 
 bool Animation::hasGameObjectIdMatchOnly(const size_t& gameObjectId) const
@@ -94,15 +109,15 @@ void Animation::setLooping(const bool looping)
 	this->looping = looping;
 }
 
-void Animation::blockTransformationForNode(const std::string& nodeName)
+void Animation::blockTransformationForNode(const std::string& nodeName, const BlockedTransformComponents& blockedComponents)
 {
 	if (nodeName != "")
 	{
-		searchChildNodeToBlockNodeTransformation(rootNode, nodeName);
+		searchChildNodeToBlockNodeTransformation(*rootNode, nodeName, blockedComponents);
 	}
 	else
 	{
-		unblockChildNodeTransformation(rootNode);
+		unblockChildNodeTransformation(*rootNode);
 	}
 }
 
@@ -154,16 +169,16 @@ void Animation::ResetAllKeyFrameIndexes()
 
 void Animation::constructNodeList(const aiNode* aiRootNode)
 {
-	rootNode.node = aiRootNode;
-	rootNode.nodeName = string(aiRootNode->mName.data);
-	rootNode.hasAnimation = nodeAnimations.find(aiRootNode->mName.data) != nodeAnimations.end();
-	rootNode.mapsToBone = mesh->boneMapping.find(aiRootNode->mName.data) != mesh->boneMapping.end();
-	rootNode.children = new MeshNode[aiRootNode->mNumChildren];
-	rootNode.parent = nullptr;
+	rootNode->node = aiRootNode;
+	rootNode->nodeName = string(aiRootNode->mName.data);
+	rootNode->hasAnimation = nodeAnimations.find(aiRootNode->mName.data) != nodeAnimations.end();
+	rootNode->mapsToBone = mesh->boneMapping.find(aiRootNode->mName.data) != mesh->boneMapping.end();
+	rootNode->children = new MeshNode[aiRootNode->mNumChildren];
+	rootNode->parent = nullptr;
 
 	for (unsigned int i = 0; i < aiRootNode->mNumChildren; i++)
 	{
-		addNode(rootNode, aiRootNode->mChildren[i], i);
+		addNode(*rootNode, aiRootNode->mChildren[i], i);
 	}
 }
 
@@ -185,7 +200,7 @@ void Animation::addNode(MeshNode& parentNode, const aiNode* node, const int chil
 	}
 }
 
-void Animation::searchChildNodeToBlockNodeTransformation(MeshNode& childNode, const std::string& nodeName)
+void Animation::searchChildNodeToBlockNodeTransformation(MeshNode& childNode, const std::string& nodeName, const BlockedTransformComponents& blockedComponents)
 {
 	if (childNode.nodeName == nodeName)
 	{
@@ -193,7 +208,7 @@ void Animation::searchChildNodeToBlockNodeTransformation(MeshNode& childNode, co
 
 		while (currentNode)
 		{
-			currentNode->blockedTransform = true;
+			currentNode->blockedComponents = blockedComponents;
 			currentNode = currentNode->parent;
 		}
 	}
@@ -201,18 +216,18 @@ void Animation::searchChildNodeToBlockNodeTransformation(MeshNode& childNode, co
 	{
 		for (int i = 0; i < childNode.node->mNumChildren; ++i)
 		{
-			searchChildNodeToBlockNodeTransformation(childNode.children[i], nodeName);
+			searchChildNodeToBlockNodeTransformation(childNode.children[i], nodeName, blockedComponents);
 		}
 	}
 }
 
 void Animation::unblockChildNodeTransformation(MeshNode& childNode)
 {
-	childNode.blockedTransform = false;
+	childNode.blockedComponents = BlockedTransformComponents();
 
 	for (int i = 0; i < childNode.node->mNumChildren; ++i)
 	{
-		unblockChildNodeTransformation(rootNode.children[i]);
+		unblockChildNodeTransformation(childNode.children[i]);
 	}
 }
 
@@ -224,7 +239,7 @@ void Animation::transformBones(std::vector<aiMatrix4x4>& transforms)
 	validateLastKeyFrames(timeInTicks);
 	animationTime = fmod(timeInTicks, animation->mDuration);
 
-	updateNode(rootNode, aiMatrix4x4());
+	updateNode(*rootNode, aiMatrix4x4());
 
 	for (unsigned int i = 0; i < mesh->numBones; i++)
 	{
@@ -236,10 +251,11 @@ void Animation::updateNode(const MeshNode& meshNode, const aiMatrix4x4& parentTr
 {
 	aiMatrix4x4 nodeTransformation(meshNode.node->mTransformation);
 
-	if (meshNode.canTransform())
+	if (meshNode.hasAnimation)
 	{
 		NodeAnimation* nodeAnimation = nodeAnimations.at(meshNode.nodeName);
-		AnimationTransformHelper::calculateNodeTransformation(nodeTransformation, *nodeAnimation, animationTime);
+		AnimationTransformHelper::calculateNodeTransformation(nodeTransformation, *nodeAnimation, 
+			animationTime, meshNode.blockedComponents);
 	}
 
 	aiMatrix4x4 childTransformation = parentTransform * nodeTransformation;

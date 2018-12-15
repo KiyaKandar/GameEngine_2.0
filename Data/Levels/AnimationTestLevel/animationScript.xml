@@ -55,7 +55,12 @@
         <lerpToTime>0.3</lerpToTime>
         <loop>False</loop>
         <animationName>../Data/Resources/Meshes/Hellknight/roar1.md5anim</animationName>
-        <nodeToBlock>origin</nodeToBlock>
+        <nodeTransformBlocker>
+          <nodeName>origin</nodeName>
+          <rotation>False</rotation>
+          <translation>True</translation>
+          <scale>False</scale>
+        </nodeTransformBlocker>
       </animation>
       <transition>
         <lerpToTime>0.3</lerpToTime>
@@ -71,7 +76,12 @@
         <lerpToTime>0.3</lerpToTime>
         <loop>False</loop>
         <animationName>../Data/Resources/Meshes/Hellknight/walk2.md5anim</animationName>
-        <nodeToBlock>origin</nodeToBlock>
+        <nodeTransformBlocker>
+          <nodeName>origin</nodeName>
+          <rotation>False</rotation>
+          <translation>True</translation>
+          <scale>False</scale>
+        </nodeTransformBlocker>
       </animation>
       <transition>
         <lerpToTime>0.3</lerpToTime>

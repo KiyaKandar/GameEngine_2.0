@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../../Communication/Messages/PlayAnimationMessage.h"
-
 #include <matrix4x4.h>
 #include <anim.h>
 #include <vector3.h>
@@ -12,6 +10,32 @@
 typedef std::hash<std::string> Hash;
 
 class Animation;
+
+struct BlockedTransformComponents
+{
+	bool blockRotation = false;
+	bool blockTranslation = false;
+	bool blockScale = false;
+
+	bool hasAnyComponentBlocked() const
+	{
+		return blockRotation || blockTranslation || blockScale;
+	}
+};
+
+struct NodeTransformBlocker
+{
+	std::string nodeName;
+	BlockedTransformComponents blockedComponents;
+};
+
+struct AnimationParams
+{
+	std::string animationName = "";
+	double lerpToTime = 0.0;
+	bool loop = false;
+	NodeTransformBlocker transformBlocker;
+};
 
 struct BoneInfo
 {
