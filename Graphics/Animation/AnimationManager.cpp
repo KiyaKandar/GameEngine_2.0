@@ -89,7 +89,7 @@ void AnimationManager::updateActiveAnimationFrame(std::vector<ActiveAnimation>::
 
 	if (animationFinished)
 	{
-		CompleteActiveAnimation(animationIterator);
+		completeActiveAnimation(animationIterator);
 	}
 	else if (animationIterator->animation->meshIsOnScreen())
 	{
@@ -98,7 +98,7 @@ void AnimationManager::updateActiveAnimationFrame(std::vector<ActiveAnimation>::
 	}
 }
 
-void AnimationManager::CompleteActiveAnimation(std::vector<ActiveAnimation>::iterator & animationIterator)
+void AnimationManager::completeActiveAnimation(std::vector<ActiveAnimation>::iterator& animationIterator)
 {
 	if (animationIterator->hasTransition())
 	{
@@ -159,7 +159,8 @@ bool AnimationManager::removeActiveAnimation(const size_t& gameObjectId, const s
 	return false;
 }
 
-void AnimationManager::beginPlayingAnimation(const size_t& gameObjectId, const size_t& animationId, const AnimationParams& params, const QueuedAnimation& transition)
+void AnimationManager::beginPlayingAnimation(const size_t& gameObjectId, const size_t& animationId, 
+	const AnimationParams& params, const QueuedAnimation& transition)
 {
 	for (Animation* animation : animations)
 	{
@@ -169,6 +170,8 @@ void AnimationManager::beginPlayingAnimation(const size_t& gameObjectId, const s
 			animation->reset();
 			animation->setDurationToLerpFromPreviousAniamtion(params.lerpToTime);
 			animation->setLooping(params.loop);
+			animation->blockTransformationForNode(params.nodeToBlock);
+
 			break;
 		}
 	}

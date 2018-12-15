@@ -63,6 +63,10 @@ AnimationParams PlayAnimationMessage::paramsBuilder(Node * node)
 		{
 			params.loop = childNode->value == "True" ? true : false;
 		}
+		else if (childNode->nodeType == "nodeToBlock")
+		{
+			params.nodeToBlock = childNode->value;
+		}
 	}
 
 	return params;

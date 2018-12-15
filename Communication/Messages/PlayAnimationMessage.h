@@ -11,6 +11,7 @@ struct AnimationParams
 	std::string animationName = "";
 	double lerpToTime = 0.0;
 	bool loop = false;
+	std::string nodeToBlock = "";
 };
 
 class PlayAnimationMessage : public Message

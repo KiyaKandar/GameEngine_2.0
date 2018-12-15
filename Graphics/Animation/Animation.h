@@ -13,10 +13,17 @@ struct MeshNode
 {
 	const aiNode* node;
 	MeshNode* children;
+	MeshNode* parent;
 	std::string nodeName;
 
 	bool mapsToBone = false;
 	bool hasAnimation = false;
+	bool blockedTransform = false;
+
+	bool canTransform() const
+	{
+		return hasAnimation && !blockedTransform;
+	}
 };
 
 class Animation
@@ -36,6 +43,8 @@ public:
 
 	void setDurationToLerpFromPreviousAniamtion(const double& lerpDuration);
 	void setLooping(const bool looping);
+	void blockTransformationForNode(const std::string& nodeName);
+
 	bool finishedPlaying() const;
 	bool meshIsOnScreen() const;
 
@@ -48,6 +57,9 @@ private:
 
 	void constructNodeList(const aiNode* rootNode);
 	void addNode(MeshNode& parentNode, const aiNode* node, const int childIndex);
+
+	void searchChildNodeToBlockNodeTransformation(MeshNode& childNode, const std::string& nodeName);
+	void unblockChildNodeTransformation(MeshNode& childNode);
 
 	void transformBones(std::vector<aiMatrix4x4>& transforms);
 	void updateNode(const MeshNode& node, const aiMatrix4x4& parentTransform);

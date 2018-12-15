@@ -94,6 +94,18 @@ void Animation::setLooping(const bool looping)
 	this->looping = looping;
 }
 
+void Animation::blockTransformationForNode(const std::string& nodeName)
+{
+	if (nodeName != "")
+	{
+		searchChildNodeToBlockNodeTransformation(rootNode, nodeName);
+	}
+	else
+	{
+		unblockChildNodeTransformation(rootNode);
+	}
+}
+
 bool Animation::finishedPlaying() const
 {
 	if (looping)
@@ -147,6 +159,7 @@ void Animation::constructNodeList(const aiNode* aiRootNode)
 	rootNode.hasAnimation = nodeAnimations.find(aiRootNode->mName.data) != nodeAnimations.end();
 	rootNode.mapsToBone = mesh->boneMapping.find(aiRootNode->mName.data) != mesh->boneMapping.end();
 	rootNode.children = new MeshNode[aiRootNode->mNumChildren];
+	rootNode.parent = nullptr;
 
 	for (unsigned int i = 0; i < aiRootNode->mNumChildren; i++)
 	{
@@ -162,12 +175,44 @@ void Animation::addNode(MeshNode& parentNode, const aiNode* node, const int chil
 	childNode.hasAnimation = nodeAnimations.find(node->mName.data) != nodeAnimations.end();
 	childNode.mapsToBone = mesh->boneMapping.find(node->mName.data) != mesh->boneMapping.end();
 	childNode.children = new MeshNode[node->mNumChildren];
+	childNode.parent = &parentNode;
 
 	parentNode.children[childIndex] = childNode;
 
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
 		addNode(parentNode.children[childIndex], node->mChildren[i], i);
+	}
+}
+
+void Animation::searchChildNodeToBlockNodeTransformation(MeshNode& childNode, const std::string& nodeName)
+{
+	if (childNode.nodeName == nodeName)
+	{
+		MeshNode* currentNode = &childNode;
+
+		while (currentNode)
+		{
+			currentNode->blockedTransform = true;
+			currentNode = currentNode->parent;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < childNode.node->mNumChildren; ++i)
+		{
+			searchChildNodeToBlockNodeTransformation(childNode.children[i], nodeName);
+		}
+	}
+}
+
+void Animation::unblockChildNodeTransformation(MeshNode& childNode)
+{
+	childNode.blockedTransform = false;
+
+	for (int i = 0; i < childNode.node->mNumChildren; ++i)
+	{
+		unblockChildNodeTransformation(rootNode.children[i]);
 	}
 }
 
@@ -191,7 +236,7 @@ void Animation::updateNode(const MeshNode& meshNode, const aiMatrix4x4& parentTr
 {
 	aiMatrix4x4 nodeTransformation(meshNode.node->mTransformation);
 
-	if (meshNode.hasAnimation)
+	if (meshNode.canTransform())
 	{
 		NodeAnimation* nodeAnimation = nodeAnimations.at(meshNode.nodeName);
 		AnimationTransformHelper::calculateNodeTransformation(nodeTransformation, *nodeAnimation, animationTime);

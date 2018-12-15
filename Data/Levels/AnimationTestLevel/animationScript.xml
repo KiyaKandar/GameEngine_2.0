@@ -29,7 +29,7 @@
       <resource>hellknight1</resource>
       <animation>
         <lerpToTime>0.0</lerpToTime>
-        <loop>False</loop>
+        <loop>True</loop>
         <animationName>../Data/Resources/Meshes/Hellknight/idle.md5anim</animationName>
       </animation>
     </SendMessage>
@@ -39,7 +39,7 @@
       <resource>hellknight2</resource>
       <animation>
         <lerpToTime>0.0</lerpToTime>
-        <loop>False</loop>
+        <loop>True</loop>
         <animationName>../Data/Resources/Meshes/Hellknight/idle2.md5anim</animationName>
       </animation>
     </SendMessage>
@@ -54,7 +54,8 @@
       <animation>
         <lerpToTime>0.3</lerpToTime>
         <loop>False</loop>
-        <animationName>../Data/Resources/Meshes/Hellknight/idle1.md5anim</animationName>
+        <animationName>../Data/Resources/Meshes/Hellknight/roar1.md5anim</animationName>
+        <nodeToBlock>origin</nodeToBlock>
       </animation>
       <transition>
         <lerpToTime>0.3</lerpToTime>
@@ -69,7 +70,8 @@
       <animation>
         <lerpToTime>0.3</lerpToTime>
         <loop>False</loop>
-        <animationName>../Data/Resources/Meshes/Hellknight/attack2.md5anim</animationName>
+        <animationName>../Data/Resources/Meshes/Hellknight/walk2.md5anim</animationName>
+        <nodeToBlock>origin</nodeToBlock>
       </animation>
       <transition>
         <lerpToTime>0.3</lerpToTime>
