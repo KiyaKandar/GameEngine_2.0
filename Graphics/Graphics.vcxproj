@@ -157,6 +157,8 @@
     <ClInclude Include="Graphics Pipeline\Graphics Settings\PaintTrail.h" />
     <ClInclude Include="Graphics Pipeline\Graphics Settings\ScoreCounter.h" />
     <ClInclude Include="Shaders\ComputeShader.h" />
+    <ClInclude Include="Animation\Skeleton.h" />
+    <ClInclude Include="Animation\SkeletonDisplay.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Utility\Frustum.h" />
     <ClInclude Include="Graphics Pipeline\Graphics Settings\BasicGeometry.h" />
@@ -196,6 +198,8 @@
     <ClCompile Include="Meshes\TextMesh.cpp" />
     <ClCompile Include="Graphics Pipeline\Graphics Settings\ScoreCounter.cpp" />
     <ClCompile Include="Shaders\ComputeShader.cpp" />
+    <ClCompile Include="Animation\Skeleton.cpp" />
+    <ClCompile Include="Animation\SkeletonDisplay.cpp" />
     <ClCompile Include="Utility\Frustum.cpp" />
     <ClCompile Include="Graphics Pipeline\Graphics Settings\BasicGeometry.cpp" />
     <ClCompile Include="Graphics Pipeline\GraphicsPipeline.cpp" />

@@ -135,7 +135,7 @@ public:
 	const aiScene* meshScene;
 
 	aiMatrix4x4 globalInverseTransform;
-	map<string, unsigned  int> boneMapping; // maps a bone name to its index
+	map<std::string, unsigned  int> boneMapping; // maps a bone name to its index
 	unsigned int numBones = 0;
 
 	int hasTexture = 0;

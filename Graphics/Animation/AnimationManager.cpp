@@ -227,7 +227,7 @@ void AnimationManager::beginPlayingAnimation(const size_t& gameObjectId, const s
 			animation->reset();
 			animation->setDurationToLerpFromPreviousAniamtion(params.lerpToTime);
 			animation->setLooping(params.loop);
-			animation->blockTransformationForNode(params.transformBlocker.nodeName, params.transformBlocker.blockedComponents);
+			animation->setBlockedSkeletonNodeTransforms(params.transformBlocker.nodeName, params.transformBlocker.blockedComponents);
 
 			break;
 		}
