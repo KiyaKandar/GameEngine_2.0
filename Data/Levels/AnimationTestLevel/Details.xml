@@ -27,7 +27,7 @@
 			<Z>1</Z>
 		</Scale>
 </GameObjects>
-  <GameObjects name="hellknight2" >
+  <GameObjects name="player0" >
     <SceneNode>
       <Mesh>HellknightMesh</Mesh>
       <Colour>
@@ -67,7 +67,7 @@
     </SceneNode>
     <Enabled>True</Enabled>
     <Position>
-      <X>100</X>
+      <X>600</X>
       <Y>40</Y>
       <Z>0</Z>
     </Position>
@@ -78,7 +78,7 @@
       <W>000</W>
     </Rotation>
     <Scale>
-      <X>180</X>
+      <X>1200</X>
       <Y>10</Y>
       <Z>180</Z>
     </Scale>

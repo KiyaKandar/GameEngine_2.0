@@ -41,12 +41,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>..\Utilities\$(Configuration);$(SolutionDir)$(Configuration);..\GLEW\lib;..\ENET\lib;..\SOIL\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
-    <IncludePath>..\Tuts_Network_Server\;..\Utilities\;$(SolutionDir);..\GLEW\include;..\SOIL\include;..\ENET\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>..\Utilities\$(Configuration);$(SolutionDir)$(Configuration);..\GLEW\lib;..\ENET\lib;..\SOIL\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;..\ASSIMP\lib\Debug</LibraryPath>
+    <IncludePath>..\Tuts_Network_Server\;..\Utilities\;$(SolutionDir);..\GLEW\include;..\SOIL\include;..\ENET\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);..\ASSIMP\include\assimp</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LibraryPath>..\Utilities\$(Configuration);$(SolutionDir)$(Configuration);..\GLEW\lib;..\ENET\lib;..\SOIL\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
-    <IncludePath>..\Tuts_Network_Server\;..\Utilities\;$(SolutionDir);..\GLEW\include;..\SOIL\include;..\ENET\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>..\Utilities\$(Configuration);$(SolutionDir)$(Configuration);..\GLEW\lib;..\ENET\lib;..\SOIL\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;..\ASSIMP\lib\Release</LibraryPath>
+    <IncludePath>..\Tuts_Network_Server\;..\Utilities\;$(SolutionDir);..\GLEW\include;..\SOIL\include;..\ENET\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);..\ASSIMP\include\assimp</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -57,6 +57,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -74,6 +75,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

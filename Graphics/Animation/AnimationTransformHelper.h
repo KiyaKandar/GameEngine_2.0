@@ -13,11 +13,14 @@ class AnimationTransformHelper
 public:
 	static void calculateNodeTransformation(aiMatrix4x4& transformation, NodeAnimation& nodeAnimation, 
 		const double& animationTime, const BlockedTransformComponents& blockedComponents);
+	static void removeBlockedComponentsFromTransform(aiMatrix4x4& result, const aiMatrix4x4& originalTransformation,
+		const BlockedTransformComponents& blockedComponents);
 
 	static void interpolateVector3(aiVector3D& result, const aiVector3D& start, const aiVector3D& end, const float factor);
 	static void interpolateDecomposedMatrices(DecomposedMatrix& result, const DecomposedMatrix& start, 
 		const DecomposedMatrix& end, const float factor);
-	static void composeMatrix(aiMatrix4x4& result, const DecomposedMatrix& decomposedMatrix);
+	static void composeMatrix(aiMatrix4x4& result, const DecomposedMatrix& decomposedMatrix, 
+		const BlockedTransformComponents& blockedComponents = defaultBlockedComponents);
 
 private:
 	static void calculateKeyFrameTranslation(aiMatrix4x4& translationTransform, NodeAnimation& nodeAnimation,
@@ -34,4 +37,6 @@ private:
 	static unsigned int findPositionKeyFrameIndex(NodeAnimation& nodeAnimation, const double& animationTime);
 	static unsigned int findRotationKeyFrameIndex(NodeAnimation& nodeAnimation, const double& animationTime);
 	static unsigned int findScalingKeyFrameIndex(NodeAnimation& nodeAnimation, const double& animationTime);
+
+	static BlockedTransformComponents defaultBlockedComponents;
 };

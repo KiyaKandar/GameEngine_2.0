@@ -19,6 +19,8 @@ _-_-_-_-_-_-_-""  ""
 #include <iterator>
 #include <sstream>
 
+#include <vector3.h>
+
 class NCLVector3	{
 public:
 	NCLVector3(void) {
@@ -36,6 +38,13 @@ public:
 		this->x = v.x;
 		this->y = v.y;
 		this->z = 1;
+	}
+
+	NCLVector3(const aiVector3D& v)
+	{
+		this->x = v.x;
+		this->y = v.y;
+		this->z = v.z;
 	}
 
 	~NCLVector3(void){}

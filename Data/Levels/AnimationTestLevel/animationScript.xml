@@ -2,7 +2,7 @@
   <OnStart>
     <SendMessage type="TEXT">
       <destination>Gameplay</destination>
-      <text>setmaxtime false</text>
+      <text>setmaxtime true 120</text>
     </SendMessage>
 
     <SendMessage type="TEXT">
@@ -14,13 +14,13 @@
       <destination>RenderingSystem</destination>
       <resource>hellknight1</resource>
       <translation>
-        <x>100</x>
-        <y>0</y>
-        <z>300</z>
+        <x>360</x>
+        <y>80</y>
+        <z>80</z>
       </translation>
       <rotation>
         <pitch>0</pitch>
-        <yaw>25</yaw>
+        <yaw>90</yaw>
       </rotation>
     </SendMessage>
 
@@ -36,17 +36,35 @@
     
     <SendMessage type="PLAY_ANIMATION">
       <destination>AnimationManager</destination>
-      <resource>hellknight2</resource>
+      <resource>player0</resource>
       <animation>
         <lerpToTime>0.0</lerpToTime>
         <loop>True</loop>
         <animationName>../Data/Resources/Meshes/Hellknight/idle2.md5anim</animationName>
       </animation>
     </SendMessage>
+    
   </OnStart>
 
+  <!--
+  <Timed interval = "0.01">
+    <SendMessage type="MOVE_CAMERA_RELATIVE_TO_GAMEOBJECT">
+      <destination>AnimationManager</destination>
+      <resource>player0</resource>
+      <translation>
+        <x>200</x>
+        <y>80</y>
+        <z>0</z>
+      </translation>
+      <rotation>
+        <pitch>0</pitch>
+        <yaw>90</yaw>
+      </rotation>
+    </SendMessage>
+  </Timed>
+  -->
   
-  <Timed interval =" 10.0">
+  <Timed interval = "10.0">
     
     <SendMessage type="PLAY_ANIMATION">
       <destination>AnimationManager</destination>
@@ -55,12 +73,11 @@
         <lerpToTime>0.3</lerpToTime>
         <loop>False</loop>
         <animationName>../Data/Resources/Meshes/Hellknight/roar1.md5anim</animationName>
-        <nodeTransformBlocker>
+        <gameObjectTransform>
           <nodeName>origin</nodeName>
-          <rotation>False</rotation>
-          <translation>True</translation>
-          <scale>False</scale>
-        </nodeTransformBlocker>
+          <rotation>True</rotation>
+          <scale>True</scale>
+        </gameObjectTransform>
       </animation>
       <transition>
         <lerpToTime>0.3</lerpToTime>
@@ -68,20 +85,19 @@
         <animationName>../Data/Resources/Meshes/Hellknight/idle.md5anim</animationName>
       </transition>
     </SendMessage>
-    
+
     <SendMessage type="PLAY_ANIMATION">
       <destination>AnimationManager</destination>
-      <resource>hellknight2</resource>
+      <resource>player0</resource>
       <animation>
         <lerpToTime>0.3</lerpToTime>
         <loop>False</loop>
         <animationName>../Data/Resources/Meshes/Hellknight/walk2.md5anim</animationName>
-        <nodeTransformBlocker>
+        <gameObjectTransform>
           <nodeName>origin</nodeName>
-          <rotation>False</rotation>
-          <translation>True</translation>
-          <scale>False</scale>
-        </nodeTransformBlocker>
+          <rotation>True</rotation>
+          <scale>True</scale>
+        </gameObjectTransform>
       </animation>
       <transition>
         <lerpToTime>0.3</lerpToTime>
@@ -89,7 +105,7 @@
         <animationName>../Data/Resources/Meshes/Hellknight/idle2.md5anim</animationName>
       </transition>
     </SendMessage>
-    
+
   </Timed>
 
 </GameplayScript>

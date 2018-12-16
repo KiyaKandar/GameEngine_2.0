@@ -23,7 +23,7 @@ struct BlockedTransformComponents
 	}
 };
 
-struct NodeTransformBlocker
+struct NodeTransformSpecifier
 {
 	std::string nodeName;
 	BlockedTransformComponents blockedComponents;
@@ -34,7 +34,8 @@ struct AnimationParams
 	std::string animationName = "";
 	double lerpToTime = 0.0;
 	bool loop = false;
-	NodeTransformBlocker transformBlocker;
+	NodeTransformSpecifier transformBlocker;
+	NodeTransformSpecifier gameObjectTransformSpecifier;
 };
 
 struct BoneInfo
@@ -90,10 +91,12 @@ struct QueuedAnimation
 
 struct ActiveAnimation
 {
-	ActiveAnimation(Animation* animation, const QueuedAnimation& transition)
+	ActiveAnimation(Animation* animation, const QueuedAnimation& transition,
+		NodeTransformSpecifier gameObjectTransformSpecifier)
 	{
 		this->animation = animation;
 		this->transition = transition;
+		this->gameObjectTransformSpecifier = gameObjectTransformSpecifier;
 	}
 
 	bool hasTransition()
@@ -102,5 +105,7 @@ struct ActiveAnimation
 	}
 
 	Animation* animation;
+	NodeTransformSpecifier gameObjectTransformSpecifier;
+
 	QueuedAnimation transition;
 };

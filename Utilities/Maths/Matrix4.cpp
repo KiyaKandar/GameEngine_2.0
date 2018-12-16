@@ -1,11 +1,22 @@
 #include "Matrix4.h"
 
+#include <vector3.h>
+#include <quaternion.h>
+
 NCLMatrix4::NCLMatrix4(void)	{
 	toIdentity();
 }
 
 NCLMatrix4::NCLMatrix4( float elements[16] )	{
 	memcpy(this->values,elements,16*sizeof(float));
+}
+
+NCLMatrix4::NCLMatrix4(const aiMatrix4x4& matrix)
+{
+	values[0]	= matrix.a1; values[4]	= matrix.a2; values[8]	= matrix.a3; values[12]	= matrix.a4;
+	values[1]	= matrix.b1; values[5]	= matrix.b2; values[9]	= matrix.b3; values[13]	= matrix.b4;
+	values[2]	= matrix.c1; values[6]	= matrix.c2; values[10] = matrix.c3; values[14] = matrix.c4;
+	values[3]	= matrix.d1; values[7] = matrix.d2; values[11] = matrix.d3; values[15] = matrix.d4;
 }
 
 NCLMatrix4::~NCLMatrix4(void)	{
@@ -24,6 +35,14 @@ void NCLMatrix4::toZero()	{
 	for(int i = 0; i < 16; i++)	{
 		values[i] = 0.0f;
 	}
+}
+
+void NCLMatrix4::toASSIMPaiMatrix(aiMatrix4x4& matrix)
+{
+	matrix.a1 = values[0]; matrix.a2 = values[4]; matrix.a3 = values[8]; matrix.a4 = values[12];
+	matrix.b1 = values[1]; matrix.b2 = values[5]; matrix.b3 = values[9]; matrix.b4 = values[13];
+	matrix.c1 = values[2]; matrix.c2 = values[6]; matrix.c3 = values[10]; matrix.c4 = values[14];
+	matrix.d1 = values[3]; matrix.d2 = values[7]; matrix.d3 = values[11]; matrix.d4 = values[15];
 }
 
 NCLVector3 NCLMatrix4::getPositionVector() const{

@@ -4,6 +4,8 @@
 
 #include <anim.h>
 
+BlockedTransformComponents AnimationTransformHelper::defaultBlockedComponents = BlockedTransformComponents();
+
 void AnimationTransformHelper::calculateNodeTransformation(aiMatrix4x4& transformation, NodeAnimation& nodeAnimation, 
 	const double& animationTime, const BlockedTransformComponents& blockedComponents)
 {
@@ -25,6 +27,15 @@ void AnimationTransformHelper::calculateNodeTransformation(aiMatrix4x4& transfor
 	transformation = translationTransform * rotationTransform * scalingTransform;
 }
 
+void AnimationTransformHelper::removeBlockedComponentsFromTransform(aiMatrix4x4& result, const aiMatrix4x4& originalTransformation, 
+	const BlockedTransformComponents& blockedComponents)
+{
+	DecomposedMatrix transformationComponents;
+	originalTransformation.Decompose(transformationComponents.scale, transformationComponents.rotation, transformationComponents.translation);
+
+	composeMatrix(result, transformationComponents, blockedComponents);
+}
+
 void AnimationTransformHelper::interpolateVector3(aiVector3D& result, const aiVector3D& start, const aiVector3D& end, const float factor)
 {
 	aiVector3D delta = end - start;
@@ -40,17 +51,29 @@ void AnimationTransformHelper::interpolateDecomposedMatrices(DecomposedMatrix& r
 	result.rotation = result.rotation.Normalize();
 }
 
-void AnimationTransformHelper::composeMatrix(aiMatrix4x4& result, const DecomposedMatrix& decomposedMatrix)
+void AnimationTransformHelper::composeMatrix(aiMatrix4x4& result, const DecomposedMatrix& decomposedMatrix,
+	const BlockedTransformComponents& blockedComponents)
 {
-	aiMatrix4x4 lerpTranslationTransform;
-	aiMatrix4x4::Translation(decomposedMatrix.translation, lerpTranslationTransform);
+	aiMatrix4x4 translationTransform;
+	aiMatrix4x4 rotationTransform;
+	aiMatrix4x4 scalingTransform;
 
-	aiMatrix4x4 lerpRotationTransform = aiMatrix4x4(decomposedMatrix.rotation.GetMatrix());
+	if (!blockedComponents.blockTranslation)
+	{
+		aiMatrix4x4::Translation(decomposedMatrix.translation, translationTransform);
+	}
 
-	aiMatrix4x4 lerpScalingTransform;
-	aiMatrix4x4::Scaling(decomposedMatrix.scale, lerpScalingTransform);
+	if (!blockedComponents.blockRotation)
+	{
+		rotationTransform = aiMatrix4x4(decomposedMatrix.rotation.GetMatrix());
+	}
 
-	result = lerpTranslationTransform * lerpRotationTransform * lerpScalingTransform;
+	if (!blockedComponents.blockScale)
+	{
+		aiMatrix4x4::Scaling(decomposedMatrix.scale, scalingTransform);
+	}
+
+	result = translationTransform * rotationTransform * scalingTransform;
 }
 
 void AnimationTransformHelper::calculateKeyFrameTranslation(aiMatrix4x4& translationTransform, NodeAnimation& nodeAnimation,

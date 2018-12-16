@@ -20,12 +20,15 @@ _-_-_-_-_-_-_-""  ""
 #include "Vector4.h"
 #include "MathsCommon.h"
 
+#include <matrix4x4.h>
+
 class NCLVector3;
 
 class NCLMatrix4	{
 public:
 	NCLMatrix4(void);
 	NCLMatrix4(float elements[16]);
+	NCLMatrix4(const aiMatrix4x4& matrix);
 	~NCLMatrix4(void);
 
 	float	values[16];
@@ -34,6 +37,8 @@ public:
 	void	toZero();
 	//Sets matrix to identity matrix (1.0 down the diagonal)
 	void	toIdentity();
+
+	void toASSIMPaiMatrix(aiMatrix4x4& m);
 
 	//Gets the OpenGL position vector (floats 12,13, and 14)
 	NCLVector3 getPositionVector() const;

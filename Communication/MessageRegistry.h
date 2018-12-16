@@ -135,8 +135,8 @@ public: \
 	REGISTER_MESSAGE(RotateGameObjectMessage)\
 	REGISTER_MESSAGE(ToggleGameObjectMessage)\
 	REGISTER_MESSAGE(PlayAnimationMessage)\
-	REGISTER_MESSAGE(DebugLineMessage)\
-	REGISTER_MESSAGE(DebugSphereMessage)
+	REGISTER_THREAD_SAFE_MESSAGE(DebugLineMessage)\
+	REGISTER_THREAD_SAFE_MESSAGE(DebugSphereMessage)
 
 #define REGISTER_PURE_VIRTUAL_SERVICE()\
 	REGISTER_PURE_VIRTUAL_MESSAGE_SERVICE(Message)\

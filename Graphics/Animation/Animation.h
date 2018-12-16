@@ -10,6 +10,7 @@ struct MeshNode;
 struct BoneInfo;
 struct NodeAnimation;
 struct BlockedTransformComponents;
+struct NodeTransformSpecifier;
 
 class Animation
 {
@@ -18,17 +19,23 @@ public:
 		const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo);
 	~Animation();
 
+	const std::string getOwningGameObjectName() const;
 	bool hasGameObjectIdMatchOnly(const size_t& gameObjectId) const;
 	bool hasAnimationIdMatchOnly(const size_t& animationId) const;
 	bool hasIdMatch(const size_t& gameObjectId, const size_t& animationId) const;
 	bool isLooping() const;
+
+	void updateSceneNodeTransformFromNode(const NodeTransformSpecifier& nodeSpecifier);
+	aiMatrix4x4 getCurrentTransformOfSceneNodeTransformerNode(const std::string nodeName);
+	void debugDrawSkeleton(const aiMatrix4x4& parentTransform);
+
+	void blockTransformationForNode(const std::string& nodeName, const BlockedTransformComponents& blockedComponents);
 
 	void incrementTimer(const double& deltaTime);
 	void reset();
 
 	void setDurationToLerpFromPreviousAniamtion(const double& lerpDuration);
 	void setLooping(const bool looping);
-	void blockTransformationForNode(const std::string& nodeName, const BlockedTransformComponents& blockedComponents);
 
 	bool finishedPlaying() const;
 	bool meshIsOnScreen() const;
@@ -43,13 +50,20 @@ private:
 	void constructNodeList(const aiNode* rootNode);
 	void addNode(MeshNode& parentNode, const aiNode* node, const int childIndex);
 
-	void searchChildNodeToBlockNodeTransformation(MeshNode& childNode, const std::string& nodeName, const BlockedTransformComponents& blockedComponents);
+	void getChildNodeByName(MeshNode*& foundNode, MeshNode& childNode, const std::string& nodeName);
+	void searchChildNodeToBlockNodeTransformation(const std::string& nodeName, const BlockedTransformComponents& blockedComponents);
 	void unblockChildNodeTransformation(MeshNode& childNode);
 
 	void transformBones(std::vector<aiMatrix4x4>& transforms);
-	void updateNode(const MeshNode& node, const aiMatrix4x4& parentTransform);
+	void updateNode(MeshNode& node, const aiMatrix4x4& parentTransform);
 	void updateBoneTransformation(const MeshNode& meshNode, const aiMatrix4x4& childTransformation);
 	void interpolateNodeToFirstKeyFrameFromCurrentBoneTransform(const aiMatrix4x4& currentNodeTransform, const unsigned int boneIndex);
+
+	void recursivelyDrawBones(const MeshNode& parentNode, const aiMatrix4x4& parentTransform);
+
+	void RemoveSceneNodeTransformFromBones(const MeshNode& node, const aiMatrix4x4& sceneNodeTransform, 
+		const BlockedTransformComponents& blockedComponents);
+	void updateRawTransform(const MeshNode& node, aiMatrix4x4 transform);
 
 	const Mesh* mesh;
 	double elapsedTime;
@@ -69,5 +83,6 @@ private:
 	const aiAnimation* animation;
 	const size_t owningGameObjectId;
 	const size_t animationId;
+	const std::string owningGameObjectName;
 };
 

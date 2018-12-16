@@ -22,6 +22,6 @@ public:
 
 private:
 	static AnimationParams paramsBuilder(Node* node);
-	static NodeTransformBlocker blockerBuilder(Node* node);
+	static NodeTransformSpecifier blockerBuilder(Node* node);
 };
 

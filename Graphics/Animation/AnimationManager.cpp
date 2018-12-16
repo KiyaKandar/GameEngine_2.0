@@ -3,20 +3,31 @@
 #include "Animation.h"
 #include "AnimationComponents.h"
 #include "../Utilities/GameTimer.h"
+#include "../Utility/Camera.h"
 #include "../../Communication/Messages/PlayAnimationMessage.h"
 #include "../../Resource Management/Database/Database.h"
+#include "../../Input/Devices/Keyboard.h"
 
 using namespace std::placeholders;
 
-AnimationManager::AnimationManager(Database* database)
+const float DEGREES90_TO_RADIANS = 1.5708f;
+vector<aiMatrix4x4> AnimationManager::emptyTransforms = vector<aiMatrix4x4>(100, aiMatrix4x4());
+
+AnimationManager::AnimationManager(Database* database, Keyboard* keyboard, Camera* camera)
 	: Subsystem("AnimationManager")
 {
 	this->database = database;
+	this->keyboard = keyboard;
+	this->camera = camera;
+	drawActiveSkeletons = false;
 
-	incomingMessages = MessageProcessor(std::vector<MessageType> { MessageType::PLAY_ANIMATION },
+	incomingMessages = MessageProcessor(std::vector<MessageType> { MessageType::PLAY_ANIMATION, MessageType::MOVE_CAMERA_RELATIVE_TO_GAMEOBJECT },
 		DeliverySystem::getPostman()->getDeliveryPoint("AnimationManager"));
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::PLAY_ANIMATION, std::bind(&AnimationManager::queueAnimationPlay, this, _1));
+	incomingMessages.addActionToExecuteOnMessage(MessageType::PLAY_ANIMATION,
+		std::bind(&AnimationManager::queueAnimationPlay, this, _1));
+	incomingMessages.addActionToExecuteOnMessage(MessageType::MOVE_CAMERA_RELATIVE_TO_GAMEOBJECT, 
+		std::bind(&AnimationManager::moveCameraWithAnimatedGameObject, this, _1));
 }
 
 AnimationManager::~AnimationManager()
@@ -28,11 +39,13 @@ void AnimationManager::updateNextFrame(const float& deltaTime)
 {
 	timer->beginTimedSection();
 
+	toggleDrawingSkeletonIfKeyTriggered();
 	activateAnimationsInPlayQueue();
 
 	std::vector<ActiveAnimation>::iterator animationIterator;
 	for (animationIterator = activeAnimations.begin(); animationIterator != activeAnimations.end();)
 	{
+		drawActiveSkeleton(animationIterator);
 		updateActiveAnimationFrame(animationIterator, deltaTime);
 	}
 
@@ -46,6 +59,27 @@ void AnimationManager::queueAnimationPlay(Message* message)
 	QueuedAnimation newAnimation(playMessage->gameObjectID, playMessage->animationParams);
 	newAnimation.transitionParams = playMessage->transition;
 	animationsToAddtoPlayQueue.push_back(newAnimation);
+}
+
+void AnimationManager::moveCameraWithAnimatedGameObject(Message* message)
+{
+	MoveCameraRelativeToGameObjectMessage* movementMessage = static_cast<MoveCameraRelativeToGameObjectMessage*>(message);
+	GameObject* gameObject = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(movementMessage->resourceName));
+	const size_t id = Hash{}(movementMessage->resourceName);
+
+	NCLMatrix4 currentAnimTransform;
+	for (const ActiveAnimation& activeAnimation : activeAnimations)
+	{
+		if (activeAnimation.animation->hasGameObjectIdMatchOnly(id))
+		{
+			currentAnimTransform = activeAnimation.animation->getCurrentTransformOfSceneNodeTransformerNode(activeAnimation.gameObjectTransformSpecifier.nodeName);
+			break;
+		}
+	}
+
+	camera->setPosition(gameObject->getSceneNode()->GetTransform().getPositionVector() + currentAnimTransform.getPositionVector() + movementMessage->translation);
+	camera->setPitch(movementMessage->pitch);
+	camera->setYaw(movementMessage->yaw);
 }
 
 void AnimationManager::addAnimation(const std::string& animationName, const std::string& gameObjectId, Mesh* mesh, const aiAnimation* animation, 
@@ -69,14 +103,21 @@ void AnimationManager::clearAnimations()
 void AnimationManager::readAnimationStateForSceneNode(const std::string& gameObjectId, std::vector<aiMatrix4x4>& animationStates) const
 {
 	const size_t id = Hash{}(gameObjectId);
+	bool foundAnimation = false;
 
 	for (const ActiveAnimation& activeAnimation : activeAnimations)
 	{
 		if (activeAnimation.animation->hasGameObjectIdMatchOnly(id))
 		{
 			activeAnimation.animation->readAnimationState(animationStates);
+			foundAnimation = true;
 			break;
 		}
+	}
+
+	if (!foundAnimation)
+	{
+		animationStates = emptyTransforms;
 	}
 }
 
@@ -84,11 +125,9 @@ void AnimationManager::updateActiveAnimationFrame(std::vector<ActiveAnimation>::
 {
 	animationIterator->animation->incrementTimer((double)deltaTime);
 
-	const bool animationFinished = animationIterator->animation->finishedPlaying()
-		&& (animationIterator->hasTransition() || !animationIterator->animation->isLooping());
-
-	if (animationFinished)
+	if (animationIterator->animation->finishedPlaying())
 	{
+		TransformGameObject(animationIterator);
 		completeActiveAnimation(animationIterator);
 	}
 	else if (animationIterator->animation->meshIsOnScreen())
@@ -98,11 +137,25 @@ void AnimationManager::updateActiveAnimationFrame(std::vector<ActiveAnimation>::
 	}
 }
 
+void AnimationManager::TransformGameObject(std::vector<ActiveAnimation>::iterator& animationIterator)
+{
+	if (animationIterator->gameObjectTransformSpecifier.nodeName != "")
+	{
+		animationIterator->animation->updateSceneNodeTransformFromNode(animationIterator->gameObjectTransformSpecifier);
+
+		if (!animationIterator->animation->isLooping())
+		{
+			animationIterator->gameObjectTransformSpecifier.nodeName = "";
+		}
+	}
+}
+
 void AnimationManager::completeActiveAnimation(std::vector<ActiveAnimation>::iterator& animationIterator)
 {
 	if (animationIterator->hasTransition())
 	{
 		QueuedAnimation transitionalAnimation(animationIterator->transition.gameObjectId, animationIterator->transition.params);
+		transitionalAnimation.params.transformBlocker = animationIterator->transition.params.transformBlocker;
 		animationsToAddtoPlayQueue.push_back(transitionalAnimation);
 		++animationIterator;
 	}
@@ -110,6 +163,10 @@ void AnimationManager::completeActiveAnimation(std::vector<ActiveAnimation>::ite
 	{
 		animationIterator->animation->reset();
 		animationIterator = activeAnimations.erase(animationIterator);
+	}
+	else
+	{
+		animationIterator->animation->reset();
 	}
 }
 
@@ -166,7 +223,7 @@ void AnimationManager::beginPlayingAnimation(const size_t& gameObjectId, const s
 	{
 		if (animation->hasIdMatch(gameObjectId, animationId))
 		{
-			activeAnimations.push_back(ActiveAnimation(animation, transition));
+			activeAnimations.push_back(ActiveAnimation(animation, transition, params.gameObjectTransformSpecifier));
 			animation->reset();
 			animation->setDurationToLerpFromPreviousAniamtion(params.lerpToTime);
 			animation->setLooping(params.loop);
@@ -174,5 +231,31 @@ void AnimationManager::beginPlayingAnimation(const size_t& gameObjectId, const s
 
 			break;
 		}
+	}
+}
+
+void AnimationManager::toggleDrawingSkeletonIfKeyTriggered()
+{
+	if (keyboard->keyTriggered(KEYBOARD_F9))
+	{
+		drawActiveSkeletons = !drawActiveSkeletons;
+	}
+}
+
+void AnimationManager::drawActiveSkeleton(std::vector<ActiveAnimation>::iterator& animationIterator)
+{
+	if (drawActiveSkeletons)
+	{
+		Resource* parentResource = database->getTable("GameObjects")->getResource(animationIterator->animation->getOwningGameObjectName());
+		GameObject* parentGameObject = static_cast<GameObject*>(parentResource);
+
+		aiMatrix4x4 parentTransform;
+		aiMatrix4x4 rotation;
+
+		parentGameObject->getSceneNode()->GetWorldTransform().toASSIMPaiMatrix(parentTransform);
+		aiMatrix4x4::RotationX(DEGREES90_TO_RADIANS, rotation);
+
+		parentTransform = parentTransform * rotation;
+		animationIterator->animation->debugDrawSkeleton(parentTransform);
 	}
 }

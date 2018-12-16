@@ -67,14 +67,18 @@ AnimationParams PlayAnimationMessage::paramsBuilder(Node * node)
 		{
 			params.transformBlocker = blockerBuilder(childNode);
 		}
+		else if (childNode->nodeType == "gameObjectTransform")
+		{
+			params.gameObjectTransformSpecifier = blockerBuilder(childNode);
+		}
 	}
 
 	return params;
 }
 
-NodeTransformBlocker PlayAnimationMessage::blockerBuilder(Node * node)
+NodeTransformSpecifier PlayAnimationMessage::blockerBuilder(Node * node)
 {
-	NodeTransformBlocker transformBlocker;
+	NodeTransformSpecifier transformBlocker;
 
 	for (Node* childNode : node->children)
 	{
