@@ -28,7 +28,7 @@ public:
 			outgoingMessages.pop();
 
 			sentMessages.push(message);
-			messageStorage->sendMessage(&sentMessages.back());
+			messageStorage->deliverMessage(&sentMessages.back());
 		}
 	}
 
