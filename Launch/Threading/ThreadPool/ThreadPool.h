@@ -47,9 +47,11 @@ public:
 		return result;
 	}
 
+	static int getLocalThreadId();
+
 private:
 	void initialiseWorkers(int numWorkers);
-	void continiouslyPollForNewTask();
+	void spoolThreadToPollNewTasks(const int threadId);
 	void joinAllThreads();
 
 	std::atomic_bool running;
