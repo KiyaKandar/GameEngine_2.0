@@ -9,6 +9,8 @@
 #include "Rendering/RenderingSystem.h"
 
 class LetterBox;
+class Profiler;
+class GameTimer;
 
 class System
 {
@@ -23,12 +25,15 @@ public:
 
 	void removeSubsystem(std::string subsystemName);
 
+	void RegisterWithProfiler(Profiler* profiler);
+
 	std::vector<Subsystem*> getSubSystems();
 
 private:
 	MessageStorage messageBuffers;
 	LetterBox* letterBox;
 	ThreadPool* threadPool;
+	GameTimer* timer;
 
 	std::vector<Subsystem*> subsystems;
 	std::vector<Subsystem*> concurrentSubsystems;

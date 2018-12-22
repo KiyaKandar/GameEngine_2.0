@@ -48,6 +48,7 @@ public:
 	}
 
 	static int getLocalThreadId();
+	static unsigned int getTotalNumberOfThreads();
 
 private:
 	void initialiseWorkers(int numWorkers);

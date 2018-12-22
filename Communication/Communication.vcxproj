@@ -118,6 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="LockFreeThreadSafeMessageBuffer.h" />
     <ClInclude Include="MessageRegistry.h" />
     <ClInclude Include="Messages\DebugSphereMessage.h" />
     <ClInclude Include="Messages\DebugLineMessage.h" />

@@ -14,7 +14,7 @@ public:
 	void removeMessageBuffer(const std::string& bufferName);
 	std::queue<Message*>* getMessageBufferByName(const std::string& bufferName);
 
-	void sendMessage(Message* message);
+	void deliverMessage(Message* message);
 	void clearMessageStorage();
 
 private:

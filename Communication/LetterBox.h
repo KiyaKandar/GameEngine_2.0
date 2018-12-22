@@ -18,7 +18,7 @@
 #include "Messages/UpdatePositionMessage.h"
 #include "Messages/ToggleGameObjectMessage.h"
 #include "Messages/PlayAnimationMessage.h"
-#include "ThreadSafeMessageBuffer.h"
+#include "LockFreeThreadSafeMessageBuffer.h"
 #include "Messages/DebugLineMessage.h"
 
 class LetterBox : public MessagingService

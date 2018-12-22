@@ -27,6 +27,15 @@ public: \
 		_##MESSAGE_TYPE.insertOutgoingMessage(message); \
 	}
 
+#define REGISTER_LOCK_FREE_THREAD_SAFE_MESSAGE(MESSAGE_TYPE) \
+private: \
+	LockFreeThreadSafeMessageBuffer<##MESSAGE_TYPE> _##MESSAGE_TYPE; \
+public: \
+	void insertMessage(##MESSAGE_TYPE message) \
+	{ \
+		_##MESSAGE_TYPE.insertOutgoingMessage(message); \
+	}
+
 #define REGISTER_PURE_VIRTUAL_MESSAGE_SERVICE(MESSAGE_TYPE)\
 	virtual void insertMessage(##MESSAGE_TYPE message) = 0;
 
@@ -126,7 +135,7 @@ public: \
 	REGISTER_MESSAGE(PreparePaintSurfaceMessage)\
 	REGISTER_MESSAGE(PaintTrailForGameObjectMessage)\
 	REGISTER_MESSAGE(UpdatePositionMessage)\
-	REGISTER_THREAD_SAFE_MESSAGE(TextMeshMessage)\
+	REGISTER_LOCK_FREE_THREAD_SAFE_MESSAGE(TextMeshMessage)\
 	REGISTER_MESSAGE(AddScoreHolderMessage)\
 	REGISTER_MESSAGE(ApplyImpulseMessage)\
 	REGISTER_MESSAGE(AbsoluteTransformMessage)\
@@ -135,8 +144,8 @@ public: \
 	REGISTER_MESSAGE(RotateGameObjectMessage)\
 	REGISTER_MESSAGE(ToggleGameObjectMessage)\
 	REGISTER_MESSAGE(PlayAnimationMessage)\
-	REGISTER_THREAD_SAFE_MESSAGE(DebugLineMessage)\
-	REGISTER_THREAD_SAFE_MESSAGE(DebugSphereMessage)
+	REGISTER_LOCK_FREE_THREAD_SAFE_MESSAGE(DebugLineMessage)\
+	REGISTER_LOCK_FREE_THREAD_SAFE_MESSAGE(DebugSphereMessage)
 
 #define REGISTER_PURE_VIRTUAL_SERVICE()\
 	REGISTER_PURE_VIRTUAL_MESSAGE_SERVICE(Message)\

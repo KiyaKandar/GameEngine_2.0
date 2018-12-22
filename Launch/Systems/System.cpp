@@ -2,6 +2,7 @@
 
 #include "Communication/DeliverySystem.h"
 #include "Communication/LetterBox.h"
+#include "../Profiler/Profiler.h"
 #include <iostream>
 #include <ctime>
 
@@ -10,6 +11,7 @@ System::System(ThreadPool* threadPool)
 	letterBox = new LetterBox();
 	DeliverySystem::provide(letterBox);
 	this->threadPool = threadPool;
+	timer = new GameTimer();
 }
 
 System::~System()
@@ -18,16 +20,22 @@ System::~System()
 	{
 		delete (subsystem);
 	}
-	subsystems.clear();
+
 	for (Subsystem* subsystem : concurrentSubsystems)
 	{
 		delete (subsystem);
 	}
+
+	subsystems.clear();
 	concurrentSubsystems.clear();
+
+	delete timer;
 }
 
 void System::updateNextSystemFrame(const float& deltaTime)
 {
+	timer->beginTimedSection();
+
 	vector<TaskFuture<void>> updates;
 
 	for (Subsystem* subsystem : concurrentSubsystems)
@@ -47,6 +55,8 @@ void System::updateNextSystemFrame(const float& deltaTime)
 	{
 		task.Complete();
 	}
+
+	timer->endTimedSection();
 }
 
 void System::addSubsystem(Subsystem* subsystem)
@@ -85,6 +95,12 @@ void System::removeSubsystem(std::string subsystemName)
 		}
 	}
 }
+
+void System::RegisterWithProfiler(Profiler* profiler)
+{
+	profiler->addSubsystemTimer("System Frame", timer);
+}
+
 std::vector<Subsystem*> System::getSubSystems()
 {
 	vector<Subsystem*> allSubsystems;

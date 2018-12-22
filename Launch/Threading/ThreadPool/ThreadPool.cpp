@@ -1,6 +1,7 @@
 #include "ThreadPool.h"
 
 thread_local int LOCAL_THREAD_ID = 0;
+extern unsigned int TOTAL_NUM_THREADS = 0;
 
 ThreadPool::ThreadPool(const int numThreads)
 {
@@ -11,13 +12,21 @@ ThreadPool::ThreadPool(const int numThreads)
 ThreadPool::ThreadPool()
 {
 	running = true;
-	const int numThreads = std::thread::hardware_concurrency() - 1;
+
+	TOTAL_NUM_THREADS = std::thread::hardware_concurrency();
+	const int numThreads = TOTAL_NUM_THREADS - 1;
+
 	initialiseWorkers(numThreads);
 }
 
 int ThreadPool::getLocalThreadId()
 {
 	return LOCAL_THREAD_ID;
+}
+
+unsigned int ThreadPool::getTotalNumberOfThreads()
+{
+	return TOTAL_NUM_THREADS;
 }
 
 void ThreadPool::initialiseWorkers(int numWorkers)

@@ -20,7 +20,7 @@ void MessageStorage::removeMessageBuffer(const std::string& bufferName)
 	activeMessageBuffers.erase(bufferName);
 }
 
-void MessageStorage::sendMessage(Message* message)
+void MessageStorage::deliverMessage(Message* message)
 {
 	activeMessageBuffers.at(message->getDestination()).push(message);
 }

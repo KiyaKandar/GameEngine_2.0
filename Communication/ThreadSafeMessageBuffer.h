@@ -2,6 +2,10 @@
 #include "MessageBuffer.h"
 
 template <class MessageType>
+/*
+	THIS IS DEPRECATED NOW.
+	USE LockFreeThreadSafeMessageBufer INSTEAD.
+*/
 class ThreadSafeMessageBuffer
 {
 public:

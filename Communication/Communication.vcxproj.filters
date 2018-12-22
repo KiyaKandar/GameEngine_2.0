@@ -117,6 +117,9 @@
     <ClInclude Include="MessageRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LockFreeThreadSafeMessageBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Message.cpp">
