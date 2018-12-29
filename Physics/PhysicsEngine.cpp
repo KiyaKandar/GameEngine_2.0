@@ -9,6 +9,8 @@
 #include "../Communication/Messages/AbsoluteTransformMessage.h"
 #include "../Input/Devices/Keyboard.h"
 
+#pragma optimize("", off)
+
 PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem("Physics")
 {
 	this->database = database;
@@ -277,7 +279,7 @@ void PhysicsEngine::updateNextFrame(const float& deltaTime)
 
 	const int maxUpdatesPerFrame = 5;
 	
-	updateRealTimeAccum += deltaTime;
+	updateRealTimeAccum += deltaTime * 0.001f;
 	for (int i = 0; (updateRealTimeAccum >= updateTimestep) && i < maxUpdatesPerFrame; ++i)
 	{
 		updateRealTimeAccum -= updateTimestep;
