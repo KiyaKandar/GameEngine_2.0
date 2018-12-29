@@ -8,6 +8,7 @@ struct Node;
 class AbsoluteTransformMessage : public Message
 {
 public:
+	AbsoluteTransformMessage() : Message("", DUMMY_TYPE) {}
 	AbsoluteTransformMessage(const std::string& destinationName, const std::string& resourceName,
 		NCLMatrix4 transform);
 	~AbsoluteTransformMessage();

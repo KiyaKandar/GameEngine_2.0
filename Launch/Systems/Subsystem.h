@@ -13,7 +13,7 @@ public:
 
 	virtual ~Subsystem();
 
-	void updateSubsystem(const float& deltaTime = 0.0f);
+	void updateSubsystem();
 	virtual void updateNextFrame(const float& deltaTime = 0.0f) = 0;
 
 	void processMessages();
@@ -25,5 +25,6 @@ protected:
 	std::string subsystemName;
 	MessageProcessor incomingMessages;
 	GameTimer* timer;
+	GameTimer* frameTimer;
 };
 

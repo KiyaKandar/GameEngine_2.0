@@ -10,6 +10,7 @@ struct Node;
 class PlayAnimationMessage : public Message
 {
 public:
+	PlayAnimationMessage() : Message("", DUMMY_TYPE) {}
 	PlayAnimationMessage(const std::string& desinationName, const std::string& gameObjectID,
 		AnimationParams animationParams, AnimationParams transition);
 	~PlayAnimationMessage();

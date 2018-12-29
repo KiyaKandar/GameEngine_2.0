@@ -215,7 +215,7 @@ void Hull::GetMinMaxVerticesInAxis(const NCLVector3& local_axis, int* out_min_ve
 	if (out_max_vert) *out_max_vert = maxVertex;
 }
 
-void Hull::DebugDraw(const NCLMatrix4& transform)
+void Hull::DebugDraw(std::vector<DebugLineMessage>& messages, const NCLMatrix4& transform)
 {
 	//Draw all Hull Polygons
 	for (HullFace& face : m_vFaces)
@@ -237,6 +237,6 @@ void Hull::DebugDraw(const NCLMatrix4& transform)
 
 	for (HullEdge& edge : m_vEdges)
 	{
-		DeliverySystem::getPostman()->insertMessage(DebugLineMessage("RenderingSystem", transform * m_vVertices[edge._vStart]._pos, transform * m_vVertices[edge._vEnd]._pos, NCLVector3(0.5, 0.5, 1)));
+		messages.push_back(DebugLineMessage("RenderingSystem", transform * m_vVertices[edge._vStart]._pos, transform * m_vVertices[edge._vEnd]._pos, NCLVector3(0.5, 0.5, 1)));
 	}
 }

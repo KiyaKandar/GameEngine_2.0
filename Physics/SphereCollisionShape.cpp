@@ -1,7 +1,8 @@
 #include "SphereCollisionShape.h"
 #include "PhysicsNode.h"
 
-
+#include "../Communication/Messages/DebugLineMessage.h"
+#include "../Communication/Messages/DebugSphereMessage.h"
 
 SphereCollisionShape::SphereCollisionShape()
 {
@@ -18,9 +19,9 @@ SphereCollisionShape::~SphereCollisionShape()
 {
 }
 
-void SphereCollisionShape::debugDraw()
+void SphereCollisionShape::debugDraw(std::vector<DebugLineMessage>& lineMessages, std::vector<DebugSphereMessage>& sphereMessages)
 {
-	DeliverySystem::getPostman()->insertMessage(DebugSphereMessage("RenderingSystem", parent()->getPosition(), radius, NCLVector3(1, 0, 0)));
+	sphereMessages.push_back(DebugSphereMessage("RenderingSystem", parent()->getPosition(), radius, NCLVector3(1, 0, 0)));
 }
 
 NCLMatrix3 SphereCollisionShape::buildInverseInertia(float invMass) const

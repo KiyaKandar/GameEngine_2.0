@@ -40,7 +40,7 @@ public:
 
 	std::vector<BParea> getBpAreas() { return bpAreas; };
 
-	void DebugDraw();
+	void DebugDraw(std::vector<DebugLineMessage>& messages);
 
 protected:
 	int maxNodes = 10;

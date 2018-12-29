@@ -6,6 +6,7 @@
 class DebugLineMessage : public Message
 {
 public:
+	DebugLineMessage() : Message("", DUMMY_TYPE) {}
 	DebugLineMessage(const std::string &destinationName, NCLVector3 from,
 		NCLVector3 to, NCLVector3 colour);
 	~DebugLineMessage();

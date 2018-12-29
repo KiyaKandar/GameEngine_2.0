@@ -7,6 +7,7 @@ struct Node;
 class PaintTrailForGameObjectMessage : public Message
 {
 public:
+	PaintTrailForGameObjectMessage() : Message("", DUMMY_TYPE) {}
 	PaintTrailForGameObjectMessage(const std::string& desinationName, 
 		const std::string& resourceName);
 	~PaintTrailForGameObjectMessage();

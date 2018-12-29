@@ -9,6 +9,7 @@ struct Node;
 class RotateGameObjectMessage : public Message
 {
 public:
+	RotateGameObjectMessage() : Message("", DUMMY_TYPE) {}
 	RotateGameObjectMessage(const std::string& desinationName, std::string gameObjectID,
 		NCLVector4 rotation, bool relative = false);
 	~RotateGameObjectMessage();

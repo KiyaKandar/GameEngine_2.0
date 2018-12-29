@@ -35,6 +35,8 @@ public:
 		playersActions.clear();
 	}
 
+	bool* b;
+
 private:
 	Player* getExistingPlayer(Player* player, int existingID);
 	void wipeStoredPlayers();

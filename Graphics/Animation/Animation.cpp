@@ -16,11 +16,15 @@ Animation::Animation(const std::string& animationName, const std::string& gameOb
 	this->animation = animation;
 
 	skeleton = new Skeleton(animation, rootNode, mesh, initialBoneInfo, &mesh->boneMapping, globalInverseTransform);
+	debugSkeletonDisplay = new SkeletonDisplay();
+
 	reset();
 }
 
 Animation::~Animation()
 {
+	delete skeleton;
+	delete debugSkeletonDisplay;
 }
 
 const std::string Animation::getOwningGameObjectName() const
@@ -80,7 +84,7 @@ aiMatrix4x4 Animation::getCurrentTransformOfSceneNodeTransformerNode(const std::
 
 void Animation::debugDrawSkeleton(const aiMatrix4x4& parentTransform)
 {
-	SkeletonDisplay::drawSkeletonBone(*skeleton->getRootNode(), parentTransform);
+	debugSkeletonDisplay->drawSkeleton(*skeleton->getRootNode(), parentTransform);
 }
 
 void Animation::setBlockedSkeletonNodeTransforms(const std::string& nodeName, const BlockedTransformComponents& blockedComponents)

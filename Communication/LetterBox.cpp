@@ -1,6 +1,8 @@
 #include "LetterBox.h"
 #include "DeliverySystem.h"
 
+INITIALISE_GLOBAL_TRACKED_SENDERS(LetterBox)
+
 LetterBox::LetterBox()
 {
 	messageStorage = new MessageStorage();
@@ -16,7 +18,7 @@ void LetterBox::addDeliveryPoint(const std::string& bufferName)
 	messageStorage->addMessageBuffer(bufferName);
 }
 
-std::queue<Message*>* LetterBox::getDeliveryPoint(const std::string& bufferName)
+MessageDeliveryBuffer* LetterBox::getDeliveryPoint(const std::string& bufferName)
 {
 	return messageStorage->getMessageBufferByName(bufferName);
 }

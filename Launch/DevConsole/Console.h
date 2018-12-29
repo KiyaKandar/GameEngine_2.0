@@ -1,10 +1,11 @@
 #pragma once
 
 #include "../Systems/Subsystem.h"
+#include "../../Input/Devices/Keyboard.h"
+#include "../../Communication/MessageSenders/TrackedMessageSender.h"
 
 class Mouse;
 class Camera;
-class Keyboard;
 
 class Console : public Subsystem
 {
@@ -42,5 +43,16 @@ private:
 
 	std::deque<std::string> previousInputs;
 	std::unordered_map<int, std::string> keyMapping;
+
+	TrackedMessageSender<TextMeshMessage> consoleViewMessage;
+
+	SinglePressKeyListener f7Listener;
+	SinglePressKeyListener returnListener;
+	SinglePressKeyListener capitalListener;
+	SinglePressKeyListener upListener;
+	SinglePressKeyListener downListener;
+	SinglePressKeyListener backListener;
+
+	std::vector<SinglePressKeyListener> keyListeners;
 };
 

@@ -18,7 +18,9 @@ public:
 	System(ThreadPool* threadPool);
 	~System();
 
-	void updateNextSystemFrame(const float& deltaTime);
+	void updateNextSystemFrame();
+	void StartConcurrentSubsystems();
+	void SynchroniseAndStopConcurrentSubsystems();
 
 	void addSubsystem(Subsystem* subsystem);
 	void addConcurrentSubsystem(Subsystem* subsystem);
@@ -37,5 +39,7 @@ private:
 
 	std::vector<Subsystem*> subsystems;
 	std::vector<Subsystem*> concurrentSubsystems;
+	vector<TaskFuture<void>> updates;
+	bool running;
 };
 

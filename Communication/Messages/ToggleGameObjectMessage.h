@@ -9,6 +9,7 @@ struct Node;
 class ToggleGameObjectMessage : public Message
 {
 public:
+	ToggleGameObjectMessage() : Message("", DUMMY_TYPE) {}
 	ToggleGameObjectMessage(const std::string& destinationName, std::string gameObjectID,
 		bool isEnabled);
 	~ToggleGameObjectMessage();

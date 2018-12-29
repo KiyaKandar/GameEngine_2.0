@@ -1,8 +1,6 @@
 #include "SendMessageActionBuilder.h"
 
-#include "DeliverySystem.h"
 #include "Messages/TextMessage.h"
-#include "../Resource Management/XMLParser.h"
 
 #include <iterator>
 #include <sstream>
@@ -10,6 +8,7 @@
 #include "Messages/MoveGameObjectMessage.h"
 #include "Messages/ScaleGameObjectMessage.h"
 #include "Messages/ToggleGameObjectMessage.h"
+#include "LetterBox.h"
 
 std::unordered_map<std::string, Builder>SendMessageActionBuilder::builders 
 	= std::unordered_map<std::string, Builder>();
@@ -52,172 +51,87 @@ void SendMessageActionBuilder::initialiseNodeBuilders()
 
 	builders.insert({ "RELATIVE_TRANSFORM" , [](Node* node)
 	{
-		RelativeTransformMessage message = RelativeTransformMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<RelativeTransformMessage>(node, &LetterBox::ADD_SENDER_RelativeTransformMessage);
 	} });
 
 	builders.insert({ "ABSOLUTE_TRANSFORM" , [](Node* node)
 	{
-		AbsoluteTransformMessage message = AbsoluteTransformMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<AbsoluteTransformMessage>(node, &LetterBox::ADD_SENDER_AbsoluteTransformMessage);
 	} });
 
 	builders.insert({ "MOVE_CAMERA_RELATIVE_TO_GAMEOBJECT" , [](Node* node)
 	{
-		MoveCameraRelativeToGameObjectMessage message = MoveCameraRelativeToGameObjectMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<MoveCameraRelativeToGameObjectMessage>(node, &LetterBox::ADD_SENDER_MoveCameraRelativeToGameObjectMessage);
 	} });
 
 	builders.insert({ "TOGGLE_GRAPHICS_MODULE" , [](Node* node)
 	{
-		ToggleGraphicsModuleMessage message = ToggleGraphicsModuleMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<ToggleGraphicsModuleMessage>(node, &LetterBox::ADD_SENDER_ToggleGraphicsModuleMessage);
 	} });
 
 	builders.insert({ "PREPARE_PAINT_SURFACE" , [](Node* node)
 	{
-		PreparePaintSurfaceMessage message = PreparePaintSurfaceMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<PreparePaintSurfaceMessage>(node, &LetterBox::ADD_SENDER_PreparePaintSurfaceMessage);
 	} });
 
 	builders.insert({ "PAINT_TRAIL_FOR_GAMEOBJECT" , [](Node* node)
 	{
-		PaintTrailForGameObjectMessage message = PaintTrailForGameObjectMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<PaintTrailForGameObjectMessage>(node, &LetterBox::ADD_SENDER_PaintTrailForGameObjectMessage);
 	} });
 
 	builders.insert({ "APPLY_IMPULSE" , [](Node* node)
 	{
-		ApplyImpulseMessage message = ApplyImpulseMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<ApplyImpulseMessage>(node, &LetterBox::ADD_SENDER_ApplyImpulseMessage);
 	} });
 
 	builders.insert({ "APPLY_FORCE" , [](Node* node)
 	{
-		ApplyForceMessage message = ApplyForceMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<ApplyForceMessage>(node, &LetterBox::ADD_SENDER_ApplyForceMessage);
 	} });
 
 	builders.insert({ "ADD_SCORE_HOLDER" , [](Node* node)
 	{
-		AddScoreHolderMessage message = AddScoreHolderMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<AddScoreHolderMessage>(node, &LetterBox::ADD_SENDER_AddScoreHolderMessage);
 	} });
 
 	builders.insert({ "MOVE_GAMEOBJECT" , [](Node* node)
 	{
-		MoveGameObjectMessage message = MoveGameObjectMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<MoveGameObjectMessage>(node, &LetterBox::ADD_SENDER_MoveGameObjectMessage);
 	} });
 
 	builders.insert({ "SCALE_GAMEOBJECT" , [](Node* node)
 	{
-		ScaleGameObjectMessage message = ScaleGameObjectMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<ScaleGameObjectMessage>(node, &LetterBox::ADD_SENDER_ScaleGameObjectMessage);
 	} });
 
 	builders.insert({ "ROTATE_GAMEOBJECT" , [](Node* node)
 	{
-		RotateGameObjectMessage message = RotateGameObjectMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<RotateGameObjectMessage>(node, &LetterBox::ADD_SENDER_RotateGameObjectMessage);
 	} });
 
 	builders.insert({ "TOGGLE_GAMEOBJECT" , [](Node* node)
 	{
-		ToggleGameObjectMessage message = ToggleGameObjectMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<ToggleGameObjectMessage>(node, &LetterBox::ADD_SENDER_ToggleGameObjectMessage);
 	} });
 
 	builders.insert({ "PLAY_ANIMATION" , [](Node* node)
 	{
-		PlayAnimationMessage message = PlayAnimationMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<PlayAnimationMessage>(node, &LetterBox::ADD_SENDER_PlayAnimationMessage);
 	} });
 
 	builders.insert({ "PLAY_SOUND" , [](Node* node)
 	{
-		PlaySoundMessage message = PlaySoundMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<PlaySoundMessage>(node, &LetterBox::ADD_SENDER_PlaySoundMessage);
 	} });
 
 	builders.insert({ "MOVING_SOUND" , [](Node* node)
 	{
-		PlayMovingSoundMessage message = PlayMovingSoundMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<PlayMovingSoundMessage>(node, &LetterBox::ADD_SENDER_PlayMovingSoundMessage);
 	} });
 
-	builders.insert({ "TEXT_MESH" , [](Node* node)
+	builders.insert({ "TEXT_MESH" , [](Node* node) -> Executable
 	{
-		TextMeshMessage message = TextMeshMessage::builder(node);
-
-		return [message = message]()
-		{
-			DeliverySystem::getPostman()->insertMessage(message);
-		};
+		return buildExecutable<TextMeshMessage>(node, &LetterBox::ADD_SENDER_TextMeshMessage);
 	} });
 }
 

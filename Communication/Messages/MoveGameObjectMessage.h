@@ -9,6 +9,7 @@ struct Node;
 class MoveGameObjectMessage : public Message
 {
 public:
+	MoveGameObjectMessage() : Message("", DUMMY_TYPE) {}
 	MoveGameObjectMessage(const std::string& desinationName, std::string gameObjectID,
 		NCLVector3 position);
 	~MoveGameObjectMessage();

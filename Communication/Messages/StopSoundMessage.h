@@ -7,6 +7,7 @@
 class StopSoundMessage : public Message
 {
 public:
+	StopSoundMessage() : Message("", DUMMY_TYPE) {}
 	StopSoundMessage(const std::string& desinationName, std::string soundNodeIdentifier);
 	~StopSoundMessage();
 

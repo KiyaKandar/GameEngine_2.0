@@ -9,6 +9,7 @@ struct Node;
 class ScaleGameObjectMessage : public Message
 {
 public:
+	ScaleGameObjectMessage() : Message("", DUMMY_TYPE) {}
 	ScaleGameObjectMessage(const std::string& desinationName, std::string gameObjectID,
 		NCLVector3 position);
 	~ScaleGameObjectMessage();

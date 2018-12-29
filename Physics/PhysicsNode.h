@@ -15,6 +15,9 @@
 #include "CollisionDetectionSAT.h"
 #include "../Launch/Networking/DeadReckoning.h"
 
+#include "../Communication/MessageSenders/TrackedMessageSender.h"
+#include "../Communication/Messages/CollisionMessage.h"
+
 #include <cmath>
 
 class PhysicsNode;
@@ -328,6 +331,8 @@ public:
 	NCLVector3 startAcceleration;
 
 	std::string collisionShapeType;
+
+	TrackedMessageSender<CollisionMessage> collisionMessageSender;
 
 private:
 	GameObject*				parent;

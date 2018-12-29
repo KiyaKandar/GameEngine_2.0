@@ -6,7 +6,6 @@
 #include "../Utility/Camera.h"
 #include "../../Communication/Messages/PlayAnimationMessage.h"
 #include "../../Resource Management/Database/Database.h"
-#include "../../Input/Devices/Keyboard.h"
 
 using namespace std::placeholders;
 
@@ -28,6 +27,8 @@ AnimationManager::AnimationManager(Database* database, Keyboard* keyboard, Camer
 		std::bind(&AnimationManager::queueAnimationPlay, this, _1));
 	incomingMessages.addActionToExecuteOnMessage(MessageType::MOVE_CAMERA_RELATIVE_TO_GAMEOBJECT, 
 		std::bind(&AnimationManager::moveCameraWithAnimatedGameObject, this, _1));
+
+	f9Listener = SinglePressKeyListener(KEYBOARD_F9, keyboard);
 }
 
 AnimationManager::~AnimationManager()
@@ -236,7 +237,7 @@ void AnimationManager::beginPlayingAnimation(const size_t& gameObjectId, const s
 
 void AnimationManager::toggleDrawingSkeletonIfKeyTriggered()
 {
-	if (keyboard->keyTriggered(KEYBOARD_F9))
+	if (f9Listener.keyPressed())
 	{
 		drawActiveSkeletons = !drawActiveSkeletons;
 	}

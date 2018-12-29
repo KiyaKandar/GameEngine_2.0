@@ -36,6 +36,7 @@ enum MessageType
 class Message
 {
 public:
+	Message() {}
 	Message(const std::string& destinationName, MessageType type);
 	
 	virtual ~Message() {}
@@ -70,6 +71,9 @@ public:
 	{
 		integerInformation.insert({ key, value });
 	}
+
+	bool processed = false;
+	bool* senderAvailable = nullptr;
 
 protected:
 	std::string destination;

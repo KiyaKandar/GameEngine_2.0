@@ -20,6 +20,7 @@
 #include "Messages/PlayAnimationMessage.h"
 #include "LockFreeThreadSafeMessageBuffer.h"
 #include "Messages/DebugLineMessage.h"
+#include "MessageSenders/TrackedMessageSender.h"
 
 class LetterBox : public MessagingService
 {
@@ -28,9 +29,10 @@ public:
 	virtual ~LetterBox();
 
 	void addDeliveryPoint(const std::string& bufferName) override;
-	std::queue<Message*>* getDeliveryPoint(const std::string& bufferName) override;
+	MessageDeliveryBuffer* getDeliveryPoint(const std::string& bufferName) override;
 
 	REGISTER_ALL_MESSAGES()
+	REGISTER_ALL_TRACKED_SENDERS()
 
 	void deliverAllMessages() override
 	{
@@ -45,6 +47,16 @@ public:
 	void cancelOutgoingMessages()
 	{
 		REGISTER_ALL_CANCEL()
+	}
+
+	void cancelDeliveredMessages()
+	{
+		messageStorage->clearMessageStorage();
+	}
+
+	void deleteAllTrackedSenders()
+	{
+		REGISTER_ALL_TRACKED_SENDERS_DELETION()
 	}
 
 private:

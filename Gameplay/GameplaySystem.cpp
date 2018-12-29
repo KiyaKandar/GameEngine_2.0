@@ -197,8 +197,12 @@ void GameplaySystem::updateGameplayWithTimeRemaining(const float& deltaTime)
 
 void GameplaySystem::updateGameOverScreen()
 {
-	DeliverySystem::getPostman()->insertMessage(TextMeshMessage("RenderingSystem", "GAME OVER!",
-		NCLVector3(-50, -50, 0), NCLVector3(50, 50, 50), NCLVector3(1, 0, 0), true, true));
+	if (gameOverMessageSender.readyToSendNextMessage())
+	{
+		gameOverMessageSender.setMessage(TextMeshMessage("RenderingSystem", "GAME OVER!",
+			NCLVector3(-50, -50, 0), NCLVector3(50, 50, 50), NCLVector3(1, 0, 0), true, true));
+		gameOverMessageSender.sendMessage();
+	}
 
 	int winningPlayerID = -1;
 	int minScore = 0;
@@ -212,8 +216,12 @@ void GameplaySystem::updateGameOverScreen()
 		}
 	}
 
-	DeliverySystem::getPostman()->insertMessage(TextMeshMessage("RenderingSystem", "Player" + std::to_string(winningPlayerID) + " wins!!! :)",
-		NCLVector3(-50, -100, 0), NCLVector3(20, 20, 20), NCLVector3(1, 1, 1), true, true));
+	if (winningPlayerMessageSender.readyToSendNextMessage())
+	{
+		winningPlayerMessageSender.setMessage(TextMeshMessage("RenderingSystem", "Player" + std::to_string(winningPlayerID) + " wins!!! :)",
+			NCLVector3(-50, -100, 0), NCLVector3(20, 20, 20), NCLVector3(1, 1, 1), true, true));
+		winningPlayerMessageSender.sendMessage();
+	}
 }
 
 void GameplaySystem::updateGameLogic(const float& deltaTime)
@@ -256,7 +264,12 @@ void GameplaySystem::updateGameTimer(const float& deltaTime)
 {
 	gameLogic.elapsedTime += (deltaTime * 0.001f);
 
-	DeliverySystem::getPostman()->insertMessage(TextMeshMessage("RenderingSystem", std::to_string((int)round(gameLogic.maxTime - gameLogic.elapsedTime)),
-		NCLVector3(-75, 310, 0), NCLVector3(30, 30, 30), NCLVector3(1, 0, 0), true, true));
+	if (timerMessageSender.readyToSendNextMessage())
+	{
+		timerMessageSender.setMessage(TextMeshMessage("RenderingSystem", std::to_string((int)round(gameLogic.maxTime - gameLogic.elapsedTime)),
+			NCLVector3(-75, 310, 0), NCLVector3(30, 30, 30), NCLVector3(1, 0, 0), true, true));
+
+		timerMessageSender.sendMessage();
+	}
 }
 

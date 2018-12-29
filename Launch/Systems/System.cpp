@@ -12,6 +12,7 @@ System::System(ThreadPool* threadPool)
 	DeliverySystem::provide(letterBox);
 	this->threadPool = threadPool;
 	timer = new GameTimer();
+	running = false;
 }
 
 System::~System()
@@ -32,31 +33,47 @@ System::~System()
 	delete timer;
 }
 
-void System::updateNextSystemFrame(const float& deltaTime)
+void System::updateNextSystemFrame()
 {
 	timer->beginTimedSection();
 
-	vector<TaskFuture<void>> updates;
+	for (Subsystem* subsystem : subsystems)
+	{
+		subsystem->updateSubsystem();
+	}
+
+	DeliverySystem::getPostman()->clearAllMessages();
+	DeliverySystem::getPostman()->deliverAllMessages();
+
+	timer->endTimedSection();
+}
+
+void System::StartConcurrentSubsystems()
+{
+	running = true;
 
 	for (Subsystem* subsystem : concurrentSubsystems)
 	{
-		updates.push_back(threadPool->submitJob([](float deltaTime, Subsystem* subsystem)
+		updates.push_back(threadPool->submitJob([](const bool* running, Subsystem* subsystem)
 		{
-			subsystem->updateSubsystem(deltaTime);
-		}, deltaTime, subsystem));
+			while (*running)
+			{
+				subsystem->updateSubsystem();
+				DeliverySystem::getPostman()->clearAllMessages();
+				DeliverySystem::getPostman()->deliverAllMessages();
+			}
+		}, &running, subsystem));
 	}
+}
 
-	for (Subsystem* subsystem : subsystems)
-	{
-		subsystem->updateSubsystem(deltaTime);
-	}
+void System::SynchroniseAndStopConcurrentSubsystems()
+{
+	running = false;
 
 	for (auto& task : updates)
 	{
 		task.Complete();
 	}
-
-	timer->endTimedSection();
 }
 
 void System::addSubsystem(Subsystem* subsystem)

@@ -1,8 +1,10 @@
 #include "MessageProcessor.h"
-#include "MessageStorage.h"
+
+#include "MessageDeliveryBuffer.h"
+#include "../Launch/Threading/ThreadPool/ThreadPool.h"
 
 MessageProcessor::MessageProcessor(std::vector<MessageType> typeOfMessagesToListenFor, 
-	std::queue<Message*>* subsystemBuffer)
+	MessageDeliveryBuffer* subsystemBuffer)
 {
 	subsystemMessageBuffer = subsystemBuffer;
 
@@ -24,15 +26,47 @@ void MessageProcessor::addActionToExecuteOnMessage(const MessageType& typeOfMess
 
 void MessageProcessor::processMessagesInBuffer()
 {
-	while (!subsystemMessageBuffer->empty())
-	{
-		Message* message = subsystemMessageBuffer->front();
+	std::vector<Message*> receivedMessages;
+	getReceivedMessagesFromDeliveryBuffer(receivedMessages);
 
-		for (Action action : *actionsToExecute.at(message->getMessageType()))
+	for (Message* message : receivedMessages)
+	{
+		processMessageByPerformingAssignedActions(message);
+	}
+	
+	receivedMessages.clear();
+}
+
+void MessageProcessor::getReceivedMessagesFromDeliveryBuffer(std::vector<Message*>& receivedMessages)
+{
+	unsigned int numberOfThreadSenders = ThreadPool::getTotalNumberOfThreads();
+
+	for (int threadId = 0; threadId < numberOfThreadSenders; ++threadId)
+	{
+		const unsigned int numberOfMessagesReceivedFromThread = subsystemMessageBuffer->count(threadId);
+
+		for (int messageNum = 0; messageNum < numberOfMessagesReceivedFromThread; ++messageNum)
 		{
-			action(message);
+			receivedMessages.push_back(subsystemMessageBuffer->read(threadId, messageNum));
 		}
 
-		subsystemMessageBuffer->pop();
+		subsystemMessageBuffer->clear(numberOfMessagesReceivedFromThread, threadId);
+	}
+}
+
+void MessageProcessor::processMessageByPerformingAssignedActions(Message * message)
+{
+	std::vector<Action>& actionsForMessageType = *actionsToExecute.at(message->getMessageType());
+
+	for (Action& action : actionsForMessageType)
+	{
+		action(message);
+	}
+
+	message->processed = true;
+
+	if (message->senderAvailable != nullptr)
+	{
+		*message->senderAvailable = true;
 	}
 }

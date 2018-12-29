@@ -140,10 +140,18 @@ void ScoreCounter::displayScores()
 
 		if (PaintGameActionBuilder::online)
 		{
-			DeliverySystem::getPostman()->insertMessage(TextMessage("NetworkClient", "sendscore " + to_string(i) + " " + to_string(score)));
+			if (onlineScoreMessage.readyToSendNextMessage())
+			{
+				onlineScoreMessage.setMessage(TextMessage("NetworkClient", "sendscore " + to_string(i) + " " + to_string(score)));
+				onlineScoreMessage.sendMessage();
+			}
 		}
 
-		DeliverySystem::getPostman()->insertMessage(TextMessage("Gameplay", "sendscore " + to_string(i) + " " + to_string(score)));
+		if (localScoreMessage.readyToSendNextMessage())
+		{
+			localScoreMessage.setMessage(TextMessage("Gameplay", "sendscore " + to_string(i) + " " + to_string(score)));
+			localScoreMessage.sendMessage();
+		}
 	}
 
 	glDisable(GL_BLEND);

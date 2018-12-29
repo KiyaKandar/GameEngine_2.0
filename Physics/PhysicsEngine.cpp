@@ -210,11 +210,16 @@ void PhysicsEngine::addPhysicsObject(PhysicsNode * obj)
 		{
 			if (!this_obj->hasTransmittedCollision)
 			{
-				DeliverySystem::getPostman()->insertMessage(CollisionMessage("Gameplay", collisionData,
-					this_obj->getParent()->getName(), colliding_obj->getParent()->getName()));
-				if (!this_obj->multipleTransmitions)
+				if (this_obj->collisionMessageSender.readyToSendNextMessage())
 				{
-					this_obj->hasTransmittedCollision = true;
+					this_obj->collisionMessageSender.setMessage(CollisionMessage("Gameplay", collisionData,
+						this_obj->getParent()->getName(), colliding_obj->getParent()->getName()));
+					this_obj->collisionMessageSender.sendMessage();
+
+					if (!this_obj->multipleTransmitions)
+					{
+						this_obj->hasTransmittedCollision = true;
+					}
 				}
 			}
 			
@@ -294,13 +299,26 @@ void PhysicsEngine::updateNextFrame(const float& deltaTime)
 	{
 		wireframeRendering = !wireframeRendering;
 	}
+
 	if (wireframeRendering)
 	{
-		BpOct.DebugDraw();
-
-		for (PhysicsNode* node : physicsNodes)
+		if (cubeDrawMessageSender.readyToSendNextMessageGroup() && sphereDrawMessageSender.readyToSendNextMessageGroup())
 		{
-			node->getCollisionShape()->debugDraw();
+			std::vector<DebugLineMessage> cubeDrawMessages;
+			std::vector<DebugSphereMessage> sphereDrawMessages;
+
+			BpOct.DebugDraw(cubeDrawMessages);
+
+			for (PhysicsNode* node : physicsNodes)
+			{
+				node->getCollisionShape()->debugDraw(cubeDrawMessages, sphereDrawMessages);
+			}
+
+			cubeDrawMessageSender.setMessageGroup(cubeDrawMessages);
+			sphereDrawMessageSender.setMessageGroup(sphereDrawMessages);
+
+			cubeDrawMessageSender.sendMessageGroup();
+			sphereDrawMessageSender.sendMessageGroup();
 		}
 	}
 

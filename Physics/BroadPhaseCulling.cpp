@@ -47,17 +47,32 @@ void BroadPhaseCulling::sortNode(PhysicsNode * p)
 		float radius = static_cast<SphereCollisionShape*>(p->getBroadPhaseShape())->getRadius();
 		NCLVector3 centre = p->getPosition();
 		//use iterator instead 
-		for (size_t i = 0; i < bpAreas.size(); ++i) {
-			if (intersect(bpAreas[i].minVal, bpAreas[i].maxVal, centre, radius)) {
+		for (size_t i = 0; i < bpAreas.size(); ++i) 
+		{
+			if (intersect(bpAreas[i].minVal, bpAreas[i].maxVal, centre, radius)) 
+			{
 				std::vector<PhysicsNode*>::iterator index = std::find(bpAreas[i].nodesInArea.begin(), bpAreas[i].nodesInArea.end(), p);
-				if (index != bpAreas[i].nodesInArea.end()) bpAreas[i].nodesInArea.erase(index);
+
+				if (index != bpAreas[i].nodesInArea.end())
+				{
+					bpAreas[i].nodesInArea.erase(index);
+				}
+
 				bpAreas[i].nodesInArea.push_back(p);
-				splitArea((bpAreas.at(i)));
+
+				if (bpAreas[i].nodesInArea.size() > 20)
+				{
+					splitArea((bpAreas.at(i)));
+				}
 			}
-			else {
+			else 
+			{
 				//check if area had it previously and remove it?
 				std::vector<PhysicsNode*>::iterator index = std::find(bpAreas[i].nodesInArea.begin(), bpAreas[i].nodesInArea.end(), p);
-				if (index != bpAreas[i].nodesInArea.end()) bpAreas[i].nodesInArea.erase(index);
+				if (index != bpAreas[i].nodesInArea.end())
+				{
+					bpAreas[i].nodesInArea.erase(index);
+				}
 			}
 		}
 	}
@@ -109,7 +124,7 @@ bool BroadPhaseCulling::intersect(NCLVector3 minVal, NCLVector3 maxVal, NCLVecto
 	return false;
 }
 
-void BroadPhaseCulling::DebugDraw()
+void BroadPhaseCulling::DebugDraw(std::vector<DebugLineMessage>& messages)
 {
 	for (BParea cube : bpAreas) {
 
@@ -118,6 +133,6 @@ void BroadPhaseCulling::DebugDraw()
 		NCLMatrix4 transform = NCLMatrix4::translation(cube.minVal + ((cube.maxVal - cube.minVal) / 2)) * NCLMatrix4::scale(NCLVector3(scale.x, scale.y, scale.z));
 		int numNodes = cube.nodesInArea.size();
 		float full = numNodes / (float)maxNodes;
-		CuboidCollisionShape::getcubeHull().DebugDraw(transform);
+		CuboidCollisionShape::getcubeHull().DebugDraw(messages, transform);
 	}
 }

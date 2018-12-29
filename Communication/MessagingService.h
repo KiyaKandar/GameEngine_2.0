@@ -8,6 +8,7 @@
 #include "Messages/StopSoundMessage.h"
 #include <string>
 #include <queue>
+#include <vector>
 #include "Messages/RelativeTransformMessage.h"
 #include "Messages/ToggleGraphicsModuleMessage.h"
 #include "Messages/ApplyForceMessage.h"
@@ -28,17 +29,20 @@
 #include "Messages/DebugLineMessage.h"
 #include "Messages/DebugSphereMessage.h"
 #include "MessageRegistry.h"
+#include "MessageStorage.h"
 
 //exposed interface
 class MessagingService 
 {
 public:
 	virtual void addDeliveryPoint(const std::string& bufferName) = 0;
-	virtual std::queue<Message*>* getDeliveryPoint(const std::string& bufferName) = 0;
+	virtual MessageDeliveryBuffer* getDeliveryPoint(const std::string& bufferName) = 0;
 
 	REGISTER_PURE_VIRTUAL_SERVICE()
 
 	virtual void deliverAllMessages() = 0;
 	virtual void clearAllMessages() = 0;
 	virtual void cancelOutgoingMessages() = 0;
+	virtual void cancelDeliveredMessages() = 0;
+	virtual void deleteAllTrackedSenders() = 0;
 };

@@ -1,9 +1,8 @@
 #pragma once
 
-#include "../Launch/Systems/Subsystem.h"
 #include "Menu.h"
-
-class Keyboard;
+#include "../Launch/Systems/Subsystem.h"
+#include "../../Input/Devices/Keyboard.h"
 
 class UserInterface : public Subsystem
 {
@@ -25,5 +24,11 @@ private:
 	Menu* menu = nullptr;
 	bool enabled = true;
 	bool blocked;
+
+	SinglePressKeyListener escapeListener;
+	SinglePressKeyListener downListener;
+	SinglePressKeyListener upListener;
+	SinglePressKeyListener leftListener;
+	SinglePressKeyListener returnListener;
 };
 

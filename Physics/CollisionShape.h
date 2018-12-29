@@ -10,6 +10,8 @@
 //using namespace GeometryUtils;
 
 class PhysicsNode;
+class DebugLineMessage;
+class DebugSphereMessage;
 
 struct CollisionEdge
 {
@@ -27,7 +29,7 @@ public:
 	virtual ~CollisionShape() {}
 
 	virtual NCLMatrix3 buildInverseInertia(float invMass) const = 0;
-	virtual void debugDraw() = 0;
+	virtual void debugDraw(std::vector<DebugLineMessage>& lineMessages, std::vector<DebugSphereMessage>& sphereMessages) = 0;
 
 	inline void setParent(PhysicsNode* node) 
 	{ 

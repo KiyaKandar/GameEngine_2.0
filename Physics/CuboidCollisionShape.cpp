@@ -3,6 +3,9 @@
 #include "GeometryUtils.h"
 #include "../Utilities/Maths/Matrix3.h"
 
+#include "../Communication/Messages/DebugLineMessage.h"
+#include "../Communication/Messages/DebugSphereMessage.h"
+
 Hull CuboidCollisionShape::cubeHull = Hull();
 
 CuboidCollisionShape::CuboidCollisionShape()
@@ -189,9 +192,9 @@ void CuboidCollisionShape::constructCubeHull()
 	cubeHull.AddFace(NCLVector3(-1.0f, 0.0f, 0.0f), 4, face6);
 }
 
-void CuboidCollisionShape::debugDraw()
+void CuboidCollisionShape::debugDraw(std::vector<DebugLineMessage>& lineMessages, std::vector<DebugSphereMessage>& sphereMessages)
 {
 	// Just draw the cuboid hull-mesh at the position of our PhysicsNode
 	NCLMatrix4 transform = this->parent()->getWorldSpaceTransform() * NCLMatrix4::scale(halfDims);
-	cubeHull.DebugDraw(transform);
+	cubeHull.DebugDraw(lineMessages, transform);
 }

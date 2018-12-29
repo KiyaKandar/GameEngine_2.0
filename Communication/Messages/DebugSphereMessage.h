@@ -6,6 +6,7 @@
 class DebugSphereMessage : public Message
 {
 public:
+	DebugSphereMessage() : Message("", DUMMY_TYPE) {}
 	DebugSphereMessage(const std::string &destinationName, NCLVector3 position,
 		float radius, NCLVector3 colour);
 	~DebugSphereMessage();

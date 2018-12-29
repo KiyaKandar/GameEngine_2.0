@@ -209,6 +209,7 @@ public:
 
 	bool keyStates[KEYBOARD_MAX];		//Is the key down?
 	bool holdStates[KEYBOARD_MAX];		//Has the key been down for multiple updates?
+	bool releasedStates[KEYBOARD_MAX];
 
 protected:
 	Keyboard(HWND &hwnd);
@@ -223,4 +224,45 @@ protected:
 										//	CSC3224 NCODE [Kiyavash Kandar] [140245239]
 	std::map<std::string, KeyboardKeys> button_mapping;
 	//	CSC3224 NCODE BLOCK ENDS
+};
+
+struct SinglePressKeyListener
+{
+public:
+	SinglePressKeyListener() = default;
+
+	SinglePressKeyListener(KeyboardKeys keyToListenTo, Keyboard* keyboard)
+	{
+		this->keyToListenTo = keyToListenTo;
+		this->keyboard = keyboard;
+	}
+
+	~SinglePressKeyListener()
+	{
+
+	}
+
+	bool keyPressed()
+	{
+		if (!listenEnabled)
+		{
+			if (!keyboard->keyDown(keyToListenTo))
+			{
+				listenEnabled = true;
+			}
+		}
+
+		if (listenEnabled && keyboard->keyTriggered(keyToListenTo))
+		{
+			listenEnabled = false;
+			return true;
+		}
+
+		return false;
+	}
+
+private:
+	KeyboardKeys keyToListenTo = KEYBOARD_MAX;
+	Keyboard* keyboard = nullptr;
+	bool listenEnabled = true;
 };

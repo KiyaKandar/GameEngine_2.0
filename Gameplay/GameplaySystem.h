@@ -6,6 +6,7 @@
 #include "../Resource Management/XMLParser.h"
 #include "GameObjectLogic/GameObjectLogic.h"
 #include "../Resource Management/Database/Database.h"
+#include "../Communication/MessageSenders/TrackedMessageSender.h"
 
 class Database;
 
@@ -57,5 +58,8 @@ private:
 	bool levelFinished = false;
 
 	std::map<int, int> playerScores;
+	TrackedMessageSender<TextMeshMessage> gameOverMessageSender;
+	TrackedMessageSender<TextMeshMessage> winningPlayerMessageSender;
+	TrackedMessageSender<TextMeshMessage> timerMessageSender;
 };
 

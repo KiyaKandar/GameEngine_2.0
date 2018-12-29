@@ -3,6 +3,7 @@ Keyboard::Keyboard(HWND &hwnd) {
 	//Initialise the arrays to false!
 	ZeroMemory(keyStates, KEYBOARD_MAX * sizeof(bool));
 	ZeroMemory(holdStates, KEYBOARD_MAX * sizeof(bool));
+	ZeroMemory(releasedStates, KEYBOARD_MAX * sizeof(bool));
 
 	//Tedious windows RAW input stuff
 	rid.usUsagePage = HID_USAGE_PAGE_GENERIC;		//The keyboard isn't anything fancy
@@ -31,6 +32,7 @@ void Keyboard::Sleep() {
 						//Prevents incorrectly thinking keys have been held / pressed when waking back up
 	ZeroMemory(keyStates, KEYBOARD_MAX * sizeof(bool));
 	ZeroMemory(holdStates, KEYBOARD_MAX * sizeof(bool));
+	ZeroMemory(releasedStates, KEYBOARD_MAX * sizeof(bool));
 }
 
 /*
@@ -62,7 +64,7 @@ bool Keyboard::keyTriggered(KeyboardKeys key) {
 
 bool Keyboard::keyReleased(KeyboardKeys key)
 {
-	return false;
+	return releasedStates[key];
 }
 
 /*
@@ -78,6 +80,8 @@ void Keyboard::update(RAWINPUT* raw) {
 		}
 
 		//First bit of the flags tag determines whether the key is down or up
-		keyStates[key] = !(raw->data.keyboard.Flags & RI_KEY_BREAK);
+		bool down = !(raw->data.keyboard.Flags & RI_KEY_BREAK);
+		releasedStates[key] = keyStates[key] && !down;
+		keyStates[key] = down;
 	}
 }

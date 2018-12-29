@@ -1,22 +1,47 @@
 #include "SkeletonDisplay.h"
 
 #include "Skeleton.h"
-#include "../../Communication/DeliverySystem.h"
 
-void SkeletonDisplay::drawSkeletonBone(const MeshNode& parentNode, const aiMatrix4x4& parentTransform)
+void SkeletonDisplay::drawSkeleton(const MeshNode& parentNode, const aiMatrix4x4& parentTransform)
+{
+	if (readyToDrawSkeleton())
+	{
+		clearPreviousDraw();
+		prepareSkeletonBoneRendering(parentNode, parentTransform);
+
+		skeletonBoneMessageSender.setMessageGroup(skeletonBoneMessages);
+		skeletonJointMessageSender.setMessageGroup(skeletonJointMessages);
+
+		skeletonBoneMessageSender.sendMessageGroup();
+		skeletonJointMessageSender.sendMessageGroup();
+	}
+}
+
+bool SkeletonDisplay::readyToDrawSkeleton()
+{
+	return skeletonBoneMessageSender.readyToSendNextMessageGroup() && skeletonJointMessageSender.readyToSendNextMessageGroup();
+}
+
+void SkeletonDisplay::clearPreviousDraw()
+{
+	skeletonBoneMessages.clear();
+	skeletonJointMessages.clear();
+}
+
+void SkeletonDisplay::prepareSkeletonBoneRendering(const MeshNode& parentNode, const aiMatrix4x4& parentTransform)
 {
 	aiVector3D startPosition;
-	SkeletonDisplay::getJointPosition(startPosition, parentTransform * parentNode.rawTransform);
-	SkeletonDisplay::displayJointNode(startPosition);
+	getJointPosition(startPosition, parentTransform * parentNode.rawTransform);
+	displayJointNode(startPosition);
 
 	for (int i = 0; i < parentNode.node->mNumChildren; ++i)
 	{
 		aiVector3D endPosition;
-		SkeletonDisplay::getJointPosition(endPosition, parentTransform * parentNode.children[i].rawTransform);
-		SkeletonDisplay::displayBoneLine(startPosition, endPosition);
+		getJointPosition(endPosition, parentTransform * parentNode.children[i].rawTransform);
+		displayBoneLine(startPosition, endPosition);
 	}
 
-	SkeletonDisplay::drawChildSkeletonBone(parentNode, parentTransform);
+	drawChildSkeletonBone(parentNode, parentTransform);
 }
 
 void SkeletonDisplay::drawChildSkeletonBone(const MeshNode& parentNode, const aiMatrix4x4& parentTransform)
@@ -27,14 +52,14 @@ void SkeletonDisplay::drawChildSkeletonBone(const MeshNode& parentNode, const ai
 	{
 		for (int i = 0; i < numChildren; ++i)
 		{
-			SkeletonDisplay::drawSkeletonBone(parentNode.children[i], parentTransform);
+			prepareSkeletonBoneRendering(parentNode.children[i], parentTransform);
 		}
 	}
 	else
 	{
 		aiVector3D jointPosition;
-		SkeletonDisplay::getJointPosition(jointPosition, parentTransform * parentNode.rawTransform);
-		SkeletonDisplay::displayJointNode(jointPosition);
+		getJointPosition(jointPosition, parentTransform * parentNode.rawTransform);
+		displayJointNode(jointPosition);
 	}
 }
 
@@ -45,12 +70,10 @@ void SkeletonDisplay::getJointPosition(aiVector3D& position, const aiMatrix4x4& 
 
 void SkeletonDisplay::displayJointNode(const aiVector3D& position)
 {
-	DebugSphereMessage jointMessage("RenderingSystem", position, 0.5f, NCLVector3(1.0f, 0.0f, 0.0f));
-	DeliverySystem::getPostman()->insertMessage(jointMessage);
+	skeletonJointMessages.push_back(DebugSphereMessage("RenderingSystem", position, 0.5f, NCLVector3(1.0f, 0.0f, 0.0f)));
 }
 
-void SkeletonDisplay::displayBoneLine(const aiVector3D & startPosition, const aiVector3D & endPosition)
+void SkeletonDisplay::displayBoneLine(const aiVector3D& startPosition, const aiVector3D& endPosition)
 {
-	DebugLineMessage boneLineMessage("RenderingSystem", startPosition, endPosition, NCLVector3(0.0f, 1.0f, 0.2f));
-	DeliverySystem::getPostman()->insertMessage(boneLineMessage);
+	skeletonBoneMessages.push_back(DebugLineMessage("RenderingSystem", startPosition, endPosition, NCLVector3(0.0f, 1.0f, 0.2f)));
 }

@@ -7,6 +7,7 @@ struct Node;
 class ToggleGraphicsModuleMessage : public Message
 {
 public:
+	ToggleGraphicsModuleMessage() : Message("", DUMMY_TYPE) {}
 	ToggleGraphicsModuleMessage(const std::string& destinationName, const std::string& moduleName, const bool enabled);
 	~ToggleGraphicsModuleMessage();
 

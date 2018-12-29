@@ -2,6 +2,7 @@
 
 #include "../Launch/Systems/Subsystem.h"
 #include "../Resource Management/Database/Database.h"
+#include "../Communication/MessageSenders/TrackedGroupMessageSender.h"
 
 #include "PhysicsNode.h"
 #include "Constraint.h"
@@ -126,4 +127,6 @@ private:
 
 	Keyboard* keyboard;
 	bool wireframeRendering = false;
+	TrackedGroupMessageSender<DebugLineMessage> cubeDrawMessageSender;
+	TrackedGroupMessageSender<DebugSphereMessage> sphereDrawMessageSender;
 };

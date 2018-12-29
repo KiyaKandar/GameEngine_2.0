@@ -34,10 +34,14 @@ GameLoop::GameLoop(System* gameSystem, Database* database, Startup* startup)
 		if (tokens[0] == "Quit")
 		{
 			quit = true;
+			engine->SynchroniseAndStopConcurrentSubsystems();
 		}
 		else if (tokens[0] == "Start")
 		{
+			engine->SynchroniseAndStopConcurrentSubsystems();
 			DeliverySystem::getPostman()->cancelOutgoingMessages();
+			DeliverySystem::getPostman()->cancelDeliveredMessages();
+			DeliverySystem::getPostman()->deleteAllTrackedSenders();
 			startup->switchLevel();
 			deltaTimeMultiplier = 1.0f;
 
@@ -56,6 +60,7 @@ GameLoop::GameLoop(System* gameSystem, Database* database, Startup* startup)
 			startup->startUserInterface();
 
 			XMLParser::deleteAllParsedXML();
+			engine->StartConcurrentSubsystems();
 		}
 		else if (tokens[0] == "deltatime")
 		{
@@ -80,16 +85,14 @@ void GameLoop::executeGameLoop()
 	camera->setPitch(24.0f);
 	camera->setYaw(-133.0f);
 
+	engine->StartConcurrentSubsystems();
+
 	while (window->updateWindow() && !quit)
 	{
-		float deltaTime = loopTimer->getTimeSinceLastRetrieval() * deltaTimeMultiplier;
-
-		engine->updateNextSystemFrame(deltaTime);
+		engine->updateNextSystemFrame();
 		incomingMessages.processMessagesInBuffer();
-
-		DeliverySystem::getPostman()->clearAllMessages();
-		updateGameObjects(deltaTime);
-		DeliverySystem::getPostman()->deliverAllMessages();
+		
+		updateGameObjects(loopTimer->getTimeSinceLastRetrieval() * deltaTimeMultiplier);
 	}
 }
 

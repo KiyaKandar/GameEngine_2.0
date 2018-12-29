@@ -2,6 +2,9 @@
 #include "CollisionShape.h"
 #include "Hull.h"
 
+class DebugLineMessage;
+class DebugSphereMessage;
+
 class CuboidCollisionShape :
 	public CollisionShape
 {
@@ -58,7 +61,7 @@ public:
 	virtual void getMinMaxVertexOnAxis(const NCLVector3& axis, NCLVector3& out_min, NCLVector3& out_max) const override;
 
 	virtual void getIncidentReferencePolygon(const NCLVector3& axis, std::list<NCLVector3>& out_face, NCLVector3& out_normal, std::vector<Plane>& out_adjacent_planes) const override;
-	void debugDraw() override;
+	void debugDraw(std::vector<DebugLineMessage>& lineMessages, std::vector<DebugSphereMessage>& sphereMessages) override;
 
 private:
 	static void constructCubeHull();

@@ -7,6 +7,7 @@
 #include <string.h>
 
 class Mesh;
+class SkeletonDisplay;
 struct MeshNode;
 struct NodeAnimation;
 struct BlockedTransformComponents;
@@ -60,6 +61,7 @@ private:
 	std::vector<aiMatrix4x4> animationState;
 
 	Skeleton* skeleton;
+	SkeletonDisplay* debugSkeletonDisplay;
 
 	const aiAnimation* animation;
 	const size_t owningGameObjectId;

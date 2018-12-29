@@ -1,11 +1,11 @@
 #pragma once
 
 #include "../Launch/Systems/Subsystem.h"
+#include "../../Input/Devices/Keyboard.h"
 #include "AnimationService.h"
 
 class Animation;
 class Database;
-class Keyboard;
 class Camera;
 
 struct QueuedAnimation;
@@ -49,6 +49,7 @@ private:
 
 	Database* database;
 	Keyboard* keyboard;
+	SinglePressKeyListener f9Listener;
 	Camera* camera;
 
 	bool drawActiveSkeletons;

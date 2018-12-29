@@ -1,5 +1,9 @@
 #pragma once
 #include "CollisionShape.h"
+
+class DebugLineMessage;
+class DebugSphereMessage;
+
 class SphereCollisionShape : public CollisionShape
 {
 public:
@@ -17,7 +21,7 @@ public:
 		return radius;
 	}
 
-	void debugDraw() override;
+	void debugDraw(std::vector<DebugLineMessage>& lineMessages, std::vector<DebugSphereMessage>& sphereMessages) override;
 
 	virtual NCLMatrix3 buildInverseInertia(float invMass) const override;
 

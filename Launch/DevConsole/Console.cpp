@@ -1,13 +1,12 @@
 #include "Console.h"
 
-#include "../../Input/Devices/Keyboard.h"
 #include "../../Input/InputControl.h"
 #include "Communication/SendMessageActionBuilder.h"
 #include "../Graphics/Utility/Camera.h"
 #include "../Input/Devices/Mouse.h"
 #include "LevelEditor.h"
 
-int consoleKeys[] =
+KeyboardKeys consoleKeys[] =
 {
 	KEYBOARD_0,
 	KEYBOARD_1,
@@ -66,7 +65,7 @@ Console::Console(Keyboard* keyboard, Camera* camera, Mouse* mouse) : Subsystem("
 
 	DeliverySystem::getPostman()->insertMessage(TextMessage("InputManager", "RegisterInputUser Console"));
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::TEXT, [&blocked = blocked, &debugCameraEnabled = debugCameraEnabled](Message* message)
+	incomingMessages.addActionToExecuteOnMessage(MessageType::TEXT, [&blocked = blocked, &debugCameraEnabled = debugCameraEnabled, mouse = this->mouse](Message* message)
 	{
 		TextMessage* textMessage = static_cast<TextMessage*>(message);
 
@@ -77,10 +76,12 @@ Console::Console(Keyboard* keyboard, Camera* camera, Mouse* mouse) : Subsystem("
 			if (debugCameraEnabled)
 			{
 				DeliverySystem::getPostman()->insertMessage(TextMessage("InputManager", "BlockAllInputs Console"));
+				mouse->setMouseSensitivity(0.00001f);
 			}
 			else
 			{
 				DeliverySystem::getPostman()->insertMessage(TextMessage("InputManager", "UnblockAll"));
+				mouse->setMouseSensitivity(0.07f);
 			}
 		}
 		else
@@ -131,6 +132,18 @@ Console::Console(Keyboard* keyboard, Camera* camera, Mouse* mouse) : Subsystem("
 	keyMapping.insert({ KEYBOARD_MINUS, "-" });
 	keyMapping.insert({ KEYBOARD_DIVIDE, "/" });
 	keyMapping.insert({ KEYBOARD_PERIOD, "." });
+
+	f7Listener = SinglePressKeyListener(KEYBOARD_F7, keyboard);
+	returnListener = SinglePressKeyListener(KEYBOARD_RETURN, keyboard);
+	capitalListener = SinglePressKeyListener(KEYBOARD_CAPITAL, keyboard);
+	upListener = SinglePressKeyListener(KEYBOARD_UP, keyboard);
+	downListener = SinglePressKeyListener(KEYBOARD_DOWN, keyboard);
+	backListener = SinglePressKeyListener(KEYBOARD_BACK, keyboard);
+
+	for (int i = 0; i < 41; ++i)
+	{
+		keyListeners.push_back(SinglePressKeyListener((KeyboardKeys)consoleKeys[i], keyboard));
+	}
 }
 
 Console::~Console()
@@ -144,7 +157,7 @@ void Console::updateNextFrame(const float & deltaTime)
 		moveCamera();
 	}
 
-	if (keyboard->keyTriggered(KEYBOARD_F7))
+	if (f7Listener.keyPressed())
 	{
 		toggleConsoleEnabled();
 	}
@@ -153,7 +166,7 @@ void Console::updateNextFrame(const float & deltaTime)
 	{
 		recordKeyPresses();
 
-		if (keyboard->keyTriggered(KEYBOARD_RETURN))
+		if (returnListener.keyPressed())
 		{
 			try
 			{
@@ -193,7 +206,7 @@ void Console::recordKeyPresses()
 	traverseInputHistory();
 	deleteLastCharacter();
 
-	if(keyboard->keyTriggered(KEYBOARD_CAPITAL))
+	if(capitalListener.keyPressed())
 	{
 		capslock =  !capslock;
 	}
@@ -205,7 +218,7 @@ void Console::recordKeyPresses()
 void Console::traverseInputHistory()
 {
 
-	if (keyboard->keyTriggered(KEYBOARD_UP))
+	if (upListener.keyPressed())
 	{
 		if ((size_t)previousInputIndexOffset < previousInputs.size())
 		{
@@ -213,7 +226,7 @@ void Console::traverseInputHistory()
 			++previousInputIndexOffset;
 		}
 	}
-	else if (keyboard->keyTriggered(KEYBOARD_DOWN))
+	else if (downListener.keyPressed())
 	{
 		if (previousInputIndexOffset > 0 && previousInputs.size() > 0)
 		{
@@ -225,8 +238,7 @@ void Console::traverseInputHistory()
 
 void Console::deleteLastCharacter()
 {
-
-	if (keyboard->keyDown(KEYBOARD_BACK) && frameCount >= 5)
+	if (backListener.keyPressed() && frameCount >= 5)
 	{
 		frameCount = 0;
 
@@ -239,20 +251,19 @@ void Console::deleteLastCharacter()
 
 void Console::readKeyboardInputs()
 {
-
-	for (int key : consoleKeys)
+	for (int i = 0; i < keyListeners.size(); ++i)
 	{
-		if (keyboard->keyStates[key] && !(keyboard->keyStates[key] && keyboard->holdStates[key]))
+		if (keyListeners[i].keyPressed())
 		{
 			if (capslock)
 			{
-				std::string str = keyMapping.at(key);
+				std::string str = keyMapping.at(consoleKeys[i]);
 				std::transform(str.begin(), str.end(), str.begin(), ::toupper);
 				input += str;
 			}
 			else
 			{
-				input += keyMapping.at(key);
+				input += keyMapping.at(consoleKeys[i]);
 			}
 		}
 	}
@@ -267,8 +278,12 @@ void Console::displayText()
 		displayLine += " ";
 	}
 
-	DeliverySystem::getPostman()->insertMessage(TextMeshMessage("RenderingSystem", displayLine,
-		NCLVector3(-620.0f, -320, 0), NCLVector3(12.9f, 12.9f, 12.9f), NCLVector3(0, 1, 0), true, true));
+	if (consoleViewMessage.readyToSendNextMessage())
+	{
+		consoleViewMessage.setMessage(TextMeshMessage("RenderingSystem", displayLine,
+			NCLVector3(-620.0f, -320, 0), NCLVector3(12.9f, 12.9f, 12.9f), NCLVector3(0, 1, 0), true, true));
+		consoleViewMessage.sendMessage();
+	}
 }
 
 void Console::moveCamera()
@@ -278,30 +293,30 @@ void Console::moveCamera()
 
 	if (keyboard->keyDown(KEYBOARD_W)) {
 		camera->setPosition(camera->getPosition() +
-			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(0, 0, -1) * 1);
+			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(0, 0, -1) * 0.001f);
 	}
 
 	if (keyboard->keyDown(KEYBOARD_S)) {
 		camera->setPosition(camera->getPosition() +
-			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(0, 0, 1) * 1);
+			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(0, 0, 1) * 0.001f);
 	}
 
 	if (keyboard->keyDown(KEYBOARD_A)) {
 		camera->setPosition(camera->getPosition() +
-			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) *  NCLVector3(-1, 0, 0) * 1);
+			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) *  NCLVector3(-1, 0, 0) * 0.001f);
 	}
 
 	if (keyboard->keyDown(KEYBOARD_D)) {
 		camera->setPosition(camera->getPosition() +
-			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) *  NCLVector3(1, 0, 0) * 1);
+			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) *  NCLVector3(1, 0, 0) * 0.001f);
 	}
 
 	if (keyboard->keyDown(KEYBOARD_SPACE)) {
-		camera->setPosition(camera->getPosition() + NCLVector3(0, 1, 0) * 1);
+		camera->setPosition(camera->getPosition() + NCLVector3(0, 1, 0) * 0.001f);
 	}
 
 	if (keyboard->keyDown(KEYBOARD_C)) {
-		camera->setPosition(camera->getPosition() + NCLVector3(0, -1, 0) * 1);
+		camera->setPosition(camera->getPosition() + NCLVector3(0, -1, 0) * 0.001f);
 	}
 
 	camera->setPitch(pitch);

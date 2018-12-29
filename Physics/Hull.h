@@ -28,7 +28,6 @@ so you could represent your mesh as a series of triangles, pentagons, quads etc 
 #include "../Utilities/Maths/Matrix4.h"
 #include <vector>
 #include "../Communication/Messages/DebugLineMessage.h"
-#include "../Communication/DeliverySystem.h"
 
 struct HullEdge;
 struct HullFace;
@@ -67,7 +66,7 @@ public:
 	Hull();
 	~Hull();
 
-	void Hull::DebugDraw(const NCLMatrix4& transform);
+	void Hull::DebugDraw(std::vector<DebugLineMessage>& messages, const NCLMatrix4& transform);
 	void Clear();
 
 

@@ -1,6 +1,5 @@
 #include "UserInterface.h"
 
-#include "../../Input/Devices/Keyboard.h"
 #include "UserInterfaceDisplay.h"
 #include "../Input/InputControl.h"
 #include "../Resource Management/Database/Database.h"
@@ -32,6 +31,12 @@ UserInterface::UserInterface(Keyboard* keyboard, NCLVector2 resolution) : Subsys
 
 	menu = nullptr;
 	DeliverySystem::getPostman()->insertMessage(TextMessage("InputManager", "BlockAllInputs UserInterface"));
+
+	escapeListener = SinglePressKeyListener(KEYBOARD_ESCAPE, keyboard);
+	downListener = SinglePressKeyListener(KEYBOARD_DOWN, keyboard);
+	upListener = SinglePressKeyListener(KEYBOARD_UP, keyboard);
+	leftListener = SinglePressKeyListener(KEYBOARD_LEFT, keyboard);
+	returnListener = SinglePressKeyListener(KEYBOARD_RETURN, keyboard);
 }
 
 UserInterface::~UserInterface()
@@ -63,27 +68,27 @@ void UserInterface::initialise(Database* database)
 
 void UserInterface::updateNextFrame(const float& deltaTime)
 {
-	if (keyboard->keyTriggered(KEYBOARD_ESCAPE))
+	if (escapeListener.keyPressed())
 	{
 		toggleModule();
 	}
 
 	if (enabled && !blocked)
 	{
-		if (keyboard->keyTriggered(KEYBOARD_DOWN))
+		if (downListener.keyPressed())
 		{
 			UserInterfaceDisplay::getInterface()->moveSelectedDown();
 		}
-		else if (keyboard->keyTriggered(KEYBOARD_UP))
+		else if (upListener.keyPressed())
 		{
 			UserInterfaceDisplay::getInterface()->moveSelectedUp();
 		}
-		else if (keyboard->keyTriggered(KEYBOARD_LEFT))
+		else if (leftListener.keyPressed())
 		{
 			UserInterfaceDisplay::getInterface()->moveSelectedLeft();
 		}
 
-		if (keyboard->keyTriggered(KEYBOARD_RETURN))
+		if (returnListener.keyPressed())
 		{
 			UserInterfaceDisplay::getInterface()->ExecuteSelectedButton();
 		}

@@ -2,7 +2,6 @@
 
 #include "../Resource Management/Database/Database.h"
 #include "../Utilities/GameTimer.h"
-#include "../Input/Devices/Keyboard.h"
 #include "FPSCounter.h"
 
 const float Y_OFFSET = 320.0f;
@@ -26,19 +25,22 @@ Profiler::Profiler(Keyboard* keyboard, Database* database, FPSCounter* fpsCounte
 	});
 
 	memoryWatcher = MemoryWatcher(database->MaxSize(), database);
+
+	f5Listener = SinglePressKeyListener(KEYBOARD_F5, keyboard);
+	f6Listener = SinglePressKeyListener(KEYBOARD_F6, keyboard);
 }
 
 void Profiler::updateNextFrame(const float& deltatime)
 {
 	fpsCounter->calculateFPS(deltatime);
 
-	if (keyboard->keyTriggered(KEYBOARD_F5))
+	if (f5Listener.keyPressed())
 	{
 		profilerEnabled = !profilerEnabled;
 		depth = 0;
 	}
 
-	if (keyboard->keyTriggered(KEYBOARD_F6))
+	if (f6Listener.keyPressed())
 	{
 		++depth;
 	}
@@ -69,23 +71,30 @@ void Profiler::updateProfiling()
 {
 	nextLine = Y_OFFSET;
 
-	updateFPS();
-	updateMemory();
-
-	for (std::string text : externalText)
+	if (timersDisplayed)
 	{
-		messages.push_back(TextMeshMessage("RenderingSystem", text,
-			NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
-		nextLine += NEXT_LINE_OFFSET;
-	}
 
-	updateTimers();
+		updateFPS();
+		updateMemory();
+		updateTimers();
+
+		for (std::string text : externalText)
+		{
+			messages.push_back(TextMeshMessage("RenderingSystem", text,
+				NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
+			nextLine += NEXT_LINE_OFFSET;
+		}
+
+		timersDisplayed = false;
+	}
 }
 
 void Profiler::updateFPS()
 {
-	messages.push_back(TextMeshMessage("RenderingSystem", "FPS : " + std::to_string(fpsCounter->fps),
-		NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
+	TextMeshMessage message("RenderingSystem", "FPS : " + std::to_string(fpsCounter->fps),
+		NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true);
+
+	messages.push_back(message);
 	nextLine += NEXT_LINE_OFFSET;
 }
 
@@ -123,11 +132,13 @@ void Profiler::updateTimers()
 
 void Profiler::displayChildTimers()
 {
-	for (TextMeshMessage& text : messages)
+	if (profilerTextSender.readyToSendNextMessageGroup())
 	{
-		DeliverySystem::getPostman()->insertMessage(text);
+		profilerTextSender.setMessageGroup(messages);
+		profilerTextSender.sendMessageGroup();
+		timersDisplayed = true;
+		externalText.clear();
 	}
-	externalText.clear();
 }
 
 void Profiler::saveProfilingInfo(GameTimer* parentTimer, int currentDepth, float parentXOffset)

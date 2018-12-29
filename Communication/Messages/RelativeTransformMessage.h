@@ -8,6 +8,7 @@ struct Node;
 class RelativeTransformMessage : public Message
 {
 public:
+	RelativeTransformMessage() : Message("", DUMMY_TYPE) {}
 	RelativeTransformMessage(const std::string& destinationName, const std::string& resourceName, 
 		NCLMatrix4 transform);
 	~RelativeTransformMessage();

@@ -4,6 +4,8 @@
 #include "../../Shaders/ComputeShader.h"
 #include "../../Meshes/TextMesh.h"
 #include "../../Utilities/GameTimer.h"
+#include "../../../Communication/MessageSenders/TrackedMessageSender.h"
+#include "../../../Communication/Messages/TextMessage.h"
 
 class Database;
 
@@ -59,5 +61,8 @@ private:
 	float elapsedTime = 0;
 
 	int* scoreData;
+	TrackedMessageSender<TextMessage> localScoreMessage;
+	TrackedMessageSender<TextMessage> onlineScoreMessage;
+
 };
 

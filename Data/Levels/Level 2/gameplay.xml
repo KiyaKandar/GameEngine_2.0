@@ -2,7 +2,7 @@
   <OnStart>
     <SendMessage type="TEXT">
       <destination>Gameplay</destination>
-      <text>setmaxtime true 120</text>
+      <text>setmaxtime true 5</text>
     </SendMessage>
 
     <SendMessage type="TOGGLE_GRAPHICS_MODULE">
@@ -57,6 +57,7 @@
     
   <Timed interval="0.01">
     <SendMessage type="MOVE_CAMERA_RELATIVE_TO_GAMEOBJECT">
+      <Tracked/>
       <destination>RenderingSystem</destination>
       <resource>player0</resource>
       <translation>
