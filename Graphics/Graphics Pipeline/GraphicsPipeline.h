@@ -13,14 +13,14 @@ public:
 	GraphicsPipeline(GameTimer* parentTimer);
 	~GraphicsPipeline();
 
-	void toggleModule(std::string moduleIdentifier);
-	void toggleModule(std::string moduleIdentifier, bool enabled);
+	void ToggleModule(std::string moduleIdentifier);
+	void ToggleModule(std::string moduleIdentifier, bool enabled);
 
-	void updateModules(float dt);
-	void executeModules();
+	void UpdateModules(float dt);
+	void ExecuteModules();
 
-	void addModule(GraphicsModule* module);
-	GraphicsModule* getGraphicsModule(std::string moduleIdentifier);
+	void AddModule(GraphicsModule* module);
+	GraphicsModule* GetGraphicsModule(std::string moduleIdentifier);
 
 private:
 	std::vector<GraphicsModule*> modules;

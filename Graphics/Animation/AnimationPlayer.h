@@ -5,12 +5,12 @@
 class AnimationPlayer
 {
 public:
-	static AnimationService* getAnimationService()
+	static AnimationService* GetAnimationService()
 	{
 		return service;
 	}
 
-	static void provide(AnimationService* newService)
+	static void Provide(AnimationService* newService)
 	{
 		service = newService;
 	}

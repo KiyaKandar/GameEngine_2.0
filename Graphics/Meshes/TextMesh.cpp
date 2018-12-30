@@ -12,7 +12,8 @@ Each character of text will be kept in a quad 1 unit big one each axis,
 and each quad is right next to its neighbours, making it easy to work out
 how large a textmesh will be when scaled etc
 */
-TextMesh::TextMesh(const std::string &text, const Font font) : font(font){
+TextMesh::TextMesh(const std::string& text, const Font font) : font(font)
+{
 	//Set our Mesh to have the font's texture, containing all of the
 	//individual characters we need.
 	SetTexture(this->font.texture);
@@ -42,7 +43,8 @@ TextMesh::TextMesh(const std::string &text, const Font font) : font(font){
 	(0,0) (top LEFT of the screen intuitively), the text
 	'hangs down' from the top left, and is visible.
 	*/
-	for (unsigned int i = 0; i < text.length(); ++i) {
+	for (unsigned int i = 0; i < text.length(); ++i)
+	{
 		unsigned int c = (unsigned int)text[i];
 
 		//We can use the modulus operator to wrap around the 
@@ -52,7 +54,7 @@ TextMesh::TextMesh(const std::string &text, const Font font) : font(font){
 		//character 15 will be at the far right, and 16
 		//will be on the left, down a row, and so on.
 
-		float x = (float)(c%this->font.xCount);
+		float x = (float)(c % this->font.xCount);
 		float y = (float)((c / this->font.xCount) % this->font.yCount);
 
 		vertices[(i * 4)] = NCLVector3((float)i, 0, 0);
@@ -62,14 +64,15 @@ TextMesh::TextMesh(const std::string &text, const Font font) : font(font){
 
 		//Now we can simply use our worked out font character sizes
 		//to generate the correct texture coordinates for each glyph...
-		textureCoords[(i * 4)] = NCLVector2(x*texelWidth, (y)*texelHeight);
-		textureCoords[(i * 4) + 1] = NCLVector2(x*texelWidth, (y + 1) * texelHeight);
-		textureCoords[(i * 4) + 2] = NCLVector2((x + 1)*texelWidth, (y)*texelHeight);
-		textureCoords[(i * 4) + 3] = NCLVector2((x + 1)*texelWidth, (y + 1) * texelHeight);
+		textureCoords[(i * 4)] = NCLVector2(x * texelWidth, (y) * texelHeight);
+		textureCoords[(i * 4) + 1] = NCLVector2(x * texelWidth, (y + 1) * texelHeight);
+		textureCoords[(i * 4) + 2] = NCLVector2((x + 1) * texelWidth, (y) * texelHeight);
+		textureCoords[(i * 4) + 3] = NCLVector2((x + 1) * texelWidth, (y + 1) * texelHeight);
 	}
 	//Lastly, we buffer the data, just like a 'normal' mesh!
 	BufferData();
 }
+
 /*
 Multiple textMeshes could be keeping hold of the same texture (borrowed as a
 pointer from its Font) so we must NULL the texture name before we call the
@@ -77,9 +80,8 @@ parent class destructor, which deletes the texture! (We could overload
 Draw instead to dereference texture every frame, but this way is slightly
 more elegant)
 */
-TextMesh::~TextMesh(void) {
+TextMesh::~TextMesh(void)
+{
 	//texture = 0;
 	glDeleteTextures(1, &font.texture);
 }
-
-

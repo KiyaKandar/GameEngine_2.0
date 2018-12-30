@@ -1,21 +1,21 @@
 #pragma once
 
 #define REGISTER_MESSAGE_SENDER(MESSAGE_TYPE) \
-		_##MESSAGE_TYPE.sendMessages(messageStorage);
+		_##MESSAGE_TYPE.SendMessages(messageStorage);
 
 #define REGISTER_OUTGOING_MESSAGE_CANCEL(MESSAGE_TYPE) \
-		_##MESSAGE_TYPE.cancelOutgoingMessages();
+		_##MESSAGE_TYPE.CancelOutgoingMessages();
 
 #define REGISTER_MESSAGE_CLEARER(MESSAGE_TYPE) \
-		_##MESSAGE_TYPE.clearSentMessages();
+		_##MESSAGE_TYPE.ClearSentMessages();
 
 #define REGISTER_MESSAGE(MESSAGE_TYPE) \
 private: \
 	MessageBuffer<##MESSAGE_TYPE> _##MESSAGE_TYPE; \
 public: \
-	void insertMessage(##MESSAGE_TYPE message) \
+	void InsertMessage(##MESSAGE_TYPE message) \
 	{ \
-		_##MESSAGE_TYPE.insertOutgoingMessage(message); \
+		_##MESSAGE_TYPE.InsertOutgoingMessage(message); \
 	}
 
 #define REGISTER_THREAD_SAFE_MESSAGE(MESSAGE_TYPE) \
@@ -24,20 +24,20 @@ private: \
 public: \
 	void insertMessage(##MESSAGE_TYPE message) \
 	{ \
-		_##MESSAGE_TYPE.insertOutgoingMessage(message); \
+		_##MESSAGE_TYPE.InsertOutgoingMessage(message); \
 	}
 
 #define REGISTER_LOCK_FREE_THREAD_SAFE_MESSAGE(MESSAGE_TYPE) \
 private: \
 	LockFreeThreadSafeMessageBuffer<##MESSAGE_TYPE> _##MESSAGE_TYPE; \
 public: \
-	void insertMessage(##MESSAGE_TYPE message) \
+	void InsertMessage(##MESSAGE_TYPE message) \
 	{ \
-		_##MESSAGE_TYPE.insertOutgoingMessage(message); \
+		_##MESSAGE_TYPE.InsertOutgoingMessage(message); \
 	}
 
 #define REGISTER_PURE_VIRTUAL_MESSAGE_SERVICE(MESSAGE_TYPE)\
-	virtual void insertMessage(##MESSAGE_TYPE message) = 0;
+	virtual void InsertMessage(##MESSAGE_TYPE message) = 0;
 
 #define REGISTER_GLOBAL_TRACKED_MESSAGE_SENDER(MESSAGE_TYPE)\
 	static std::vector<TrackedMessageSender<##MESSAGE_TYPE>*> SENDER_##MESSAGE_TYPE;\

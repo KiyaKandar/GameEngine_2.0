@@ -38,26 +38,26 @@ class NetworkClient : public Subsystem
 {
 public:
 	NetworkClient(InputRecorder* keyboardAndMouse, Database* database,
-		PlayerBase* playerbase, GameplaySystem* gameplay);
+	              PlayerBase* playerbase, GameplaySystem* gameplay);
 	~NetworkClient();
 
-	void updateNextFrame(const float& deltaTime) override;
+	void UpdateNextFrame(const float& deltaTime) override;
 
-	void connectToServer();
-	void waitForOtherClients(int numberToWaitFor);
+	void ConnectToServer();
+	void WaitForOtherClients(int numberToWaitFor);
 
 private:
-	void broadcastKinematicState();
-	void broadcastMinionState();
-	void broadcastPlayerScores();
-	void broadcastCollision();
+	void BroadcastKinematicState();
+	void BroadcastMinionState();
+	void BroadcastPlayerScores();
+	void BroadcastCollision() const;
 
-	void updateDeadReckoningForConnectedClients();
-	void updateDeadReckoningForMinions();
+	void UpdateDeadReckoningForConnectedClients();
+	void UpdateDeadReckoningForMinions();
 
-	void displayPlayerScores();
-	
-	void processNetworkMessages(const float& deltaTime);
+	void DisplayPlayerScores();
+
+	void ProcessNetworkMessages(const float& deltaTime);
 
 	int clientID;
 	int numberOfOtherPlayersToWaitFor = 0;
@@ -67,7 +67,7 @@ private:
 	ENetPeer* serverConnection;
 
 	InputRecorder* keyboardAndMouse;
-	PlayerBase* playerbase; 
+	PlayerBase* playerbase;
 	GameplaySystem* gameplay;
 	Database* database;
 	std::vector<GameObject*> objectsToToTransmitStatesFor;
@@ -96,4 +96,3 @@ private:
 
 	std::vector<PlayerScore> scoresToSend;
 };
-

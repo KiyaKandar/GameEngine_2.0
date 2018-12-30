@@ -13,13 +13,13 @@ public:
 
 	virtual ~Subsystem();
 
-	void updateSubsystem();
-	virtual void updateNextFrame(const float& deltaTime = 0.0f) = 0;
+	void UpdateSubsystem();
+	virtual void UpdateNextFrame(const float& deltaTime = 0.0f) = 0;
 
-	void processMessages();
+	void ProcessMessages();
 
-	GameTimer* getTimer();
-	std::string getSubsystemName();
+	GameTimer* GetTimer() const;
+	std::string GetSubsystemName() const;
 
 protected:
 	std::string subsystemName;
@@ -27,4 +27,3 @@ protected:
 	GameTimer* timer;
 	GameTimer* frameTimer;
 };
-

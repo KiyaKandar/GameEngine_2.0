@@ -13,17 +13,17 @@ public:
 		const NCLVector2 resolution, Camera* camera, std::vector<SceneNode*>* nodesInFrame);
 	~BasicGeometry();
 
-	void linkShaders() override;
-	void regenerateShaders() override;
+	void LinkShaders() override;
+	void RegenerateShaders() override;
 
-	void initialise() override;
-	void apply() override;
+	void Initialise() override;
+	void Apply() override;
 
 private:
 	std::vector<SceneNode*>* nodesInFrame;
 
 
-	void locateUniforms() override;
+	void LocateUniforms() override;
 	Shader* basicShader;
 
 	Camera* camera;

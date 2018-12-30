@@ -4,9 +4,6 @@
 #include "../../Utilities/GameTimer.h"
 #include "../../Input/Devices/Window.h"
 
-
-
-
 #include <memory>
 #include "Scene Management/SceneManager.h"
 #include "Rendering/RenderingSystem.h"
@@ -26,20 +23,20 @@ public:
 	GameLoop(System* gameSystem, Database* database, Startup* startup);
 	~GameLoop();
 
-	void executeGameLoop();
-	void updateGameObjects(float deltaTime);
+	void ExecuteGameLoop();
+	void UpdateGameObjects(float deltaTime) const;
 
-	void addCameraToGameLoop(Camera* camera)
+	void AddCameraToGameLoop(Camera* camera)
 	{
 		this->camera = camera;
 	}
 
-	void addWindowToGameLoop(Window* window)
+	void AddWindowToGameLoop(Window* window)
 	{
 		this->window = window;
 	}
 
-	void addGameTimerToGameLoop(GameTimer* timer)
+	void AddGameTimerToGameLoop(GameTimer* timer)
 	{
 		loopTimer = timer;
 	}
@@ -56,4 +53,3 @@ private:
 	bool quit = false;
 	float deltaTimeMultiplier = 1.0f;
 };
-

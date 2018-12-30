@@ -11,7 +11,7 @@ FPSCounter::~FPSCounter()
 {
 }
 
-void FPSCounter::calculateFPS(const float& time)
+void FPSCounter::CalculateFps(const float& time)
 {
 	frameTime += time;
 	++frames;

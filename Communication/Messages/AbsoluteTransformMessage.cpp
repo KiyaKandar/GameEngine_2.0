@@ -12,7 +12,7 @@ AbsoluteTransformMessage::~AbsoluteTransformMessage()
 {
 }
 
-AbsoluteTransformMessage AbsoluteTransformMessage::builder(Node* node)
+AbsoluteTransformMessage AbsoluteTransformMessage::Builder(Node* node)
 {
 	std::string nodeDestination = "";
 	std::string nodeResourcename = "";
@@ -51,7 +51,7 @@ AbsoluteTransformMessage AbsoluteTransformMessage::builder(Node* node)
 	return AbsoluteTransformMessage(nodeDestination, nodeResourcename, nodeTransform);
 }
 
-AbsoluteTransformMessage AbsoluteTransformMessage::tokensToMessage(std::vector<std::string> lineTokens)
+AbsoluteTransformMessage AbsoluteTransformMessage::TokensToMessage(std::vector<std::string> lineTokens)
 {
 	std::string nodeDestination = lineTokens[1];
 	std::string nodeResourcename = lineTokens[2];

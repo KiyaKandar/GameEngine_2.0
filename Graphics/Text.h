@@ -9,12 +9,16 @@ public:
 
 	Text(std::string text = "", NCLVector3 position = NCLVector3(),
 		float size = 0, bool perspective = false)
-		:text(text),
-		position(position),
-		size(size),
-		perspective(perspective) {}
+		: text(text),
+		  position(position),
+		  size(size),
+		  perspective(perspective)
+	{
+	}
 
-	~Text() {}
+	~Text()
+	{
+	}
 
 	std::string text;
 	NCLVector3 position;

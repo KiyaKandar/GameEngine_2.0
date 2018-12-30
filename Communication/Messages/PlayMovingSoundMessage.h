@@ -13,7 +13,7 @@ public:
 		std::string soundID, std::string soundNodeIdentifier, std::string gameObjectID);
 	~PlayMovingSoundMessage();
 
-	static PlayMovingSoundMessage builder(Node* node);
+	static PlayMovingSoundMessage Builder(Node* node);
 
 	NCLVector3 *position;
 	SoundPriority priority;

@@ -17,12 +17,12 @@ public:
 	void preparePaintSurface(std::vector<GameObject*> surfaceObjects);
 	void addPainterObjectForNextFrame(GameObject* painter);
 
-	void linkShaders() override;
-	void initialise() override;
-	void apply() override;
-	void regenerateShaders() override;
+	void LinkShaders() override;
+	void Initialise() override;
+	void Apply() override;
+	void RegenerateShaders() override;
 
-	void clear()
+	void Clear()
 	{
 		while (!painters.empty())
 		{
@@ -36,7 +36,7 @@ public:
 	NCLMatrix4 textureMatrices;
 
 private:
-	void locateUniforms() override;
+	void LocateUniforms() override;
 
 	Database* database;
 	std::queue<GameObject*> painters;

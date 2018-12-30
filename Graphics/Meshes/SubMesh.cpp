@@ -135,7 +135,7 @@ void SubMesh::DrawShadow(Shader& shader, NCLMatrix4& worldTransform)
 	glActiveTexture(GL_TEXTURE0);
 }
 
-void SubMesh::addTexture(unsigned int texture)
+void SubMesh::AddTexture(unsigned int texture)
 {
 	Texture text;
 	text.type = "diffuseTex";

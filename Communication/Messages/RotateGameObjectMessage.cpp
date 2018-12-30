@@ -13,7 +13,7 @@ RotateGameObjectMessage::~RotateGameObjectMessage()
 {
 }
 
-RotateGameObjectMessage RotateGameObjectMessage::builder(Node* node)
+RotateGameObjectMessage RotateGameObjectMessage::Builder(Node* node)
 {
 	std::string destination = "";
 	std::string object = "";
@@ -43,7 +43,7 @@ RotateGameObjectMessage RotateGameObjectMessage::builder(Node* node)
 	return RotateGameObjectMessage(destination, object, rotation, nodeRelative);
 }
 
-RotateGameObjectMessage RotateGameObjectMessage::tokensToMessage(std::vector<std::string> lineTokens)
+RotateGameObjectMessage RotateGameObjectMessage::TokensToMessage(std::vector<std::string> lineTokens)
 {
 	std::string nodeDestination = lineTokens[1];
 	std::string nodeResourcename = lineTokens[2];

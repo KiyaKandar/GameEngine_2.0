@@ -52,7 +52,7 @@ public:
 	inline		 PhysicsNode* Parent()		 { return m_Parent; }
 	inline const PhysicsNode* Parent() const { return m_Parent; }
 
-	virtual void setScale(NCLVector3 scale, float invMass) = 0;
+	virtual void SetScale(NCLVector3 scale, float invMass) = 0;
 
 //<----- USED BY COLLISION DETECTION ----->
 	// Get all collision axes between the current shape and the given

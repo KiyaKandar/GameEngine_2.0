@@ -14,18 +14,18 @@ typedef std::function<void()> Executable;
 class ActionBuilder
 {
 public:
-	static GameplayAction buildAction(Node* node);
-	static TimedGameplayAction buildTimedAction(Node* node);
+	static GameplayAction BuildAction(Node* node);
+	static TimedGameplayAction BuildTimedAction(Node* node);
 
-	static void compileActionSection(Node* section, std::vector<Condition>& conditions, std::vector<Executable>& executables);
-	static Executable compileActionSectionWithoutCondition(Node* section);
+	static void CompileActionSection(Node* section, std::vector<Condition>& conditions, std::vector<Executable>& executables);
+	static Executable CompileActionSectionWithoutCondition(Node* section);
 
-	static void setExecutableBuilder(std::function<Executable(Node*)> executableBuilder);
+	static void SetExecutableBuilder(std::function<Executable(Node*)> executableBuilder);
 private:
-	static GameplayAction buildFinalActionWithCondition(std::vector<Condition>& conditions, std::vector<Executable>& executables);
-	static GameplayAction buildFinalAction(std::vector<Executable>& executables);
+	static GameplayAction BuildFinalActionWithCondition(std::vector<Condition>& conditions, std::vector<Executable>& executables);
+	static GameplayAction BuildFinalAction(std::vector<Executable>& executables);
 
-	static Condition buildIfStatement(Node* node);
+	static Condition BuildIfStatement(Node* node);
 	static std::function<Executable(Node*)> executableBuilder;
 };
 

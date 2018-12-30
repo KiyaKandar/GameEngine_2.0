@@ -18,12 +18,12 @@ public:
 	void UnhighlightButton();
 	void ExecuteSelectedButton() override;
 
-	void moveSelectedDown() override;
-	void moveSelectedUp() override;
+	void MoveSelectedDown() override;
+	void MoveSelectedUp() override;
 	void moveSelectedRight();
-	void moveSelectedLeft() override;
+	void MoveSelectedLeft() override;
 
-	std::vector<Button*>* getAllButtonsInMenu() override;
+	std::vector<Button*>* GetAllButtonsInMenu() override;
 
 private:
 	void buildTree(Button* button);

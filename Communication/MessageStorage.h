@@ -12,11 +12,11 @@ public:
 	MessageStorage();
 	~MessageStorage();
 
-	void addMessageBuffer(const std::string& bufferName);
-	MessageDeliveryBuffer* getMessageBufferByName(const std::string& bufferName);
+	void AddMessageBuffer(const std::string& bufferName);
+	MessageDeliveryBuffer* GetMessageBufferByName(const std::string& bufferName);
 
-	void deliverMessage(Message* message, unsigned int threadId);
-	void clearMessageStorage();
+	void DeliverMessage(Message* message, unsigned int threadId);
+	void ClearMessageStorage();
 
 private:
 	std::map<std::string, MessageDeliveryBuffer*> activeMessageBuffers;

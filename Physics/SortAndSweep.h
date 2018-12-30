@@ -20,15 +20,15 @@ public:
 
 		for (unsigned x = 0; x < nodes.size(); ++x)
 		{
-			if (nodes[x]->getEnabled())
+			if (nodes[x]->GetEnabled())
 			{
 				float maxA = GetMaxXCoordOfNode(nodes[x]);
 
 				for (unsigned y = x + 1; y < nodes.size(); ++y)
 				{
-					if (nodes[y]->getEnabled())
+					if (nodes[y]->GetEnabled())
 					{
-						if (!(nodes[x]->getIsStatic() && nodes[y]->getIsStatic()))
+						if (!(nodes[x]->GetIsStatic() && nodes[y]->GetIsStatic()))
 						{
 							float minB = GetMinXCoordOfNode(nodes[y]);
 

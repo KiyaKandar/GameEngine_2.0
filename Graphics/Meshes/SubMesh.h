@@ -120,7 +120,7 @@ public:
 		boundingRadius = max(minLength, maxLength);//(box.max - box.min).Length() / 2;//
 	}
 
-	void addTexture(unsigned int texture);
+	void AddTexture(unsigned int texture);
 
 	//Mesh Data
 	std::vector<Vertex> vertices;

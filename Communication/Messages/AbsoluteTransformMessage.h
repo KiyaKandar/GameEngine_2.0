@@ -13,8 +13,8 @@ public:
 		NCLMatrix4 transform);
 	~AbsoluteTransformMessage();
 
-	static AbsoluteTransformMessage builder(Node* node);
-	static AbsoluteTransformMessage tokensToMessage(std::vector<std::string> lineTokens);
+	static AbsoluteTransformMessage Builder(Node* node);
+	static AbsoluteTransformMessage TokensToMessage(std::vector<std::string> lineTokens);
 
 	NCLMatrix4 transform;
 	std::string resourceName;

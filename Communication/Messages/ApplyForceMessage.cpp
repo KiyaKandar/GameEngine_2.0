@@ -19,7 +19,7 @@ ApplyForceMessage::~ApplyForceMessage()
 {
 }
 
-ApplyForceMessage ApplyForceMessage::builder(Node* node)
+ApplyForceMessage ApplyForceMessage::Builder(Node* node)
 {
 	std::string destination = "";
 	std::string object = "";
@@ -68,7 +68,7 @@ ApplyForceMessage ApplyForceMessage::builder(Node* node)
 }
 
 //APPLY_FORCE Physics player0 force=5,5,5
-ApplyForceMessage ApplyForceMessage::tokensToMessage(std::vector<std::string> lineTokens)
+ApplyForceMessage ApplyForceMessage::TokensToMessage(std::vector<std::string> lineTokens)
 {
 	std::string nodeDestination = lineTokens[1];
 	std::string nodeResourcename = lineTokens[2];

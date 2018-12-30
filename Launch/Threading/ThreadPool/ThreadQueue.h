@@ -17,10 +17,10 @@ class ThreadQueue
 public:
 	~ThreadQueue()
 	{
-		invalidate();
+		Invalidate();
 	}
 
-	bool getAvailableTask(T& out)
+	bool GetAvailableTask(T& out)
 	{
 		std::unique_lock<std::mutex> lock(queueLock);
 
@@ -40,7 +40,7 @@ public:
 		return true;
 	}
 
-	void push(T value) 
+	void Push(T value)
 	{
 		std::unique_lock<std::mutex> lock(queueLock);
 
@@ -48,18 +48,18 @@ public:
 		condition.notify_one();
 	}
 
-	bool isEmpty() const
+	bool IsEmpty() const
 	{
 		std::lock_guard<std::mutex> lock(queueLock);
 
 		return tasks.empty();
 	}
 
-	void deleteAllTasks()
+	void DeleteAllTasks()
 	{
 		std::lock_guard<std::mutex> lock(queueLock);
 
-		while (!tasks.empty()) 
+		while (!tasks.empty())
 		{
 			tasks.pop();
 		}
@@ -67,7 +67,7 @@ public:
 		condition.notify_all();
 	}
 
-	void invalidate()
+	void Invalidate()
 	{
 		std::lock_guard<std::mutex> lock(queueLock);
 
@@ -75,8 +75,7 @@ public:
 		condition.notify_all();
 	}
 
-		
-	bool isValid() const
+	bool IsValid() const
 	{
 		std::lock_guard<std::mutex> lock(queueLock);
 
@@ -84,7 +83,7 @@ public:
 	}
 
 private:
-	std::atomic_bool valid { true };
+	std::atomic_bool valid{true};
 
 	mutable std::mutex queueLock;
 	std::queue<T> tasks;

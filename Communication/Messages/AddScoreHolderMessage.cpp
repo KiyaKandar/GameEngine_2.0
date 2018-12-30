@@ -10,7 +10,7 @@ AddScoreHolderMessage::~AddScoreHolderMessage()
 {
 }
 
-AddScoreHolderMessage AddScoreHolderMessage::builder(Node* node)
+AddScoreHolderMessage AddScoreHolderMessage::Builder(Node* node)
 {
 	std::string nodeDestination = "";
 	std::string nodeResourceName = "";
@@ -30,7 +30,7 @@ AddScoreHolderMessage AddScoreHolderMessage::builder(Node* node)
 	return AddScoreHolderMessage(nodeDestination, nodeResourceName);
 }
 
-AddScoreHolderMessage AddScoreHolderMessage::tokensToMessage(std::vector<std::string> lineTokens)
+AddScoreHolderMessage AddScoreHolderMessage::TokensToMessage(std::vector<std::string> lineTokens)
 {
 	std::string destination = lineTokens[1];
 	std::string resource = lineTokens[2];

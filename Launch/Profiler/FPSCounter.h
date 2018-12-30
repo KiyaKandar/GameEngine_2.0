@@ -8,10 +8,9 @@ public:
 	FPSCounter();
 	~FPSCounter();
 
-	void calculateFPS(const float& time);
+	void CalculateFps(const float& time);
 
-	int	frames;
+	int frames;
 	float frameTime;
 	float fps;
 };
-

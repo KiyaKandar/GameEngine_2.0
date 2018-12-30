@@ -23,37 +23,37 @@ public:
 	ThreadPool();
 	ThreadPool(const int numThreads);
 
-	~ThreadPool() 
+	~ThreadPool()
 	{
 		running = false;
-		taskQueue.invalidate();
+		taskQueue.Invalidate();
 
-		joinAllThreads();
+		JoinAllThreads();
 	}
 
 	template <typename Function, typename... Params>
-	inline auto submitJob(Function&& func, Params&&... params)
+	inline auto SubmitJob(Function&& func, Params&&... params)
 	{
 		auto thisTask = bind(forward<Function>(func), forward<Params>(params)...);
 
 		using resultType = std::result_of_t<decltype(thisTask)()>; //What will the function return?
-		using packagedTask = std::packaged_task<resultType()>;		 //Prepare the function for async...
-		using taskType = ThreadTask<packagedTask>;			 //Create a thread task for that function.
+		using packagedTask = std::packaged_task<resultType()>; //Prepare the function for async...
+		using taskType = ThreadTask<packagedTask>; //Create a thread task for that function.
 
-		packagedTask task{ move(thisTask) };
-		TaskFuture<resultType> result{ task.get_future() };
+		packagedTask task{move(thisTask)};
+		TaskFuture<resultType> result{task.get_future()};
 
-		taskQueue.push(std::make_unique<taskType>(move(task)));
+		taskQueue.Push(std::make_unique<taskType>(move(task)));
 		return result;
 	}
 
-	static int getLocalThreadId();
-	static unsigned int getTotalNumberOfThreads();
+	static int GetLocalThreadId();
+	static unsigned int GetTotalNumberOfThreads();
 
 private:
-	void initialiseWorkers(int numWorkers);
-	void spoolThreadToPollNewTasks(const int threadId);
-	void joinAllThreads();
+	void InitialiseWorkers(int numWorkers);
+	void SpoolThreadToPollNewTasks(const int threadId);
+	void JoinAllThreads();
 
 	std::atomic_bool running;
 	ThreadQueue<std::unique_ptr<Task>> taskQueue;

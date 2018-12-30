@@ -15,40 +15,41 @@ public:
 	SceneNode(Mesh* mesh, NCLVector4 colour = NCLVector4(1, 1, 1, 1));
 	virtual ~SceneNode(void);
 
-	void setParent(GameObject* parentObject)
+	void SetParent(GameObject* parentObject)
 	{
 		this->parentObject = parentObject;
 	}
 
-	GameObject* getParent()
+	GameObject* GetParent() const
 	{
 		return parentObject;
 	}
 
-	void setPosition(NCLVector3 position)
+	void SetPosition(NCLVector3 position)
 	{
 		transform.setPositionVector(position);
 	}
 
-	void  SetTransform(const NCLMatrix4 &matrix)
+	void SetTransform(const NCLMatrix4& matrix)
 	{
 		transform = matrix;
 	}
 
-	void	SetTransform(NCLVector3 pos) 
+	void SetTransform(NCLVector3 pos)
 	{
 		transform.setPositionVector(pos);
 	}
 
-	Mesh* GetMesh()
+	Mesh* GetMesh() const
 	{
 		return mesh;
 	}
 
-	NCLMatrix4 GetTransform()
+	NCLMatrix4 GetTransform() const
 	{
 		return transform;
 	}
+
 	NCLMatrix4 GetWorldTransform() const
 	{
 		return worldTransform;
@@ -60,7 +61,7 @@ public:
 		mesh->SetbackupColourAttributeForAllSubMeshes(c);
 	}
 
-	NCLVector4 getColour();
+	NCLVector4 getColour() const;
 
 	void SetModelScale(NCLVector3 s)
 	{
@@ -72,7 +73,11 @@ public:
 	{
 		return distanceFromCamera;
 	}
-	void	SetCameraDistance(float f) { distanceFromCamera = f; }
+
+	void SetCameraDistance(float f)
+	{
+		distanceFromCamera = f;
+	}
 
 	void AddChild(SceneNode* s);
 	void RemoveChild(SceneNode* s);
@@ -81,29 +86,33 @@ public:
 	virtual void Draw(Shader& shader);
 	virtual void DrawShadow(Shader& shader);
 
-	std::vector<SceneNode*>::const_iterator GetChildIteratorStart() {
+	std::vector<SceneNode*>::const_iterator GetChildIteratorStart()
+	{
 		return children.begin();
 	}
 
-	std::vector<SceneNode*>::const_iterator GetChildIteratorEnd() {
+	std::vector<SceneNode*>::const_iterator GetChildIteratorEnd()
+	{
 		return children.end();
 	}
 
-	static bool CompareByCameraDistance(SceneNode* a, SceneNode* b) {
+	static bool CompareByCameraDistance(SceneNode* a, SceneNode* b)
+	{
 		return (a->distanceFromCamera < b->distanceFromCamera)
-			? true : false;
+			       ? true
+			       : false;
 	}
 
-	void setEnabled(bool isEnabled)
+	void SetEnabled(bool isEnabled)
 	{
 		this->isEnabled = isEnabled;
 	}
 
-	void takeLocalCopyOfMeshAnimations();
+	void TakeLocalCopyOfMeshAnimations();
 
-	std::vector<SceneNode*> getChildren();
+	std::vector<SceneNode*> GetChildren() const;
 
-	const float getRadius();
+	const float GetRadius() const;
 
 	bool isPaintSurface = false;
 	int hasTexture = 0;
@@ -114,18 +123,17 @@ public:
 	float reflectiveStrength = 0.0f;
 
 protected:
-	SceneNode*	parent;
-	Mesh*		mesh;
-	NCLMatrix4		worldTransform;
-	NCLMatrix4		transform;
-	NCLVector4		colour;
+	SceneNode* parent;
+	Mesh* mesh;
+	NCLMatrix4 worldTransform;
+	NCLMatrix4 transform;
+	NCLVector4 colour;
 
-	float		distanceFromCamera;
-	float		boundingRadius;
+	float distanceFromCamera;
+	float boundingRadius;
 
 	std::vector<SceneNode*> children;
 	GameObject* parentObject;
 
 	vector<BoneInfo> boneInfo;
 };
-

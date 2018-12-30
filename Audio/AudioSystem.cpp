@@ -8,32 +8,32 @@ AudioSystem::AudioSystem(Database *database, Camera *camera) : Subsystem("AudioS
 	soundManager = std::make_unique<SoundManager>(database, camera);
 
 	incomingMessages = MessageProcessor(std::vector<MessageType>{ MessageType::PLAY_SOUND, MessageType::STOP_SOUND, MessageType::MOVING_SOUND }, 
-		DeliverySystem::getPostman()->getDeliveryPoint("AudioSystem"));
+		DeliverySystem::GetPostman()->GetDeliveryPoint("AudioSystem"));
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::PLAY_SOUND, [&soundManagerPointer = soundManager](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::PLAY_SOUND, [&soundManagerPointer = soundManager](Message* message)
 	{
 		PlaySoundMessage* soundMessage = static_cast<PlaySoundMessage*>(message);
 		soundManagerPointer->AddNewSoundNode(soundMessage);
 	});
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::MOVING_SOUND, [&soundManagerPointer = soundManager](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::MOVING_SOUND, [&soundManagerPointer = soundManager](Message* message)
 	{
 		PlayMovingSoundMessage* soundMessage = static_cast<PlayMovingSoundMessage*>(message);
 		soundManagerPointer->AddNewSoundNode(soundMessage);
 	});
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::STOP_SOUND, [&soundManagerPointer = soundManager](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::STOP_SOUND, [&soundManagerPointer = soundManager](Message* message)
 	{
 		StopSoundMessage* soundMessage = static_cast<StopSoundMessage*>(message);
-		soundManagerPointer->stopSoundNode(soundMessage);
+		soundManagerPointer->StopSoundNode(soundMessage);
 	});
 }
 
-void AudioSystem::updateNextFrame(const float& deltaTime)
+void AudioSystem::UpdateNextFrame(const float& deltaTime)
 {
 	timer->beginTimedSection();
 
-	soundManager->update(deltaTime);
+	soundManager->Update(deltaTime);
 
 	timer->endTimedSection();
 }

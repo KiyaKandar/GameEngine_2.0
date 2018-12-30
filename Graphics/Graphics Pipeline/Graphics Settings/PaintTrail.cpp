@@ -34,7 +34,7 @@ void PaintTrail::preparePaintSurface(std::vector<GameObject*> surfaceObjects)
 {
 	for (GameObject* surfaceObject : surfaceObjects)
 	{
-		surfaceObject->getSceneNode()->isPaintSurface = true;
+		surfaceObject->GetSceneNode()->isPaintSurface = true;
 	}
 }
 
@@ -47,24 +47,24 @@ void PaintTrail::addPainterObjectForNextFrame(GameObject* painter)
 	}
 }
 
-void PaintTrail::linkShaders()
+void PaintTrail::LinkShaders()
 {
 	paintTrailShader->LinkProgram();
 }
 
-void PaintTrail::regenerateShaders()
+void PaintTrail::RegenerateShaders()
 {
 	paintTrailShader->Regenerate();
 }
 
-void PaintTrail::locateUniforms()
+void PaintTrail::LocateUniforms()
 {
 	GLuint program = paintTrailShader->GetProgram();
 	viewMatrixLocation = glGetUniformLocation(program, "viewMatrix");
 	projMatrixLocation = glGetUniformLocation(program, "projMatrix");
 }
 
-void PaintTrail::initialise()
+void PaintTrail::Initialise()
 {
 	GraphicsUtility::ClearGLErrorStack();
 
@@ -87,12 +87,12 @@ void PaintTrail::initialise()
 	GraphicsUtility::VerifyBuffer("RBO Depth Paint Trail", false);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	locateUniforms();
+	LocateUniforms();
 }
 
-void PaintTrail::apply()
+void PaintTrail::Apply()
 {
-	setCurrentShader(paintTrailShader);
+	SetCurrentShader(paintTrailShader);
 	glBindFramebuffer(GL_FRAMEBUFFER, buffer);
 
 	GLuint program = currentShader->GetProgram();
@@ -107,7 +107,7 @@ void PaintTrail::apply()
 		painters.pop();
 
 		glUniform4fv(glGetUniformLocation(program, "baseColour"), 1, (float*)&painter->stats.colourToPaint);
-		painter->getSceneNode()->DrawShadow(*paintTrailShader);
+		painter->GetSceneNode()->DrawShadow(*paintTrailShader);
 	}
 
 	existingPainters.clear();

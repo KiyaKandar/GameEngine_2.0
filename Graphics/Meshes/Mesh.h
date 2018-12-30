@@ -33,20 +33,20 @@ public:
 
 		file = path;
 
-		setSize(sizeof(*this));
+		SetSize(sizeof(*this));
 	}
 
 	Mesh(const string path, int numModels, const string name = "")
 	{
 		meshScene = nullptr;
-		setName(name);
+		SetName(name);
 
 		this->numModels = numModels;
 		LoadModel(path);
 
 		file = path;
 		
-		setSize(sizeof(*this));
+		SetSize(sizeof(*this));
 	}
 
 	Mesh()
@@ -66,7 +66,7 @@ public:
 	void LoadMesh(std::string path);
 	void LoadMD5ProxyFile(std::string path);
 
-	void setupMesh()
+	void SetupMesh()
 	{
 		for (SubMesh* submesh : meshes)
 		{
@@ -80,7 +80,7 @@ public:
 
 		if (textureFile != "")
 		{
-			loadTexture(textureFile);
+			LoadTexture(textureFile);
 		}
 	}
 
@@ -101,15 +101,15 @@ public:
 
 	virtual void Draw(Shader& shader,NCLMatrix4 worldTransform);
 
-	float getRadius()
+	float GetRadius()
 	{
 		return this->meshes[0]->GetBoundingRadius();
 	}
 	
 	vector<VertexBoneData> LoadBones(const aiMesh* mesh, vector<BoneInfo>& boneInfo);
 
-	void loadTexture(std::string filepath);
-	void setTextureFile(std::string textureFile)
+	void LoadTexture(std::string filepath);
+	void SetTextureFile(std::string textureFile)
 	{
 		this->textureFile = textureFile;
 	}

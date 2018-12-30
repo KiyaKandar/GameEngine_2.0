@@ -16,6 +16,6 @@ public:
 	float pitch;
 	float yaw;
 
-	static MoveCameraRelativeToGameObjectMessage builder(Node* node);
+	static MoveCameraRelativeToGameObjectMessage Builder(Node* node);
 };
 

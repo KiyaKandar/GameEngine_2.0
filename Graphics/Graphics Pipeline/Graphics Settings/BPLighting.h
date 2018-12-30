@@ -18,16 +18,16 @@ public:
 		delete lightingPassShader;
 	}
 
-	void linkShaders()  override;
-	void regenerateShaders()  override;
+	void LinkShaders()  override;
+	void RegenerateShaders()  override;
 
-	void updateShadowData(ShadowData* shadowData) 
+	void UpdateShadowData(ShadowData* shadowData) 
 	{
 		this->shadowData = shadowData;
 	}
 
-	void initialise() override;
-	void apply() override;
+	void Initialise() override;
+	void Apply() override;
 
 	GLuint FBO;
 	float ambientLighting;
@@ -35,8 +35,8 @@ public:
 	bool* ShadowsApplied;
 
 private:
-	void locateUniforms() override;
-	void lightingPass();
+	void LocateUniforms() override;
+	void LightingPass();
 
 	//Uniform locations
 	GLint lightDataBuffer;

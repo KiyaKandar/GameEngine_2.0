@@ -13,18 +13,18 @@ public:
 	Console(Keyboard* keyboard, Camera* camera, Mouse* mouse);
 	~Console();
 
-	void updateNextFrame(const float& deltaTime) override;
+	void UpdateNextFrame(const float& deltaTime) override;
 
 private:
-	void toggleConsoleEnabled();
-	void recordKeyPresses();
+	void ToggleConsoleEnabled();
+	void RecordKeyPresses();
 
-	void traverseInputHistory();
-	void deleteLastCharacter();
-	void readKeyboardInputs();
-	void displayText();
+	void TraverseInputHistory();
+	void DeleteLastCharacter();
+	void ReadKeyboardInputs();
+	void DisplayText();
 
-	void moveCamera();
+	void MoveCamera();
 
 	Keyboard* keyboard;
 	Mouse* mouse;
@@ -55,4 +55,3 @@ private:
 
 	std::vector<SinglePressKeyListener> keyListeners;
 };
-

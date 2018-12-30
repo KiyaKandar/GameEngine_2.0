@@ -14,18 +14,18 @@ public:
 	SkeletonDisplay() {}
 	~SkeletonDisplay() {}
 
-	void drawSkeleton(const MeshNode& parentNode, const aiMatrix4x4& parentTransform);
+	void DrawSkeleton(const MeshNode& parentNode, const aiMatrix4x4& parentTransform);
 
 private:
-	bool readyToDrawSkeleton();
-	void clearPreviousDraw();
-	void prepareSkeletonBoneRendering(const MeshNode& parentNode, const aiMatrix4x4& parentTransform);
+	bool ReadyToDrawSkeleton();
+	void ClearPreviousDraw();
+	void PrepareSkeletonBoneRendering(const MeshNode& parentNode, const aiMatrix4x4& parentTransform);
 
-	void drawChildSkeletonBone(const MeshNode& parentNode, const aiMatrix4x4& parentTransform);
+	void DrawChildSkeletonBone(const MeshNode& parentNode, const aiMatrix4x4& parentTransform);
 
-	void getJointPosition(aiVector3D& position, const aiMatrix4x4& jointTrainsform);
-	void displayJointNode(const aiVector3D& position);
-	void displayBoneLine(const aiVector3D& startPosition, const aiVector3D& endPosition);
+	void GetJointPosition(aiVector3D& position, const aiMatrix4x4& jointTrainsform);
+	void DisplayJointNode(const aiVector3D& position);
+	void DisplayBoneLine(const aiVector3D& startPosition, const aiVector3D& endPosition);
 
 	TrackedGroupMessageSender<DebugLineMessage> skeletonBoneMessageSender;
 	std::vector<DebugLineMessage> skeletonBoneMessages;

@@ -15,14 +15,14 @@ public:
 		AnimationParams animationParams, AnimationParams transition);
 	~PlayAnimationMessage();
 
-	static PlayAnimationMessage builder(Node* node);
+	static PlayAnimationMessage Builder(Node* node);
 
 	std::string gameObjectID;
 	AnimationParams animationParams;
 	AnimationParams transition;
 
 private:
-	static AnimationParams paramsBuilder(Node* node);
-	static NodeTransformSpecifier blockerBuilder(Node* node);
+	static AnimationParams ParamsBuilder(Node* node);
+	static NodeTransformSpecifier BlockerBuilder(Node* node);
 };
 

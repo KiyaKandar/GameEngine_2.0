@@ -15,7 +15,7 @@ public:
 	InputManager(PlayerBase* playerbase);
 	~InputManager();
 
-	void updateNextFrame(const float& deltatime) override;
+	void UpdateNextFrame(const float& deltatime) override;
 
 	PlayerBase* GetPlayerbase() const
 	{
@@ -23,7 +23,7 @@ public:
 	}
 
 private:
-	void sendInputMessagesForKeys(std::vector<ButtonInputData>& inputData, Player* player);
+	void SendInputMessagesForKeys(std::vector<ButtonInputData>& inputData, Player* player);
 
 	PlayerBase* playerbase;
 	Window* window;

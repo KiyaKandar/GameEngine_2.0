@@ -16,7 +16,7 @@ TextMeshMessage::~TextMeshMessage()
 {
 }
 
-TextMeshMessage TextMeshMessage::builder(Node* node)
+TextMeshMessage TextMeshMessage::Builder(Node* node)
 {
 	std::string nodeDestination = "";
 	bool nodeHasBackground = false;

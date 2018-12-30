@@ -41,17 +41,17 @@ public:
 	
 	virtual ~Message() {}
 
-	const std::string getDestination() const
+	const std::string GetDestination() const
 	{ 
 		return destination;
 	}
 
-	const MessageType getMessageType() const
+	const MessageType GetMessageType() const
 	{ 
 		return type; 
 	}
 
-	virtual std::string getDataField(std::string name)
+	virtual std::string GetDataField(std::string name)
 	{
 		if (name == "destination")
 		{
@@ -67,7 +67,7 @@ public:
 		}
 	}
 	
-	void addIntegerInformation(std::string key, std::string value)
+	void AddIntegerInformation(std::string key, std::string value)
 	{
 		integerInformation.insert({ key, value });
 	}

@@ -105,17 +105,17 @@ Window::Window(std::string title,
 	}
 
 	timer = new GameTimer();
-	elapsedMS = timer->getMillisecondsSinceStart();
+	elapsedMs = timer->getMillisecondsSinceStart();
 
-	Window::getMouse()->setAbsolutePositionBounds((unsigned int)size.x, (unsigned int)size.y);
+	Window::GetMouse()->SetAbsolutePositionBounds((unsigned int)size.x, (unsigned int)size.y);
 
 	POINT pt;
 	GetCursorPos(&pt);
 	ScreenToClient(window->windowHandle, &pt);
-	Window::getMouse()->setAbsolutePosition(pt.x, pt.y);
+	Window::GetMouse()->SetAbsolutePosition(pt.x, pt.y);
 
-	lockMouseToWindow(lockMouse);
-	showOSPointer(showMouse);
+	LockMouseToWindow(lockMouse);
+	ShowOsPointer(showMouse);
 
 	init = true;
 }
@@ -129,39 +129,39 @@ Window::~Window(void)
 	//FreeConsole();		//Destroy the console window
 }
 
-HWND Window::getHandle() {
+HWND Window::GetHandle() {
 	return windowHandle;
 }
 
-bool Window::hasInitialised() {
+bool Window::HasInitialised() {
 	return init;
 }
 
-bool	Window::updateWindow() {
+bool	Window::UpdateWindow() {
 	MSG		msg;
 
-	float diff = timer->getMillisecondsSinceStart() - elapsedMS;
+	float diff = timer->getMillisecondsSinceStart() - elapsedMs;
 
-	Window::getMouse()->updateDoubleClick(diff);
+	Window::GetMouse()->UpdateDoubleClick(diff);
 
-	Window::getKeyboard()->updateHolds();
-	Window::getMouse()->updateHolds();
+	Window::GetKeyboard()->UpdateHolds();
+	Window::GetMouse()->UpdateHolds();
 
 	while (PeekMessage(&msg, windowHandle, 0, 0, PM_REMOVE)) {
-		checkMessages(msg);
+		CheckMessages(msg);
 	}
 
-	elapsedMS = timer->getMillisecondsSinceStart();
+	elapsedMs = timer->getMillisecondsSinceStart();
 
 	return !forceQuit;
 }
 
-void Window::checkMessages(MSG &msg) {
+void Window::CheckMessages(MSG &msg) {
 	switch (msg.message) {				// Is There A Message Waiting?
 	case (WM_QUIT):
 	case (WM_CLOSE): {					// Have We Received A Quit Message?
-		window->showOSPointer(true);
-		window->lockMouseToWindow(false);
+		window->ShowOsPointer(true);
+		window->LockMouseToWindow(false);
 		forceQuit = true;
 	}break;
 	case (WM_INPUT): {
@@ -174,11 +174,11 @@ void Window::checkMessages(MSG &msg) {
 		RAWINPUT* raw = (RAWINPUT*)lpb;
 
 		if (keyboard && raw->header.dwType == RIM_TYPEKEYBOARD) {
-			Window::getKeyboard()->update(raw);
+			Window::GetKeyboard()->Update(raw);
 		}
 
 		if (mouse && raw->header.dwType == RIM_TYPEMOUSE) {
-			Window::getMouse()->update(raw);
+			Window::GetMouse()->Update(raw);
 		}
 		delete lpb;
 	}break;
@@ -193,8 +193,8 @@ void Window::checkMessages(MSG &msg) {
 LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 	switch (message) {
 	case(WM_DESTROY): {
-		window->showOSPointer(true);
-		window->lockMouseToWindow(false);
+		window->ShowOsPointer(true);
+		window->LockMouseToWindow(false);
 
 		PostQuitMessage(0);
 		window->forceQuit = true;
@@ -204,21 +204,21 @@ LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
 		if (LOWORD(wParam) == WA_INACTIVE) {
 			ReleaseCapture();
 			ClipCursor(NULL);
-			mouse->sleep();
+			mouse->Sleep();
 			keyboard->Sleep();
 		}
 		else {
 			if (window->init) {
-				mouse->wake();
-				keyboard->wake();
+				mouse->Wake();
+				keyboard->Wake();
 
 				POINT pt;
 				GetCursorPos(&pt);
 				ScreenToClient(window->windowHandle, &pt);
-				mouse->setAbsolutePosition(pt.x, pt.y);
+				mouse->SetAbsolutePosition(pt.x, pt.y);
 
 				if (window->lockMouse) {
-					window->lockMouseToWindow(true);
+					window->LockMouseToWindow(true);
 				}
 			}
 		}
@@ -226,7 +226,7 @@ LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
 	}break;
 	case (WM_LBUTTONDOWN): {
 		if (window->lockMouse) {
-			window->lockMouseToWindow(true);
+			window->LockMouseToWindow(true);
 		}
 
 	}break;
@@ -240,19 +240,19 @@ LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
 
 		if (window->mouseLeftWindow) {
 			window->mouseLeftWindow = false;
-			mouse->wake();
-			keyboard->wake();
+			mouse->Wake();
+			keyboard->Wake();
 
 			POINT pt;
 			GetCursorPos(&pt);
 			ScreenToClient(window->windowHandle, &pt);
-			mouse->setAbsolutePosition(pt.x, pt.y);
+			mouse->SetAbsolutePosition(pt.x, pt.y);
 		}
 
 	}break;
 	case(WM_MOUSELEAVE): {
 		window->mouseLeftWindow = true;
-		mouse->sleep();
+		mouse->Sleep();
 		keyboard->Sleep();
 	}break;
 	case(WM_SIZE): {
@@ -260,21 +260,21 @@ LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
 		window->size.y = (float)HIWORD(lParam);
 
 		if (window->init) {
-			mouse->setAbsolutePositionBounds(LOWORD(lParam), HIWORD(lParam));
+			mouse->SetAbsolutePositionBounds(LOWORD(lParam), HIWORD(lParam));
 
 			POINT pt;
 			GetCursorPos(&pt);
 			ScreenToClient(window->windowHandle, &pt);
-			mouse->setAbsolutePosition(pt.x, pt.y);
+			mouse->SetAbsolutePosition(pt.x, pt.y);
 
-			window->lockMouseToWindow(window->lockMouse);
+			window->LockMouseToWindow(window->lockMouse);
 		}
 	}break;
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-void	Window::lockMouseToWindow(bool lock) {
+void	Window::LockMouseToWindow(bool lock) {
 	lockMouse = lock;
 	if (lock) {
 		RECT		windowRect;
@@ -286,7 +286,7 @@ void	Window::lockMouseToWindow(bool lock) {
 		POINT pt;
 		GetCursorPos(&pt);
 		ScreenToClient(window->windowHandle, &pt);
-		Window::getMouse()->setAbsolutePosition(pt.x, pt.y);
+		Window::GetMouse()->SetAbsolutePosition(pt.x, pt.y);
 	}
 	else {
 		ReleaseCapture();
@@ -294,7 +294,7 @@ void	Window::lockMouseToWindow(bool lock) {
 	}
 }
 
-void	Window::showOSPointer(bool show) {
+void	Window::ShowOsPointer(bool show) {
 	if (show == showMouse) {
 		return;	//ShowCursor does weird things, due to being a counter internally...
 	}

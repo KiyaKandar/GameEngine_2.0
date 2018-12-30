@@ -11,11 +11,11 @@ public:
 	InputControl();
 	~InputControl();
 
-	void registerNewInputUserByDeliveryPoint(std::string deliveryPoint);
-	void blockAllInputUsersOtherThanCaller(std::string caller);
-	void unlockBlockedUsers();
+	void RegisterNewInputUserByDeliveryPoint(std::string deliveryPoint);
+	void BlockAllInputUsersOtherThanCaller(std::string caller);
+	void UnlockBlockedUsers();
 
-	static bool isBlocked(const std::string revievedMessage);
+	static bool IsBlocked(const std::string revievedMessage);
 
 private:
 	std::vector<std::string> inputUserDeliveryPoints;

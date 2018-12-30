@@ -16,63 +16,63 @@ GraphicsPipeline::~GraphicsPipeline()
 	modules.clear();
 }
 
-void GraphicsPipeline::toggleModule(std::string moduleIdentifier)
+void GraphicsPipeline::ToggleModule(std::string moduleIdentifier)
 {
 	for (GraphicsModule* module : modules)
 	{
-		if (module->getIdentifier() == moduleIdentifier) 
+		if (module->GetIdentifier() == moduleIdentifier) 
 		{
-			module->toggleModule();
+			module->ToggleModule();
 			break;
 		}
 	}
 }
 
-void GraphicsPipeline::toggleModule(std::string moduleIdentifier, bool enabled)
+void GraphicsPipeline::ToggleModule(std::string moduleIdentifier, bool enabled)
 {
 	for (GraphicsModule* module : modules)
 	{
-		if (module->getIdentifier() == moduleIdentifier)
+		if (module->GetIdentifier() == moduleIdentifier)
 		{
-			module->setIsEnabled(enabled);
+			module->SetIsEnabled(enabled);
 			break;
 		}
 	}
 }
 
-void GraphicsPipeline::updateModules(float dt)
+void GraphicsPipeline::UpdateModules(float dt)
 {
 	for (GraphicsModule* module : modules)
 	{
-		module->update(dt);
+		module->Update(dt);
 	}
 }
 
-void GraphicsPipeline::executeModules()
+void GraphicsPipeline::ExecuteModules()
 {
 	for (GraphicsModule* module : modules)
 	{
-		if (module->isEnabled())
+		if (module->IsEnabled())
 		{
-			parentTimer->beginChildTimedSection(module->getIdentifier());
-			module->apply();
-			parentTimer->endChildTimedSection(module->getIdentifier());
+			parentTimer->beginChildTimedSection(module->GetIdentifier());
+			module->Apply();
+			parentTimer->endChildTimedSection(module->GetIdentifier());
 		}
 	}
 }
 
 
-void GraphicsPipeline::addModule(GraphicsModule* module)
+void GraphicsPipeline::AddModule(GraphicsModule* module)
 {
-	parentTimer->addChildTimer(module->getIdentifier());
+	parentTimer->addChildTimer(module->GetIdentifier());
 	modules.push_back(module);
 }
 
-GraphicsModule* GraphicsPipeline::getGraphicsModule(std::string moduleIdentifier)
+GraphicsModule* GraphicsPipeline::GetGraphicsModule(std::string moduleIdentifier)
 {
 	for (GraphicsModule* module : modules)
 	{
-		if (module->getIdentifier() == moduleIdentifier)
+		if (module->GetIdentifier() == moduleIdentifier)
 		{
 			return module;
 		}

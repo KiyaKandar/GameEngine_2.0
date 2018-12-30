@@ -9,10 +9,10 @@ public:
 	GameplayInputBridge() {}
 	~GameplayInputBridge() {}
 
-	void addInputActionMapForPlayer(const InputActionMap& mapping);
-	void processPlayerInputMessage(const PlayerInputMessage& message);
+	void AddInputActionMapForPlayer(const InputActionMap& mapping);
+	void ProcessPlayerInputMessage(const PlayerInputMessage& message);
 
-	void clearInputActions()
+	void ClearInputActions()
 	{
 		actionsForEachPlayer.clear();
 	}

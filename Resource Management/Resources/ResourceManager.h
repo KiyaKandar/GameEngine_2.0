@@ -22,19 +22,19 @@ public:
 
 	~ResourceManager()
 	{
-		deleteAllResources();
+		DeleteAllResources();
 	}
 
-	void addResource(T* resource)
+	void AddResource(T* resource)
 	{
-		if ((currentSize + resource->getSize()) <= maxSize)
+		if ((currentSize + resource->GetSize()) <= maxSize)
 		{
-			resourceBuffer.insert({ resource->getName(), resource });
-			currentSize += resource->getSize();
+			resourceBuffer.insert({ resource->GetName(), resource });
+			currentSize += resource->GetSize();
 		}
 	}
 
-	T* getResource(std::string identifier)
+	T* GetResource(std::string identifier)
 	{
 		if (resourceBuffer.find(identifier) == resourceBuffer.end())
 		{
@@ -46,19 +46,19 @@ public:
 		}
 	}
 
-	void deleteResource(std::string identifier)
+	void DeleteResource(std::string identifier)
 	{
 		auto iterator = resourceBuffer.find(identifier);
 
 		if (iterator != resourceBuffer.end())
 		{
-			currentSize -= iterator->second->getSize();
+			currentSize -= iterator->second->GetSize();
 			delete iterator->second;
 			resourceBuffer.erase(identifier);
 		}
 	}
 
-	void deleteAllResources()
+	void DeleteAllResources()
 	{
 		for (auto iter = resourceBuffer.begin(); iter != resourceBuffer.end(); iter++)
 		{
@@ -69,17 +69,17 @@ public:
 		currentSize = 0;
 	}
 
-	std::unordered_map<std::string, T*> & getResourceBuffer()
+	std::unordered_map<std::string, T*> & GetResourceBuffer()
 	{
 		return resourceBuffer;
 	}
 
-	size_t getMaxSize() const
+	size_t GetMaxSize() const
 	{
 		return maxSize;
 	}
 
-	size_t getCurrentSize() const
+	size_t GetCurrentSize() const
 	{
 		return currentSize;
 	}

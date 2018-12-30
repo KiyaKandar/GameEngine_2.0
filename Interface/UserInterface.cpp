@@ -12,25 +12,25 @@ UserInterface::UserInterface(Keyboard* keyboard, NCLVector2 resolution) : Subsys
 
 	std::vector<MessageType> types = { MessageType::TEXT };
 
-	incomingMessages = MessageProcessor(types, DeliverySystem::getPostman()->getDeliveryPoint("UserInterface"));
-	DeliverySystem::getPostman()->insertMessage(TextMessage("InputManager", "RegisterInputUser UserInterface"));
+	incomingMessages = MessageProcessor(types, DeliverySystem::GetPostman()->GetDeliveryPoint("UserInterface"));
+	DeliverySystem::GetPostman()->InsertMessage(TextMessage("InputManager", "RegisterInputUser UserInterface"));
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::TEXT, [&blocked = blocked, this](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::TEXT, [&blocked = blocked, this](Message* message)
 	{
 		TextMessage* textMessage = static_cast<TextMessage*>(message);
 
 		if (textMessage->text == "Toggle")
 		{
-			this->toggleModule();
+			this->ToggleModule();
 		}
 		else
 		{
-			blocked = InputControl::isBlocked(textMessage->text);
+			blocked = InputControl::IsBlocked(textMessage->text);
 		}
 	});
 
 	menu = nullptr;
-	DeliverySystem::getPostman()->insertMessage(TextMessage("InputManager", "BlockAllInputs UserInterface"));
+	DeliverySystem::GetPostman()->InsertMessage(TextMessage("InputManager", "BlockAllInputs UserInterface"));
 
 	escapeListener = SinglePressKeyListener(KEYBOARD_ESCAPE, keyboard);
 	downListener = SinglePressKeyListener(KEYBOARD_DOWN, keyboard);
@@ -44,71 +44,71 @@ UserInterface::~UserInterface()
 	delete menu;
 }
 
-void UserInterface::setMenuFile(std::string newMenuFile)
+void UserInterface::SetMenuFile(std::string newMenuFile)
 {
 	menuFile = newMenuFile;
 }
 
-void UserInterface::initialise(Database* database)
+void UserInterface::Initialise(Database* database)
 {
 	if (menu != nullptr)
 	{
 		delete menu;
 	}
 
-	auto UIMeshesResources = database->getTable("UIMeshes")->getAllResources()->getResourceBuffer();
+	auto UIMeshesResources = database->GetTable("UIMeshes")->GetAllResources()->GetResourceBuffer();
 	for (auto UIMeshIterator = UIMeshesResources.begin(); UIMeshIterator != UIMeshesResources.end(); UIMeshIterator++)
 	{
-		static_cast<Mesh*>((*UIMeshIterator).second)->setupMesh();
+		static_cast<Mesh*>((*UIMeshIterator).second)->SetupMesh();
 	}
 
 	menu = new Menu(menuFile, database);
-	UserInterfaceDisplay::provide(menu);
+	UserInterfaceDisplay::Provide(menu);
 }
 
-void UserInterface::updateNextFrame(const float& deltaTime)
+void UserInterface::UpdateNextFrame(const float& deltaTime)
 {
-	if (escapeListener.keyPressed())
+	if (escapeListener.KeyPressed())
 	{
-		toggleModule();
+		ToggleModule();
 	}
 
 	if (enabled && !blocked)
 	{
-		if (downListener.keyPressed())
+		if (downListener.KeyPressed())
 		{
-			UserInterfaceDisplay::getInterface()->moveSelectedDown();
+			UserInterfaceDisplay::GetInterface()->MoveSelectedDown();
 		}
-		else if (upListener.keyPressed())
+		else if (upListener.KeyPressed())
 		{
-			UserInterfaceDisplay::getInterface()->moveSelectedUp();
+			UserInterfaceDisplay::GetInterface()->MoveSelectedUp();
 		}
-		else if (leftListener.keyPressed())
+		else if (leftListener.KeyPressed())
 		{
-			UserInterfaceDisplay::getInterface()->moveSelectedLeft();
+			UserInterfaceDisplay::GetInterface()->MoveSelectedLeft();
 		}
 
-		if (returnListener.keyPressed())
+		if (returnListener.KeyPressed())
 		{
-			UserInterfaceDisplay::getInterface()->ExecuteSelectedButton();
+			UserInterfaceDisplay::GetInterface()->ExecuteSelectedButton();
 		}
 	}
 }
 
-void UserInterface::toggleModule()
+void UserInterface::ToggleModule()
 {
 	if (enabled)
 	{
 		enabled = false;
-		DeliverySystem::getPostman()->insertMessage(TextMessage("InputManager", "UnblockAll"));
-		DeliverySystem::getPostman()->insertMessage(TextMessage("GameLoop", "deltatime enable"));
+		DeliverySystem::GetPostman()->InsertMessage(TextMessage("InputManager", "UnblockAll"));
+		DeliverySystem::GetPostman()->InsertMessage(TextMessage("GameLoop", "deltatime enable"));
 	}
 	else
 	{
 		enabled = true;
-		DeliverySystem::getPostman()->insertMessage(TextMessage("InputManager", "BlockAllInputs UserInterface"));
-		DeliverySystem::getPostman()->insertMessage(TextMessage("GameLoop", "deltatime disable"));
+		DeliverySystem::GetPostman()->InsertMessage(TextMessage("InputManager", "BlockAllInputs UserInterface"));
+		DeliverySystem::GetPostman()->InsertMessage(TextMessage("GameLoop", "deltatime disable"));
 	}
 
-	DeliverySystem::getPostman()->insertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "UIModule", enabled));
+	DeliverySystem::GetPostman()->InsertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "UIModule", enabled));
 }

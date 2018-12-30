@@ -61,19 +61,19 @@ public:
 		}
 	}
 
-	inline void setCollisionShape(std::string colshape)
+	inline void SetCollisionShape(std::string colshape)
 	{
 		CollisionShape* colShape;
 
 		if (colshape == "Sphere")
 		{
-			colShape = new SphereCollisionShape(parent->getScale().x);
+			colShape = new SphereCollisionShape(parent->GetScale().x);
 			colShape->SetParent(this);
 			collisionShapeType = "Sphere";
 		}
 		else if (colshape == "Box")
 		{
-			colShape = new CuboidCollisionShape(parent->getScale());
+			colShape = new CuboidCollisionShape(parent->GetScale());
 			colShape->SetParent(this);
 			collisionShapeType = "Box";
 		}
@@ -110,62 +110,62 @@ public:
 	inline const NCLVector3&		GetTorque()					const { return torque; }
 	inline const NCLMatrix3&		GetInverseInertia()			const { return invInertia; }
 
-	inline const bool getIsCollision() const
+	inline const bool GetIsCollision() const
 	{
 		return isCollision;
 	}
 
-	float getDamping() const
+	float GetDamping() const
 	{
 		return damping;
 	}
 
-	inline CollisionShape* getCollisionShape() const
+	inline CollisionShape* GetCollisionShape() const
 	{
 		return collisionShapes[0];
 	}
 
-	inline void setEnabled(bool isPhy)
+	inline void SetEnabled(bool isPhy)
 	{
 		enabled = isPhy;
 	}
 
-	inline const bool getEnabled() const
+	inline const bool GetEnabled() const
 	{
 		return enabled;
 	}
 
-	inline void setIsCollision(bool isCol)
+	inline void SetIsCollision(bool isCol)
 	{
 		isCollision = isCol;
 	}
 
-	inline void setDamping(float dampingCoeff)
+	inline void SetDamping(float dampingCoeff)
 	{
 		damping = dampingCoeff;
 	}
 
-	inline const bool getIsStatic() const
+	inline const bool GetIsStatic() const
 	{
 		return isStatic;
 	}
 
-	inline void setStatic(bool isStat)
+	inline void SetStatic(bool isStat)
 	{
 		isStatic = isStat;
 	}
 
-	inline NCLVector3 getAppliedForce() const
+	inline NCLVector3 GetAppliedForce() const
 	{
 		return appliedForce;
 	}
 
-	inline void setAppliedForce(NCLVector3 appliedForce)
+	inline void SetAppliedForce(NCLVector3 appliedForce)
 	{
 		this->appliedForce = appliedForce;
 	}
 
-	inline void applyImpulse(NCLVector3 impulse)
+	inline void ApplyImpulse(NCLVector3 impulse)
 	{
 		linVelocity += impulse;
 	}
@@ -195,7 +195,7 @@ public:
 	inline void SetTorque(const NCLVector3& v)							{ torque = v; }
 	inline void SetInverseInertia(const NCLMatrix3& v)					{ invInertia = v; }
 
-	void setRotation(NCLVector4 rotation)
+	void SetRotation(NCLVector4 rotation)
 	{
 		worldTransform = (NCLMatrix4::translation(position) *
 			NCLMatrix4::rotation(rotation.w, NCLVector3(rotation.x, rotation.y, rotation.z)) *

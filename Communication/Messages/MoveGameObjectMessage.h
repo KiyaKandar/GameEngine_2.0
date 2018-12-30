@@ -14,8 +14,8 @@ public:
 		NCLVector3 position);
 	~MoveGameObjectMessage();
 
-	static MoveGameObjectMessage builder(Node* node);
-	static MoveGameObjectMessage tokensToMessage(std::vector<std::string> lineTokens);
+	static MoveGameObjectMessage Builder(Node* node);
+	static MoveGameObjectMessage TokensToMessage(std::vector<std::string> lineTokens);
 
 	std::string gameObjectID;
 	NCLVector3 position;

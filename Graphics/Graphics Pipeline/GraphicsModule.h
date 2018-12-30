@@ -46,25 +46,25 @@ public:
 
 	virtual ~GraphicsModule() {}
 
-	virtual void initialise() = 0;
-	virtual void apply() = 0;
+	virtual void Initialise() = 0;
+	virtual void Apply() = 0;
 
-	virtual void linkShaders() = 0;
-	virtual void regenerateShaders() = 0;
+	virtual void LinkShaders() = 0;
+	virtual void RegenerateShaders() = 0;
 
-	void update(float dt)
+	void Update(float dt)
 	{
 		this->time += dt;
 	}
 
-	void setCurrentShader(Shader*s)
+	void SetCurrentShader(Shader*s)
 	{
 		currentShader = s;
 
 		glUseProgram(s->GetProgram());
 	}
 
-	void updateShaderMatrices()
+	void UpdateShaderMatrices()
 	{
 		if (currentShader)
 		{
@@ -78,30 +78,30 @@ public:
 		}
 	}
 
-	const std::string getIdentifier() const
+	const std::string GetIdentifier() const
 	{
 		return identifier;
 	}
 
-	const bool isEnabled() const
+	const bool IsEnabled() const
 	{
 		return enabled;
 	}
 
-	void toggleModule() 
+	void ToggleModule() 
 	{
 		enabled = !enabled;
 	}
 
-	void setIsEnabled(bool newEnabled)
+	void SetIsEnabled(bool newEnabled)
 	{
 		enabled = newEnabled;
 	}
 
 protected:
-	virtual void locateUniforms() = 0;
+	virtual void LocateUniforms() = 0;
 
-	void renderScreenQuad()
+	void RenderScreenQuad()
 	{
 		if (quadVAO == 0)
 		{
@@ -138,7 +138,7 @@ protected:
 		if (hasAnimations)
 		{
 			std::vector<aiMatrix4x4> transforms;
-			AnimationPlayer::getAnimationService()->readAnimationStateForSceneNode(sceneNode->getParent()->getName(), transforms);
+			AnimationPlayer::GetAnimationService()->ReadAnimationStateForSceneNode(sceneNode->GetParent()->GetName(), transforms);
 
 			for (int i = 0; i < transforms.size(); i++)
 			{

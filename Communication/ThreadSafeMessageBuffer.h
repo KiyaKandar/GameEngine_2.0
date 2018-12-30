@@ -12,23 +12,23 @@ public:
 	ThreadSafeMessageBuffer() {}
 	~ThreadSafeMessageBuffer() {}
 
-	void insertOutgoingMessage(MessageType message)
+	void InsertOutgoingMessage(MessageType message)
 	{
 		std::unique_lock<std::mutex> lock(bufferLock);
 		messageBuffer.insertOutgoingMessage(message);
 	}
 
-	void sendMessages(MessageStorage* messageStorage)
+	void SendMessages(MessageStorage* messageStorage)
 	{
 		messageBuffer.sendMessages(messageStorage);
 	}
 
-	void clearSentMessages()
+	void ClearSentMessages()
 	{
 		messageBuffer.clearSentMessages();
 	}
 
-	void clearOutgoingMessages()
+	void ClearOutgoingMessages()
 	{
 		messageBuffer.clearOutgoingMessages();
 	}

@@ -9,12 +9,12 @@ InputControl::~InputControl()
 {
 }
 
-void InputControl::registerNewInputUserByDeliveryPoint(std::string deliveryPoint)
+void InputControl::RegisterNewInputUserByDeliveryPoint(std::string deliveryPoint)
 {
 	inputUserDeliveryPoints.push_back(deliveryPoint);
 }
 
-void InputControl::blockAllInputUsersOtherThanCaller(std::string caller)
+void InputControl::BlockAllInputUsersOtherThanCaller(std::string caller)
 {
 	if (std::find(inputUserDeliveryPoints.begin(), inputUserDeliveryPoints.end(), 
 		caller) != inputUserDeliveryPoints.end())
@@ -24,23 +24,23 @@ void InputControl::blockAllInputUsersOtherThanCaller(std::string caller)
 			if (deliveryPoint != caller)
 			{
 				blockedInputUsers.push_back(deliveryPoint);
-				DeliverySystem::getPostman()->insertMessage(TextMessage(deliveryPoint, "BLOCK"));
+				DeliverySystem::GetPostman()->InsertMessage(TextMessage(deliveryPoint, "BLOCK"));
 			}
 		}
 	}
 }
 
-void InputControl::unlockBlockedUsers()
+void InputControl::UnlockBlockedUsers()
 {
 	for (std::string deliveryPoint : blockedInputUsers)
 	{
-		DeliverySystem::getPostman()->insertMessage(TextMessage(deliveryPoint, "UNBLOCK"));
+		DeliverySystem::GetPostman()->InsertMessage(TextMessage(deliveryPoint, "UNBLOCK"));
 	}
 
 	blockedInputUsers.clear();
 }
 
-bool InputControl::isBlocked(const std::string revievedMessage)
+bool InputControl::IsBlocked(const std::string revievedMessage)
 {
 	if (revievedMessage == "BLOCK")
 	{

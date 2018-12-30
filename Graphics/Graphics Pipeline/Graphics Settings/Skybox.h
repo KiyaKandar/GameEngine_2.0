@@ -12,13 +12,13 @@ public:
 	Skybox(const std::string identifier, const NCLVector2 resolution, NCLMatrix4* viewMatrix);
 	~Skybox();
 
-	void linkShaders() override;
-	void regenerateShaders() override;
+	void LinkShaders() override;
+	void RegenerateShaders() override;
 
-	void initialise() override;
-	void apply() override;
+	void Initialise() override;
+	void Apply() override;
 
-	void setSkyboxTexture(unsigned int newTextureID)
+	void SetSkyboxTexture(unsigned int newTextureID)
 	{
 		textureID = newTextureID;
 	}
@@ -27,8 +27,8 @@ public:
 	unsigned int textureID;
 
 private:
-	void initialiseMesh();
-	void locateUniforms() override {}
+	void InitialiseMesh();
+	void LocateUniforms() override {}
 
 	NCLMatrix4* viewMatrix;
 	Shader* skyboxShader;

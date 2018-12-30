@@ -54,8 +54,8 @@ KeyboardKeys consoleKeys[] =
 
 Console::Console(Keyboard* keyboard, Camera* camera, Mouse* mouse) : Subsystem("Console")
 {
-	incomingMessages = MessageProcessor(std::vector<MessageType> {MessageType::TEXT},
-		DeliverySystem::getPostman()->getDeliveryPoint("Console"));
+	incomingMessages = MessageProcessor(std::vector<MessageType>{MessageType::TEXT},
+		DeliverySystem::GetPostman()->GetDeliveryPoint("Console"));
 
 	this->keyboard = keyboard;
 	this->mouse = mouse;
@@ -63,9 +63,11 @@ Console::Console(Keyboard* keyboard, Camera* camera, Mouse* mouse) : Subsystem("
 	enabled = false;
 	blocked = false;
 
-	DeliverySystem::getPostman()->insertMessage(TextMessage("InputManager", "RegisterInputUser Console"));
+	DeliverySystem::GetPostman()->InsertMessage(TextMessage("InputManager", "RegisterInputUser Console"));
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::TEXT, [&blocked = blocked, &debugCameraEnabled = debugCameraEnabled, mouse = this->mouse](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::TEXT,
+		[&blocked = blocked, &debugCameraEnabled = debugCameraEnabled, mouse =
+		this->mouse](Message* message)
 	{
 		TextMessage* textMessage = static_cast<TextMessage*>(message);
 
@@ -75,18 +77,20 @@ Console::Console(Keyboard* keyboard, Camera* camera, Mouse* mouse) : Subsystem("
 
 			if (debugCameraEnabled)
 			{
-				DeliverySystem::getPostman()->insertMessage(TextMessage("InputManager", "BlockAllInputs Console"));
-				mouse->setMouseSensitivity(0.00001f);
+				DeliverySystem::GetPostman()->InsertMessage(
+					TextMessage("InputManager", "BlockAllInputs Console"));
+				mouse->SetMouseSensitivity(0.00001f);
 			}
 			else
 			{
-				DeliverySystem::getPostman()->insertMessage(TextMessage("InputManager", "UnblockAll"));
-				mouse->setMouseSensitivity(0.07f);
+				DeliverySystem::GetPostman()->InsertMessage(
+					TextMessage("InputManager", "UnblockAll"));
+				mouse->SetMouseSensitivity(0.07f);
 			}
 		}
 		else
 		{
-			blocked = InputControl::isBlocked(textMessage->text);
+			blocked = InputControl::IsBlocked(textMessage->text);
 		}
 	});
 
@@ -150,31 +154,31 @@ Console::~Console()
 {
 }
 
-void Console::updateNextFrame(const float & deltaTime)
+void Console::UpdateNextFrame(const float& deltaTime)
 {
 	if (debugCameraEnabled)
 	{
-		moveCamera();
+		MoveCamera();
 	}
 
-	if (f7Listener.keyPressed())
+	if (f7Listener.KeyPressed())
 	{
-		toggleConsoleEnabled();
+		ToggleConsoleEnabled();
 	}
 
 	if (enabled && !blocked)
 	{
-		recordKeyPresses();
+		RecordKeyPresses();
 
-		if (returnListener.keyPressed())
+		if (returnListener.KeyPressed())
 		{
 			try
 			{
 				previousInputs.push_front(input);
-				LevelEditor::executeDevConsoleLine(input);
+				LevelEditor::ExecuteDevConsoleLine(input);
 				input = "";
 			}
-			catch(...)
+			catch (...)
 			{
 				input = "error";
 			}
@@ -182,43 +186,42 @@ void Console::updateNextFrame(const float & deltaTime)
 	}
 }
 
-void Console::toggleConsoleEnabled()
+void Console::ToggleConsoleEnabled()
 {
 	if (!debugCameraEnabled)
 	{
 		if (enabled)
 		{
-			DeliverySystem::getPostman()->insertMessage(TextMessage("InputManager", "UnblockAll"));
+			DeliverySystem::GetPostman()->InsertMessage(TextMessage("InputManager", "UnblockAll"));
 			enabled = false;
 		}
 		else
 		{
-			DeliverySystem::getPostman()->insertMessage(TextMessage("InputManager", "BlockAllInputs Console"));
+			DeliverySystem::GetPostman()->InsertMessage(TextMessage("InputManager", "BlockAllInputs Console"));
 			enabled = true;
 		}
 	}
 }
 
-void Console::recordKeyPresses()
+void Console::RecordKeyPresses()
 {
 	++frameCount;
 
-	traverseInputHistory();
-	deleteLastCharacter();
+	TraverseInputHistory();
+	DeleteLastCharacter();
 
-	if(capitalListener.keyPressed())
+	if (capitalListener.KeyPressed())
 	{
-		capslock =  !capslock;
+		capslock = !capslock;
 	}
 
-	readKeyboardInputs();
-	displayText();
+	ReadKeyboardInputs();
+	DisplayText();
 }
 
-void Console::traverseInputHistory()
+void Console::TraverseInputHistory()
 {
-
-	if (upListener.keyPressed())
+	if (upListener.KeyPressed())
 	{
 		if ((size_t)previousInputIndexOffset < previousInputs.size())
 		{
@@ -226,7 +229,7 @@ void Console::traverseInputHistory()
 			++previousInputIndexOffset;
 		}
 	}
-	else if (downListener.keyPressed())
+	else if (downListener.KeyPressed())
 	{
 		if (previousInputIndexOffset > 0 && previousInputs.size() > 0)
 		{
@@ -236,9 +239,9 @@ void Console::traverseInputHistory()
 	}
 }
 
-void Console::deleteLastCharacter()
+void Console::DeleteLastCharacter()
 {
-	if (backListener.keyPressed() && frameCount >= 5)
+	if (backListener.KeyPressed() && frameCount >= 5)
 	{
 		frameCount = 0;
 
@@ -249,11 +252,11 @@ void Console::deleteLastCharacter()
 	}
 }
 
-void Console::readKeyboardInputs()
+void Console::ReadKeyboardInputs()
 {
 	for (int i = 0; i < keyListeners.size(); ++i)
 	{
-		if (keyListeners[i].keyPressed())
+		if (keyListeners[i].KeyPressed())
 		{
 			if (capslock)
 			{
@@ -269,7 +272,7 @@ void Console::readKeyboardInputs()
 	}
 }
 
-void Console::displayText()
+void Console::DisplayText()
 {
 	std::string displayLine = input;
 
@@ -278,47 +281,54 @@ void Console::displayText()
 		displayLine += " ";
 	}
 
-	if (consoleViewMessage.readyToSendNextMessage())
+	if (consoleViewMessage.ReadyToSendNextMessage())
 	{
-		consoleViewMessage.setMessage(TextMeshMessage("RenderingSystem", displayLine,
-			NCLVector3(-620.0f, -320, 0), NCLVector3(12.9f, 12.9f, 12.9f), NCLVector3(0, 1, 0), true, true));
-		consoleViewMessage.sendMessage();
+		consoleViewMessage.SetMessage(TextMeshMessage("RenderingSystem", displayLine,
+			NCLVector3(-620.0f, -320, 0), NCLVector3(12.9f, 12.9f, 12.9f),
+			NCLVector3(0, 1, 0), true, true));
+		consoleViewMessage.SendTrackedMessage();
 	}
 }
 
-void Console::moveCamera()
+void Console::MoveCamera()
 {
-	pitch -= (mouse->getRelativePosition().y);
-	yaw -= (mouse->getRelativePosition().x);
+	pitch -= (mouse->GetRelativePosition().y);
+	yaw -= (mouse->GetRelativePosition().x);
 
-	if (keyboard->keyDown(KEYBOARD_W)) {
-		camera->setPosition(camera->getPosition() +
+	if (keyboard->KeyDown(KEYBOARD_W))
+	{
+		camera->SetPosition(camera->GetPosition() +
 			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(0, 0, -1) * 0.001f);
 	}
 
-	if (keyboard->keyDown(KEYBOARD_S)) {
-		camera->setPosition(camera->getPosition() +
+	if (keyboard->KeyDown(KEYBOARD_S))
+	{
+		camera->SetPosition(camera->GetPosition() +
 			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(0, 0, 1) * 0.001f);
 	}
 
-	if (keyboard->keyDown(KEYBOARD_A)) {
-		camera->setPosition(camera->getPosition() +
-			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) *  NCLVector3(-1, 0, 0) * 0.001f);
+	if (keyboard->KeyDown(KEYBOARD_A))
+	{
+		camera->SetPosition(camera->GetPosition() +
+			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(-1, 0, 0) * 0.001f);
 	}
 
-	if (keyboard->keyDown(KEYBOARD_D)) {
-		camera->setPosition(camera->getPosition() +
-			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) *  NCLVector3(1, 0, 0) * 0.001f);
+	if (keyboard->KeyDown(KEYBOARD_D))
+	{
+		camera->SetPosition(camera->GetPosition() +
+			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(1, 0, 0) * 0.001f);
 	}
 
-	if (keyboard->keyDown(KEYBOARD_SPACE)) {
-		camera->setPosition(camera->getPosition() + NCLVector3(0, 1, 0) * 0.001f);
+	if (keyboard->KeyDown(KEYBOARD_SPACE))
+	{
+		camera->SetPosition(camera->GetPosition() + NCLVector3(0, 1, 0) * 0.001f);
 	}
 
-	if (keyboard->keyDown(KEYBOARD_C)) {
-		camera->setPosition(camera->getPosition() + NCLVector3(0, -1, 0) * 0.001f);
+	if (keyboard->KeyDown(KEYBOARD_C))
+	{
+		camera->SetPosition(camera->GetPosition() + NCLVector3(0, -1, 0) * 0.001f);
 	}
 
-	camera->setPitch(pitch);
-	camera->setYaw(yaw);
+	camera->SetPitch(pitch);
+	camera->SetYaw(yaw);
 }

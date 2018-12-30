@@ -14,8 +14,8 @@ Skeleton::Skeleton(const aiAnimation* animation, const aiNode* aiRootNode, const
 
 	transitionInterpolationFactor = 1.0f;
 
-	mapSkeletonToAnimation(animation);
-	constructSkeletonFromNodeTree(aiRootNode);
+	MapSkeletonToAnimation(animation);
+	ConstructSkeletonFromNodeTree(aiRootNode);
 }
 
 Skeleton::~Skeleton()
@@ -30,12 +30,12 @@ Skeleton::~Skeleton()
 	delete rootNode;
 }
 
-MeshNode* Skeleton::getRootNode()
+MeshNode* Skeleton::GetRootNode()
 {
 	return rootNode;
 }
 
-void Skeleton::getNodeByName(MeshNode*& foundNode, MeshNode& currentNode, const std::string& nodeName)
+void Skeleton::GetNodeByName(MeshNode*& foundNode, MeshNode& currentNode, const std::string& nodeName)
 {
 	if (currentNode.nodeName == nodeName)
 	{
@@ -45,12 +45,12 @@ void Skeleton::getNodeByName(MeshNode*& foundNode, MeshNode& currentNode, const 
 	{
 		for (int i = 0; i < currentNode.node->mNumChildren; ++i)
 		{
-			getNodeByName(foundNode, currentNode.children[i], nodeName);
+			GetNodeByName(foundNode, currentNode.children[i], nodeName);
 		}
 	}
 }
 
-void Skeleton::resetAllKeyFrameIndexes()
+void Skeleton::ResetAllKeyFrameIndexes()
 {
 	for (NodeAnimation* nodeAnimation : nodeAnimationRawStorage)
 	{
@@ -58,34 +58,34 @@ void Skeleton::resetAllKeyFrameIndexes()
 	}
 }
 
-void Skeleton::setTransitionInterpolationFactor(const float interpolationFactor)
+void Skeleton::SetTransitionInterpolationFactor(const float interpolationFactor)
 {
 	transitionInterpolationFactor = interpolationFactor;
 }
 
-void Skeleton::updateNode(MeshNode& meshNode, const aiMatrix4x4& parentTransform, const double& animationTime)
+void Skeleton::UpdateNode(MeshNode& meshNode, const aiMatrix4x4& parentTransform, const double& animationTime)
 {
 	aiMatrix4x4 nodeTransformation(meshNode.node->mTransformation);
 
 	if (meshNode.hasAnimation)
 	{
 		NodeAnimation* nodeAnimation = nodeAnimations.at(meshNode.nodeName);
-		AnimationTransformHelper::calculateNodeTransformation(nodeTransformation, *nodeAnimation,
+		AnimationTransformHelper::CalculateNodeTransformation(nodeTransformation, *nodeAnimation,
 			animationTime, meshNode.blockedComponents);
 	}
 
 	aiMatrix4x4 childTransformation = parentTransform * nodeTransformation;
 	meshNode.rawTransform = childTransformation;
 
-	updateBoneTransformation(meshNode, childTransformation);
+	UpdateBoneTransformation(meshNode, childTransformation);
 
 	for (unsigned int i = 0; i < meshNode.node->mNumChildren; i++)
 	{
-		updateNode(meshNode.children[i], childTransformation, animationTime);
+		UpdateNode(meshNode.children[i], childTransformation, animationTime);
 	}
 }
 
-void Skeleton::readSkeletonBoneTransformations(std::vector<aiMatrix4x4>& transforms)
+void Skeleton::ReadSkeletonBoneTransformations(std::vector<aiMatrix4x4>& transforms)
 {
 	const int numBones = (int)boneInfo->size();
 	for (unsigned int i = 0; i < numBones; i++)
@@ -94,7 +94,7 @@ void Skeleton::readSkeletonBoneTransformations(std::vector<aiMatrix4x4>& transfo
 	}
 }
 
-void Skeleton::applyTransformationToNodeAndChildrenRawBoneTransform(const MeshNode& meshNode, const aiMatrix4x4& transformation)
+void Skeleton::ApplyTransformationToNodeAndChildrenRawBoneTransform(const MeshNode& meshNode, const aiMatrix4x4& transformation)
 {
 	if (meshNode.mapsToBone)
 	{
@@ -104,14 +104,14 @@ void Skeleton::applyTransformationToNodeAndChildrenRawBoneTransform(const MeshNo
 
 	for (unsigned int i = 0; i < meshNode.node->mNumChildren; i++)
 	{
-		applyTransformationToNodeAndChildrenRawBoneTransform(meshNode.children[i], transformation);
+		ApplyTransformationToNodeAndChildrenRawBoneTransform(meshNode.children[i], transformation);
 	}
 }
 
-void Skeleton::blockChildNodeAndParentsFromTransformations(const std::string & childNodeName, const BlockedTransformComponents & blockedComponents)
+void Skeleton::BlockChildNodeAndParentsFromTransformations(const std::string & childNodeName, const BlockedTransformComponents & blockedComponents)
 {
 	MeshNode* childNode = nullptr;
-	getNodeByName(childNode, *rootNode, childNodeName);
+	GetNodeByName(childNode, *rootNode, childNodeName);
 
 	if (childNode != nullptr)
 	{
@@ -125,17 +125,17 @@ void Skeleton::blockChildNodeAndParentsFromTransformations(const std::string & c
 	}
 }
 
-void Skeleton::unblockNodeAndChildrenTransformations(MeshNode& meshNode)
+void Skeleton::UnblockNodeAndChildrenTransformations(MeshNode& meshNode)
 {
 	meshNode.blockedComponents = BlockedTransformComponents();
 
 	for (int i = 0; i < meshNode.node->mNumChildren; ++i)
 	{
-		unblockNodeAndChildrenTransformations(meshNode.children[i]);
+		UnblockNodeAndChildrenTransformations(meshNode.children[i]);
 	}
 }
 
-void Skeleton::updateBoneTransformation(const MeshNode& meshNode, const aiMatrix4x4& childTransformation)
+void Skeleton::UpdateBoneTransformation(const MeshNode& meshNode, const aiMatrix4x4& childTransformation)
 {
 	if (meshNode.mapsToBone)
 	{
@@ -143,7 +143,7 @@ void Skeleton::updateBoneTransformation(const MeshNode& meshNode, const aiMatrix
 
 		if (transitionInterpolationFactor < 1.0f)
 		{
-			interpolateNodeToFirstKeyFrameFromCurrentBoneTransform(childTransformation, boneIndex);
+			InterpolateNodeToFirstKeyFrameFromCurrentBoneTransform(childTransformation, boneIndex);
 		}
 		else
 		{
@@ -154,7 +154,7 @@ void Skeleton::updateBoneTransformation(const MeshNode& meshNode, const aiMatrix
 	}
 }
 
-void Skeleton::interpolateNodeToFirstKeyFrameFromCurrentBoneTransform(const aiMatrix4x4& currentNodeTransform, const unsigned int boneIndex)
+void Skeleton::InterpolateNodeToFirstKeyFrameFromCurrentBoneTransform(const aiMatrix4x4& currentNodeTransform, const unsigned int boneIndex)
 {
 	DecomposedMatrix decomposedPreviousTransform;
 	DecomposedMatrix decomposedCurrentTransform;
@@ -165,17 +165,17 @@ void Skeleton::interpolateNodeToFirstKeyFrameFromCurrentBoneTransform(const aiMa
 		decomposedCurrentTransform.translation);
 
 	DecomposedMatrix decomposedInterpolatedTransform;
-	AnimationTransformHelper::interpolateDecomposedMatrices(decomposedInterpolatedTransform, decomposedPreviousTransform,
+	AnimationTransformHelper::InterpolateDecomposedMatrices(decomposedInterpolatedTransform, decomposedPreviousTransform,
 		decomposedCurrentTransform, transitionInterpolationFactor);
 
 	aiMatrix4x4 interpolatedTransform;
-	AnimationTransformHelper::composeMatrix(interpolatedTransform, decomposedInterpolatedTransform);
+	AnimationTransformHelper::ComposeMatrix(interpolatedTransform, decomposedInterpolatedTransform);
 
 	(*boneInfo)[boneIndex].finalTransformation = globalInverseTransform * interpolatedTransform *
 		(*boneInfo)[boneIndex].boneOffset;
 }
 
-void Skeleton::mapSkeletonToAnimation(const aiAnimation* animation)
+void Skeleton::MapSkeletonToAnimation(const aiAnimation* animation)
 {
 	for (unsigned int i = 0; i < animation->mNumChannels; i++)
 	{
@@ -184,28 +184,28 @@ void Skeleton::mapSkeletonToAnimation(const aiAnimation* animation)
 	}
 }
 
-void Skeleton::constructSkeletonFromNodeTree(const aiNode* aiRootNode)
+void Skeleton::ConstructSkeletonFromNodeTree(const aiNode* aiRootNode)
 {
-	*rootNode = createNode(aiRootNode, nullptr);
+	*rootNode = CreateNode(aiRootNode, nullptr);
 
 	for (unsigned int i = 0; i < aiRootNode->mNumChildren; i++)
 	{
-		addChildNode(*rootNode, aiRootNode->mChildren[i], i);
+		AddChildNode(*rootNode, aiRootNode->mChildren[i], i);
 	}
 }
 
-void Skeleton::addChildNode(MeshNode& parentNode, const aiNode* node, const int childIndex)
+void Skeleton::AddChildNode(MeshNode& parentNode, const aiNode* node, const int childIndex)
 {
-	MeshNode childNode = createNode(node, &parentNode);
+	MeshNode childNode = CreateNode(node, &parentNode);
 	parentNode.children[childIndex] = childNode;
 
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
-		addChildNode(parentNode.children[childIndex], node->mChildren[i], i);
+		AddChildNode(parentNode.children[childIndex], node->mChildren[i], i);
 	}
 }
 
-MeshNode Skeleton::createNode(const aiNode* node, MeshNode* parentNode)
+MeshNode Skeleton::CreateNode(const aiNode* node, MeshNode* parentNode)
 {
 	MeshNode childNode;
 	childNode.node = node;

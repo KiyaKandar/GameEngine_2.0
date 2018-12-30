@@ -13,16 +13,16 @@ public:
 	GameText(const std::string identifier, const NCLVector2 resolution, Camera* camera);
 	~GameText();
 
-	void initialise() override;
-	void apply() override;
+	void Initialise() override;
+	void Apply() override;
 
-	void linkShaders() override;
-	void regenerateShaders() override;
+	void LinkShaders() override;
+	void RegenerateShaders() override;
 
-	void bufferText(std::string text, NCLVector3 position, NCLVector3 scale, NCLVector3 colour, bool orthographic, bool hasBackground);
+	void BufferText(std::string text, NCLVector3 position, NCLVector3 scale, NCLVector3 colour, bool orthographic, bool hasBackground);
 
 protected:
-	void locateUniforms() override;
+	void LocateUniforms() override;
 	Shader* UIShader;
 	Shader* UITextShader;
 	Shader* textWithBackgrounShader;

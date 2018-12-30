@@ -14,7 +14,7 @@ ToggleGraphicsModuleMessage::~ToggleGraphicsModuleMessage()
 {
 }
 
-ToggleGraphicsModuleMessage ToggleGraphicsModuleMessage::builder(Node* node)
+ToggleGraphicsModuleMessage ToggleGraphicsModuleMessage::Builder(Node* node)
 {
 	std::string nodeDestination = "";
 	std::string nodeModuleName = "";

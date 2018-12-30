@@ -7,21 +7,23 @@ Polls the camera for keyboard / mouse movement.
 Should be done once per frame! Pass it the msec since
 last frame (default value is for simplicities sake...)
 */
-void Camera::updateCamera(float msec) {
+void Camera::UpdateCamera(float msec)
+{
 	//Bounds check the pitch, to be between straight up and straight down ;)
 	pitch = min(pitch, 90.0f);
 	pitch = max(pitch, -90.0f);
 
-	if (yaw <0) {
+	if (yaw < 0)
+	{
 		yaw += 360.0f;
 	}
-	if (yaw > 360.0f) {
+	if (yaw > 360.0f)
+	{
 		yaw -= 360.0f;
 	}
-
 }
 
-bool Camera::subMeshIsInCameraView(SubMesh* submesh)
+bool Camera::SubMeshIsInCameraView(SubMesh* submesh)
 {
 	const NCLVector3 position = submesh->GetTransform().getPositionVector();
 	const float radius = submesh->GetBoundingRadius();
@@ -29,11 +31,10 @@ bool Camera::subMeshIsInCameraView(SubMesh* submesh)
 	return viewFrustum.insideFrustum(position, radius);
 }
 
-bool Camera::sceneNodeIsInCameraView(SceneNode * sceneNode)
+bool Camera::SceneNodeIsInCameraView(SceneNode* sceneNode) const
 {
 	const NCLVector3 position = sceneNode->GetWorldTransform().getPositionVector();
-	const float radius = sceneNode->getRadius();
-
+	const float radius = sceneNode->GetRadius();
 
 	//return viewFrustum.insideFrustum(position, radius);
 	return true;
@@ -43,7 +44,8 @@ bool Camera::sceneNodeIsInCameraView(SceneNode * sceneNode)
 Generates a view matrix for the camera's viewpoint. This matrix can be sent
 straight to the shader...it's already an 'inverse camera' matrix.
 */
-NCLMatrix4 Camera::buildViewMatrix() {
+NCLMatrix4 Camera::BuildViewMatrix()
+{
 	//Why do a complicated matrix inversion, when we can just generate the matrix
 	//using the negative values ;). The matrix multiplication order is important!
 	NCLMatrix4 matrix = NCLMatrix4::rotation(-pitch, NCLVector3(1, 0, 0)) *
@@ -55,7 +57,7 @@ NCLMatrix4 Camera::buildViewMatrix() {
 	return matrix;
 }
 
-void Camera::updateViewFrustum(NCLMatrix4& projectionMatrix)
+void Camera::UpdateViewFrustum(NCLMatrix4& projectionMatrix)
 {
 	viewFrustum.fromMatrix(projectionMatrix * viewMatrix);
 };

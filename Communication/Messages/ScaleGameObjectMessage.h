@@ -14,8 +14,8 @@ public:
 		NCLVector3 position);
 	~ScaleGameObjectMessage();
 
-	static ScaleGameObjectMessage builder(Node* node);
-	static ScaleGameObjectMessage tokensToMessage(std::vector<std::string> lineTokens);
+	static ScaleGameObjectMessage Builder(Node* node);
+	static ScaleGameObjectMessage TokensToMessage(std::vector<std::string> lineTokens);
 
 	std::string gameObjectID;
 	NCLVector3 scale;

@@ -22,44 +22,44 @@ public:
 
 	~Table() {}
 
-	void addNewResource(Node* resource)
+	void AddNewResource(Node* resource)
 	{
-		storage->addResource(builder(resource));
+		storage->AddResource(builder(resource));
 	}
 
-	void addNewResource(Resource* resource)
+	void AddNewResource(Resource* resource)
 	{
-		storage->addResource(resource);
+		storage->AddResource(resource);
 	}
 
-	void deleteResource(const std::string& identifier)
+	void DeleteResource(const std::string& identifier)
 	{
-		storage->deleteResource(identifier);
+		storage->DeleteResource(identifier);
 	}
 
-	ResourceManager<ResourceType>* getAllResources()
+	ResourceManager<ResourceType>* GetAllResources()
 	{
 		return storage;
 	}
 
-	ResourceType* getResource(const std::string& identifier)
+	ResourceType* GetResource(const std::string& identifier)
 	{
-		if (resourceExists(identifier))
+		if (ResourceExists(identifier))
 		{
-			return storage->getResource(identifier);
+			return storage->GetResource(identifier);
 		}
 
 		return nullptr;
 	}
 
-	std::string getName()
+	std::string GetName() const
 	{
 		return name;
 	}
 
-	bool resourceExists(const std::string& identifier)
+	bool ResourceExists(const std::string& identifier)
 	{
-		return storage->getResourceBuffer().find(identifier) != storage->getResourceBuffer().end();
+		return storage->GetResourceBuffer().find(identifier) != storage->GetResourceBuffer().end();
 	}
 
 

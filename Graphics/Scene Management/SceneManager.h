@@ -17,17 +17,17 @@ public:
 	explicit SceneManager(Camera* camera, std::vector<SceneNode*>* sceneNodes);
 	~SceneManager();
 
-	void clearMeshLists();
-	void buildMeshLists();
+	void ClearMeshLists();
+	void BuildMeshLists();
 
-	std::vector<SceneNode*>* getSceneNodesInFrustum();
-	std::vector<SceneNode*>* getTransparentSceneNodesInFrustum();
+	std::vector<SceneNode*>* GetSceneNodesInFrustum();
+	std::vector<SceneNode*>* GetTransparentSceneNodesInFrustum();
 
-	std::vector<Light*>** getAllLights();
-	std::vector<SceneNode*>** getAllNodes();
+	std::vector<Light*>** GetAllLights();
+	std::vector<SceneNode*>** GetAllNodes();
 
 private:
-	void allocateSubNodesToNodeLists(SceneNode* node);
+	void AllocateSubNodesToNodeLists(SceneNode* node);
 
 	Camera* camera;
 

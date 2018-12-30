@@ -5,12 +5,12 @@
 class DeliverySystem
 {
 public:
-	static MessagingService* getPostman() 
+	static MessagingService* GetPostman() 
 	{
 		return service;
 	}
 
-	static void provide(MessagingService* newService)
+	static void Provide(MessagingService* newService)
 	{
 		service = newService;
 	}

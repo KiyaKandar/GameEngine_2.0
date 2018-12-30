@@ -18,7 +18,7 @@ Animation::Animation(const std::string& animationName, const std::string& gameOb
 	skeleton = new Skeleton(animation, rootNode, mesh, initialBoneInfo, &mesh->boneMapping, globalInverseTransform);
 	debugSkeletonDisplay = new SkeletonDisplay();
 
-	reset();
+	Reset();
 }
 
 Animation::~Animation()
@@ -27,79 +27,79 @@ Animation::~Animation()
 	delete debugSkeletonDisplay;
 }
 
-const std::string Animation::getOwningGameObjectName() const
+const std::string Animation::GetOwningGameObjectName() const
 {
 	return owningGameObjectName;
 }
 
-bool Animation::hasGameObjectIdMatchOnly(const size_t& gameObjectId) const
+bool Animation::HasGameObjectIdMatchOnly(const size_t& gameObjectId) const
 {
 	return owningGameObjectId == gameObjectId;
 }
 
-bool Animation::hasAnimationIdMatchOnly(const size_t & animationId) const
+bool Animation::HasAnimationIdMatchOnly(const size_t & animationId) const
 {
 	return this->animationId == animationId;
 }
 
-bool Animation::hasIdMatch(const size_t& meshId, const size_t& animationId) const
+bool Animation::HasIdMatch(const size_t& meshId, const size_t& animationId) const
 {
-	return hasGameObjectIdMatchOnly(meshId) && hasAnimationIdMatchOnly(animationId);
+	return HasGameObjectIdMatchOnly(meshId) && HasAnimationIdMatchOnly(animationId);
 }
 
-bool Animation::isLooping() const
+bool Animation::IsLooping() const
 {
 	return looping;
 }
 
-void Animation::updateSceneNodeTransformFromNode(const NodeTransformSpecifier& nodeSpecifier)
+void Animation::UpdateSceneNodeTransformFromNode(const NodeTransformSpecifier& nodeSpecifier)
 {
 	MeshNode* foundNode = nullptr;
-	skeleton->getNodeByName(foundNode, *skeleton->getRootNode(), nodeSpecifier.nodeName);
+	skeleton->GetNodeByName(foundNode, *skeleton->GetRootNode(), nodeSpecifier.nodeName);
 
 	aiMatrix4x4 sceneNodeRelativeTransformation;
-	AnimationTransformHelper::removeBlockedComponentsFromTransform(sceneNodeRelativeTransformation, 
+	AnimationTransformHelper::RemoveBlockedComponentsFromTransform(sceneNodeRelativeTransformation, 
 		foundNode->rawTransform, nodeSpecifier.blockedComponents);
 
 	RelativeTransformMessage message("RenderingSystem", owningGameObjectName, 
 		NCLMatrix4(sceneNodeRelativeTransformation));
-	DeliverySystem::getPostman()->insertMessage(message);
+	DeliverySystem::GetPostman()->InsertMessage(message);
 
 	RemoveSceneNodeTransformFromBones(*foundNode, sceneNodeRelativeTransformation, nodeSpecifier.blockedComponents);
 }
 
-aiMatrix4x4 Animation::getCurrentTransformOfSceneNodeTransformerNode(const std::string nodeName)
+aiMatrix4x4 Animation::GetCurrentTransformOfSceneNodeTransformerNode(const std::string nodeName)
 {
 	if (nodeName == "")
 	{
-		return skeleton->getRootNode()->rawTransform;
+		return skeleton->GetRootNode()->rawTransform;
 	}
 	else
 	{
 		MeshNode* foundNode = nullptr;
-		skeleton->getNodeByName(foundNode, *skeleton->getRootNode(), nodeName);
+		skeleton->GetNodeByName(foundNode, *skeleton->GetRootNode(), nodeName);
 		return foundNode->rawTransform;
 	}
 }
 
-void Animation::debugDrawSkeleton(const aiMatrix4x4& parentTransform)
+void Animation::DebugDrawSkeleton(const aiMatrix4x4& parentTransform)
 {
-	debugSkeletonDisplay->drawSkeleton(*skeleton->getRootNode(), parentTransform);
+	debugSkeletonDisplay->DrawSkeleton(*skeleton->GetRootNode(), parentTransform);
 }
 
-void Animation::setBlockedSkeletonNodeTransforms(const std::string& nodeName, const BlockedTransformComponents& blockedComponents)
+void Animation::SetBlockedSkeletonNodeTransforms(const std::string& nodeName, const BlockedTransformComponents& blockedComponents)
 {
 	if (nodeName != "")
 	{
-		skeleton->blockChildNodeAndParentsFromTransformations(nodeName, blockedComponents);
+		skeleton->BlockChildNodeAndParentsFromTransformations(nodeName, blockedComponents);
 	}
 	else
 	{
-		skeleton->unblockNodeAndChildrenTransformations(*skeleton->getRootNode());
+		skeleton->UnblockNodeAndChildrenTransformations(*skeleton->GetRootNode());
 	}
 }
 
-void Animation::incrementTimer(const double& deltaTime)
+void Animation::IncrementTimer(const double& deltaTime)
 {
 	const double deltaTimeInSeconds = deltaTime * 0.001f;
 	interpolationFactor = 1.0f;
@@ -114,69 +114,69 @@ void Animation::incrementTimer(const double& deltaTime)
 	elapsedTime += deltaTimeInSeconds;
 }
 
-void Animation::reset()
+void Animation::Reset()
 {
 	elapsedTime = 0.0;
 	animationTime = 0.0;
 	totalLerpDurationFromPreviousTransformation = 0.0;
 	remainingLerpDurationFromPreviousTransformation = 0.0;
 	interpolationFactor = 0.0f;
-	skeleton->resetAllKeyFrameIndexes();
+	skeleton->ResetAllKeyFrameIndexes();
 }
 
-void Animation::setDurationToLerpFromPreviousAniamtion(const double& lerpDuration)
+void Animation::SetDurationToLerpFromPreviousAniamtion(const double& lerpDuration)
 {
 	totalLerpDurationFromPreviousTransformation = lerpDuration;
 	remainingLerpDurationFromPreviousTransformation = lerpDuration;
 }
 
-void Animation::setLooping(const bool looping)
+void Animation::SetLooping(const bool looping)
 {
 	this->looping = looping;
 }
 
-bool Animation::finishedPlaying() const
+bool Animation::FinishedPlaying() const
 {
 	return elapsedTime * animation->mTicksPerSecond >= animation->mDuration;
 }
 
-bool Animation::meshIsOnScreen() const
+bool Animation::MeshIsOnScreen() const
 {
 	return mesh->onScreen;
 }
 
-void Animation::updateAnimationTransformState()
+void Animation::UpdateAnimationTransformState()
 {
 	std::vector<aiMatrix4x4> nextState;
 	nextState.resize(mesh->numBones);
-	transformBones(nextState);
+	TransformBones(nextState);
 	animationState = nextState;
 }
 
-void Animation::readAnimationState(std::vector<aiMatrix4x4>& animationState) const
+void Animation::ReadAnimationState(std::vector<aiMatrix4x4>& animationState) const
 {
 	animationState = this->animationState;
 }
 
-void Animation::validateLastKeyFrames(const double timeInTicks)
+void Animation::ValidateLastKeyFrames(const double timeInTicks)
 {
 	if (timeInTicks >= animation->mDuration)
 	{
-		skeleton->resetAllKeyFrameIndexes();
+		skeleton->ResetAllKeyFrameIndexes();
 	}
 }
 
-void Animation::transformBones(std::vector<aiMatrix4x4>& transforms)
+void Animation::TransformBones(std::vector<aiMatrix4x4>& transforms)
 {
 	const double ticksPerSecond = animation->mTicksPerSecond != 0 ? animation->mTicksPerSecond : 25.0f;
 	const double timeInTicks = elapsedTime * ticksPerSecond;
 
-	validateLastKeyFrames(timeInTicks);
+	ValidateLastKeyFrames(timeInTicks);
 	animationTime = fmod(timeInTicks, animation->mDuration);
 
-	skeleton->setTransitionInterpolationFactor(interpolationFactor);
-	skeleton->updateNode(*skeleton->getRootNode(), aiMatrix4x4(), animationTime);
-	skeleton->readSkeletonBoneTransformations(transforms);
+	skeleton->SetTransitionInterpolationFactor(interpolationFactor);
+	skeleton->UpdateNode(*skeleton->GetRootNode(), aiMatrix4x4(), animationTime);
+	skeleton->ReadSkeletonBoneTransformations(transforms);
 }
 
 void Animation::RemoveSceneNodeTransformFromBones(const MeshNode& node, const aiMatrix4x4& sceneNodeTransform, 
@@ -191,7 +191,7 @@ void Animation::RemoveSceneNodeTransformFromBones(const MeshNode& node, const ai
 	a.scale = a.scale * -1.0f; //TEMP
 
 	aiMatrix4x4 revertedMatrix;
-	AnimationTransformHelper::composeMatrix(revertedMatrix, a, blockedComponents);
+	AnimationTransformHelper::ComposeMatrix(revertedMatrix, a, blockedComponents);
 
-	skeleton->applyTransformationToNodeAndChildrenRawBoneTransform(node, revertedMatrix);
+	skeleton->ApplyTransformationToNodeAndChildrenRawBoneTransform(node, revertedMatrix);
 }

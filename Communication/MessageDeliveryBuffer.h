@@ -10,7 +10,7 @@ class MessageDeliveryBuffer
 public:
 	MessageDeliveryBuffer()
 	{
-		unsigned int numThreads = ThreadPool::getTotalNumberOfThreads();
+		unsigned int numThreads = ThreadPool::GetTotalNumberOfThreads();
 		buffer = new std::deque<Message*>[numThreads];
 		locks = new std::mutex[numThreads];
 	}
@@ -21,25 +21,25 @@ public:
 		delete[] locks;
 	}
 
-	void push(Message* message, const unsigned int threadId)
+	void Push(Message* message, const unsigned int threadId)
 	{
 		std::lock_guard<std::mutex> guard(locks[threadId]);
 		buffer[threadId].push_back(message);
 	}
 
-	Message* read(const unsigned int threadId, const unsigned int bufferIndex)
+	Message* Read(const unsigned int threadId, const unsigned int bufferIndex)
 	{
 		std::lock_guard<std::mutex> guard(locks[threadId]);
 		return buffer[threadId][bufferIndex];
 	}
 
-	unsigned int count(const unsigned int threadId)
+	unsigned int Count(const unsigned int threadId)
 	{
 		std::lock_guard<std::mutex> guard(locks[threadId]);
 		return buffer[threadId].size();
 	}
 
-	void clear(const unsigned int numToPopOffFront, unsigned int threadId)
+	void Clear(const unsigned int numToPopOffFront, unsigned int threadId)
 	{
 		std::lock_guard<std::mutex> guard(locks[threadId]);
 		for (int i = 0; i < numToPopOffFront; ++i)
@@ -48,9 +48,9 @@ public:
 		}
 	}
 
-	void clearAll()
+	void ClearAll()
 	{
-		unsigned int numThreads = ThreadPool::getTotalNumberOfThreads();
+		unsigned int numThreads = ThreadPool::GetTotalNumberOfThreads();
 
 		for (int threadId = 0; threadId < numThreads; ++threadId)
 		{

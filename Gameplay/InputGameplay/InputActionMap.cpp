@@ -9,12 +9,12 @@ InputActionMap::~InputActionMap()
 {
 }
 
-void InputActionMap::attachKeyToAction(const int& key, PlayerAction action)
+void InputActionMap::AttachKeyToAction(const int& key, PlayerAction action)
 {
 	mapping.insert({ key, action });
 }
 
-void InputActionMap::executeAction(const int& key, Player* player)
+void InputActionMap::ExecuteAction(const int& key, Player* player)
 {
 	mapping.at(key)(player);
 }

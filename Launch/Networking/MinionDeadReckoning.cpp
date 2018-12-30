@@ -8,19 +8,19 @@ MinionDeadReckoning::MinionDeadReckoning(MinionKinematicState prediction)
 	this->prediction = prediction;
 }
 
-void MinionDeadReckoning::blendStates(PhysicsNode* node)
+void MinionDeadReckoning::BlendStates(PhysicsNode* node) const
 {
-	const float interpolationFactor = calculateInterpolationFactor(node->GetPosition());
+	const float interpolationFactor = CalculateInterpolationFactor(node->GetPosition());
 	node->SetPosition(NCLVector3::interpolate(node->GetPosition(), prediction.position, interpolationFactor));
 }
 
-void MinionDeadReckoning::predictPosition(float deltaTime)
+void MinionDeadReckoning::PredictPosition(float deltaTime)
 {
 	prediction.linearVelocity += prediction.linearAcceleration * deltaTime;
 	prediction.position += prediction.linearVelocity * deltaTime;
 }
 
-float MinionDeadReckoning::calculateInterpolationFactor(const NCLVector3& originalPosition)
+float MinionDeadReckoning::CalculateInterpolationFactor(const NCLVector3& originalPosition) const
 {
 	float factor = (prediction.position - originalPosition).length();
 	factor /= MAX_INTERPOLATION_DISTANCE;

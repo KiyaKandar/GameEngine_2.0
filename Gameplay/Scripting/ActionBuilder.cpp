@@ -20,33 +20,33 @@ const std::string SEND_MESSAGE_STATEMENT = "SendMessage";
 std::function<Executable(Node*)> ActionBuilder::executableBuilder
 	= [](Node*) {return []() {}; };
 
-GameplayAction ActionBuilder::buildAction(Node* node)
+GameplayAction ActionBuilder::BuildAction(Node* node)
 {
 	std::vector<Condition> conditions;
 	std::vector<Executable> executables;
 
 	for (Node* section : node->children)
 	{
-		compileActionSection(section, conditions, executables);
+		CompileActionSection(section, conditions, executables);
 	}
 
 	if (conditions.size() > 0)
 	{
-		return buildFinalActionWithCondition(conditions, executables);
+		return BuildFinalActionWithCondition(conditions, executables);
 	}
 	else
 	{
-		return buildFinalAction(executables);
+		return BuildFinalAction(executables);
 	}
 }
 
-TimedGameplayAction ActionBuilder::buildTimedAction(Node* node)
+TimedGameplayAction ActionBuilder::BuildTimedAction(Node* node)
 {
 	std::vector<Executable> executables;
 
 	for (Node* section : node->children)
 	{
-		executables.push_back(compileActionSectionWithoutCondition(section));
+		executables.push_back(CompileActionSectionWithoutCondition(section));
 	}
 
 	float interval = std::stof(node->name);
@@ -65,7 +65,7 @@ TimedGameplayAction ActionBuilder::buildTimedAction(Node* node)
 	};
 }
 
-GameplayAction ActionBuilder::buildFinalActionWithCondition(std::vector<Condition>& conditions, std::vector<Executable>& executables)
+GameplayAction ActionBuilder::BuildFinalActionWithCondition(std::vector<Condition>& conditions, std::vector<Executable>& executables)
 {
 	return [conditions, executables](Message message)
 	{
@@ -86,7 +86,7 @@ GameplayAction ActionBuilder::buildFinalActionWithCondition(std::vector<Conditio
 	};
 }
 
-GameplayAction ActionBuilder::buildFinalAction(std::vector<Executable>& executables)
+GameplayAction ActionBuilder::BuildFinalAction(std::vector<Executable>& executables)
 {
 	return [executables](Message message)
 	{
@@ -97,40 +97,40 @@ GameplayAction ActionBuilder::buildFinalAction(std::vector<Executable>& executab
 	};
 }
 
-void ActionBuilder::compileActionSection(Node* section, std::vector<Condition>& conditions, std::vector<Executable>& executables)
+void ActionBuilder::CompileActionSection(Node* section, std::vector<Condition>& conditions, std::vector<Executable>& executables)
 {
 	if (section->nodeType == CONDITIONAL_STATEMENT)
 	{
-		conditions.push_back(buildIfStatement(section));
+		conditions.push_back(BuildIfStatement(section));
 	}
 	else
 	{
-		executables.push_back(compileActionSectionWithoutCondition(section));
+		executables.push_back(CompileActionSectionWithoutCondition(section));
 	}
 }
 
-Executable ActionBuilder::compileActionSectionWithoutCondition(Node* section)
+Executable ActionBuilder::CompileActionSectionWithoutCondition(Node* section)
 {
 	return executableBuilder(section);
 }
 
-void ActionBuilder::setExecutableBuilder(std::function<Executable(Node*)> executableBuilder)
+void ActionBuilder::SetExecutableBuilder(std::function<Executable(Node*)> executableBuilder)
 {
 	ActionBuilder::executableBuilder = executableBuilder;
 }
 
-Condition ActionBuilder::buildIfStatement(Node* node)
+Condition ActionBuilder::BuildIfStatement(Node* node)
 {
 	if (node->name == "OR")
 	{
-		return ConditionalStatementBuilder::buildOrCondition(node);
+		return ConditionalStatementBuilder::BuildOrCondition(node);
 	}
 	else if (node->name == "AND")
 	{
-		return ConditionalStatementBuilder::buildAndCondition(node);
+		return ConditionalStatementBuilder::BuildAndCondition(node);
 	}
 	else
 	{
-		return ConditionalStatementBuilder::buildSingleIfCondition(node);
+		return ConditionalStatementBuilder::BuildSingleIfCondition(node);
 	}
 }

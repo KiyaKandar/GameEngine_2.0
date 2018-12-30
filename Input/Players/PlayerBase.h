@@ -15,22 +15,22 @@ public:
 	PlayerBase(Database* database, std::vector<InputRecorder*> allRecorders);
 	~PlayerBase();
 
-	void initializePlayers(std::vector<InputRecorder*> allRecorders);
+	void InitializePlayers(std::vector<InputRecorder*> allRecorders);
 
-	Player* addNewPlayer(InputRecorder* recorder, int id);
-	void removePlayer(int playerID);
+	Player* AddNewPlayer(InputRecorder* recorder, int id);
+	void RemovePlayer(int playerID);
 
-	std::vector<Player*>& getPlayers()
+	std::vector<Player*>& GetPlayers()
 	{
 		return players;
 	}
 
-	std::vector<InputActionMap> & getPlayersAction()
+	std::vector<InputActionMap>& GetPlayersAction()
 	{
 		return playersActions;
 	}
 
-	void clearPlayeractions()
+	void ClearPlayeractions()
 	{
 		playersActions.clear();
 	}
@@ -38,8 +38,8 @@ public:
 	bool* b;
 
 private:
-	Player* getExistingPlayer(Player* player, int existingID);
-	void wipeStoredPlayers();
+	Player* GetExistingPlayer(Player* player, int existingID);
+	void WipeStoredPlayers();
 
 	std::vector<InputRecorder*> inputRecorders;
 	std::vector<Player*> players;

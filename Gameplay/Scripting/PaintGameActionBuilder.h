@@ -21,10 +21,10 @@ typedef std::function<Executable(std::vector<std::string>)> DevConsoleNodeBuilde
 class PaintGameActionBuilder
 {
 public:
-	static void initialiseBuilders(Database* database);
-	static Executable buildExecutable(Node* node);
+	static void InitialiseBuilders(Database* database);
+	static Executable BuildExecutable(Node* node);
 
-	static void updateBufferedVariables();
+	static void UpdateBufferedVariables();
 
 	static std::string localPlayer;
 	static bool online;

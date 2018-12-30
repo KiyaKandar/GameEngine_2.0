@@ -17,14 +17,19 @@ class DeadReckoning
 {
 public:
 	explicit DeadReckoning(KinematicState prediction);
-	DeadReckoning() {}
-	~DeadReckoning() {}
 
-	void blendStates(PhysicsNode* node);
-	void predictPosition(float deltaTime);
+	DeadReckoning()
+	{
+	}
+
+	~DeadReckoning()
+	{
+	}
+
+	void BlendStates(PhysicsNode* node) const;
+	void PredictPosition(float deltaTime);
 
 private:
 	KinematicState prediction;
-	float calculateInterpolationFactor(const NCLVector3& originalPosition);
+	float CalculateInterpolationFactor(const NCLVector3& originalPosition) const;
 };
-

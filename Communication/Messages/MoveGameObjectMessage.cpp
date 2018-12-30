@@ -13,7 +13,7 @@ MoveGameObjectMessage::~MoveGameObjectMessage()
 {
 }
 
-MoveGameObjectMessage MoveGameObjectMessage::builder(Node* node)
+MoveGameObjectMessage MoveGameObjectMessage::Builder(Node* node)
 {
 	std::string destination = "";
 	std::string object = "";
@@ -38,7 +38,7 @@ MoveGameObjectMessage MoveGameObjectMessage::builder(Node* node)
 	return MoveGameObjectMessage(destination, object, position);
 }
 
-MoveGameObjectMessage MoveGameObjectMessage::tokensToMessage(std::vector<std::string> lineTokens)
+MoveGameObjectMessage MoveGameObjectMessage::TokensToMessage(std::vector<std::string> lineTokens)
 {
 	if (lineTokens.size() != 4)
 	{

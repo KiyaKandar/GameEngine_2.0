@@ -62,19 +62,19 @@ Skybox::~Skybox()
 	glDeleteTextures(1, &textureID);
 }
 
-void Skybox::linkShaders()
+void Skybox::LinkShaders()
 {
 	skyboxShader->LinkProgram();
 }
 
-void Skybox::regenerateShaders()
+void Skybox::RegenerateShaders()
 {
 	skyboxShader->Regenerate();
 }
 
-void Skybox::initialise()
+void Skybox::Initialise()
 {
-	initialiseMesh();
+	InitialiseMesh();
 
 	vector<string> faces =
 	{
@@ -85,10 +85,10 @@ void Skybox::initialise()
 		"../Data/Resources/Skyboxes/Nice/back.jpg",
 		"../Data/Resources/Skyboxes/Nice/front.jpg",
 	};
-	GraphicsUtility::loadCubeMap(&textureID, faces);
+	GraphicsUtility::LoadCubeMap(&textureID, faces);
 }
 
-void Skybox::apply()
+void Skybox::Apply()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, *GBufferFBO);
 	glDepthFunc(GL_LEQUAL);
@@ -114,7 +114,7 @@ void Skybox::apply()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Skybox::initialiseMesh()
+void Skybox::InitialiseMesh()
 {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);

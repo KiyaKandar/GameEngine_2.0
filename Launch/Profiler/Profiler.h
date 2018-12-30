@@ -17,20 +17,23 @@ class Profiler : public Subsystem
 {
 public:
 	Profiler(Keyboard* keyboard, Database* database, FPSCounter* fpsCounter);
-	~Profiler() {}
 
-	void updateNextFrame(const float& deltatime) override;
-	void addSubsystemTimer(std::string name, GameTimer* timer);
+	~Profiler()
+	{
+	}
+
+	void UpdateNextFrame(const float& deltatime) override;
+	void AddSubsystemTimer(std::string name, GameTimer* timer);
 
 private:
-	void updateProfiling();
-	
-	void updateFPS();
-	void updateMemory();
-	void updateTimers();
+	void UpdateProfiling();
 
-	void displayChildTimers();
-	void saveProfilingInfo(GameTimer* parentTimer, int currentDepth, float parentXOffset);
+	void UpdateFps();
+	void UpdateMemory();
+	void UpdateTimers();
+
+	void DisplayChildTimers();
+	void SaveProfilingInfo(GameTimer* parentTimer, int currentDepth, float parentXOffset);
 
 	int numTimers;
 	int numAdded = 0;
@@ -58,4 +61,3 @@ private:
 	SinglePressKeyListener f5Listener;
 	SinglePressKeyListener f6Listener;
 };
-

@@ -17,15 +17,15 @@ public:
 
 	void bufferScoreHolder(std::string scoreHoldername);
 
-	void linkShaders() override;
-	void regenerateShaders() override;
+	void LinkShaders() override;
+	void RegenerateShaders() override;
 
-	void initialise() override;
-	void apply() override;
+	void Initialise() override;
+	void Apply() override;
 
 	GLuint* paintTrailTexture;
 
-	void clear()
+	void Clear()
 	{
 		scoreHolders.clear();
 		coloursToCount.clear();
@@ -39,9 +39,9 @@ public:
 	}
 
 private:
-	void calculateScores();
-	void displayScores();
-	void locateUniforms() override;
+	void CalculateScores();
+	void DisplayScores();
+	void LocateUniforms() override;
 
 	ComputeShader* computeShader;
 	Shader* textShader;

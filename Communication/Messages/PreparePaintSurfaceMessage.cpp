@@ -13,7 +13,7 @@ PreparePaintSurfaceMessage::~PreparePaintSurfaceMessage()
 {
 }
 
-PreparePaintSurfaceMessage PreparePaintSurfaceMessage::builder(Node* node)
+PreparePaintSurfaceMessage PreparePaintSurfaceMessage::Builder(Node* node)
 {
 	std::string nodeDestination = "";
 	std::vector<std::string> nodeSurfaceObjectIdentifiers;

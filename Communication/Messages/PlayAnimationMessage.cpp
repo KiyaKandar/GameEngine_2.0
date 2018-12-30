@@ -15,7 +15,7 @@ PlayAnimationMessage::~PlayAnimationMessage()
 {
 }
 
-PlayAnimationMessage PlayAnimationMessage::builder(Node* node)
+PlayAnimationMessage PlayAnimationMessage::Builder(Node* node)
 {
 	std::string destination = "";
 	std::string object = "";
@@ -34,18 +34,18 @@ PlayAnimationMessage PlayAnimationMessage::builder(Node* node)
 		}
 		else if (childNode->nodeType == "animation")
 		{
-			animationParams = paramsBuilder(childNode);
+			animationParams = ParamsBuilder(childNode);
 		}
 		else if (childNode->nodeType == "transition")
 		{
-			transition = paramsBuilder(childNode);
+			transition = ParamsBuilder(childNode);
 		}
 	}
 
 	return PlayAnimationMessage(destination, object, animationParams, transition);
 }
 
-AnimationParams PlayAnimationMessage::paramsBuilder(Node * node)
+AnimationParams PlayAnimationMessage::ParamsBuilder(Node * node)
 {
 	AnimationParams params;
 
@@ -65,18 +65,18 @@ AnimationParams PlayAnimationMessage::paramsBuilder(Node * node)
 		}
 		else if (childNode->nodeType == "nodeTransformBlocker")
 		{
-			params.transformBlocker = blockerBuilder(childNode);
+			params.transformBlocker = BlockerBuilder(childNode);
 		}
 		else if (childNode->nodeType == "gameObjectTransform")
 		{
-			params.gameObjectTransformSpecifier = blockerBuilder(childNode);
+			params.gameObjectTransformSpecifier = BlockerBuilder(childNode);
 		}
 	}
 
 	return params;
 }
 
-NodeTransformSpecifier PlayAnimationMessage::blockerBuilder(Node * node)
+NodeTransformSpecifier PlayAnimationMessage::BlockerBuilder(Node * node)
 {
 	NodeTransformSpecifier transformBlocker;
 

@@ -48,17 +48,17 @@ public:
 	XMLWriter(Database* database, GameplaySystem* gameplay);
 	~XMLWriter();
 
-	void saveLevelFile(std::string levelName);
+	void SaveLevelFile(std::string levelName);
 
 private:
-	void createFolder(const char* path);
-	void saveMeshFile(std::string meshFileName);
-	void saveSoundsFile(std::string soundFileName);
-	void saveLightsFile(std::string lightsFileName);
-	void saveLevelDetails(std::string levelDetailsFile);
+	void CreateFolder(const char* path);
+	void SaveMeshFile(std::string meshFileName);
+	void SaveSoundsFile(std::string soundFileName);
+	void SaveLightsFile(std::string lightsFileName);
+	void SaveLevelDetails(std::string levelDetailsFile);
 
-	LevelGameObjectsState getGameObjectStates();
-	LevelLightsState getLightsState();
+	LevelGameObjectsState GetGameObjectStates();
+	LevelLightsState GetLightsState();
 
 	Database* database;
 	GameplaySystem* gameplay;

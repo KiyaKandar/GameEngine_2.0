@@ -17,18 +17,18 @@ public:
 	GameLogic(MessageProcessor* messages, Node* xmlNode);
 	~GameLogic();
 
-	void compileScript(std::string scriptFile);
-	void compileParsedXMLIntoScript(Node* xmlNode);
+	void CompileScript(std::string scriptFile);
+	void CompileParsedXmlIntoScript(Node* xmlNode);
 
-	void executeMessageBasedActions();
-	void executeTimeBasedActions(const float& deltaTime);
-	void executeActionsOnStart();
+	void ExecuteMessageBasedActions();
+	void ExecuteTimeBasedActions(const float& deltaTime);
+	void ExecuteActionsOnStart();
 
-	void notifyMessageActions(const std::string& messageType, Message* message);
-	void clearNotifications();
+	void NotifyMessageActions(const std::string& messageType, Message* message);
+	void ClearNotifications();
 
-	std::unordered_map<std::string, std::vector<GameplayAction>> getMessageBasedActionsMap() { return messageBasedActions; }
-	std::string getScriptFile();
+	std::unordered_map<std::string, std::vector<GameplayAction>> GetMessageBasedActionsMap() { return messageBasedActions; }
+	std::string GetScriptFile();
 
 	float maxTime = 0.0f;
 	float elapsedTime = 0.0f;

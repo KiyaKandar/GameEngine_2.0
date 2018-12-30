@@ -5,7 +5,7 @@
 class InputUtility
 {
 public:
-	static int getKeyID(std::string keyName);
+	static int GetKeyId(std::string keyName);
 
 private:
 	static const std::map<std::string, int> keyIDs;

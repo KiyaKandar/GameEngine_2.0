@@ -15,7 +15,7 @@ public:
 	ButtonActionCreator();
 	~ButtonActionCreator();
 
-	ButtonAction createButtonAction(Node* actionNode);
+	ButtonAction CreateButtonAction(Node* actionNode);
 
 private:
 	std::unordered_map<std::string, ButtonAction> actions;

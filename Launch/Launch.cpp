@@ -20,34 +20,32 @@ int main()
 		return -1;
 	}
 
-	SendMessageActionBuilder::initialiseBuilders();
+	SendMessageActionBuilder::InitialiseBuilders();
 	ThreadPool threadPool;
-	
+
 	Startup startup(&threadPool);
-	startup.initialiseRenderingSystem();
+	startup.InitialiseRenderingSystem();
 
 	bool loadedSubsystems = false;
 
-	threadPool.submitJob([&startup = startup, &loadedSubsystems = loadedSubsystems]()
+	threadPool.SubmitJob([&startup = startup, &loadedSubsystems = loadedSubsystems]()
 	{
-		startup.initialiseSubsystems();
-		startup.loadMainMenu();
+		startup.InitialiseSubsystems();
+		startup.LoadMainMenu();
 
 		loadedSubsystems = true;
 	});
 
-
 	while (!loadedSubsystems)
 	{
-		startup.renderLoadingScreen();
+		startup.RenderLoadingScreen();
 	}
 
-	startup.startRenderingSystem();
-	startup.setupMeshes();
-	startup.startUserInterface();
+	startup.StartRenderingSystem();
+	startup.SetupMeshes();
+	startup.StartUserInterface();
 
-	startup.startGameLoop();
+	startup.StartGameLoop();
 
-    return 0;
+	return 0;
 }
-

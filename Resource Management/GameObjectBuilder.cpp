@@ -1,33 +1,33 @@
 #include "GameObjectBuilder.h"
 
-GameObject* GameObjectBuilder::buildGameObject(Node* node, Database* database)
+GameObject* GameObjectBuilder::BuildGameObject(Node* node, Database* database)
 {
-	SceneNode* sceneNode = buildSceneNode(node->children[0], database);
+	SceneNode* sceneNode = BuildSceneNode(node->children[0], database);
 	GameObject* gameObject = new GameObject();
 	
-	gameObject->setSize(sizeof(GameObject));
-	gameObject->setName(node->name);
-	gameObject->setSceneNode(sceneNode);
+	gameObject->SetSize(sizeof(GameObject));
+	gameObject->SetName(node->name);
+	gameObject->SetSceneNode(sceneNode);
 	
 	gameObject->stats.colourToPaint = VectorBuilder::buildVector4(node->children[0]->children[1]);
-	gameObject->setScale(VectorBuilder::buildVector3(node->children[4]));
+	gameObject->SetScale(VectorBuilder::buildVector3(node->children[4]));
 
 	if (node->children.size() >= 6)
 	{
-		PhysicsNode* physicsNode = buildPhysicsNode(node->children[5], gameObject);
-		gameObject->setPhysicsNode(physicsNode);
+		PhysicsNode* physicsNode = BuildPhysicsNode(node->children[5], gameObject);
+		gameObject->SetPhysicsNode(physicsNode);
 	}
 
-	gameObject->setPosition(VectorBuilder::buildVector3(node->children[2]));
-	gameObject->setRotation(VectorBuilder::buildVector4(node->children[3]));
+	gameObject->SetPosition(VectorBuilder::buildVector3(node->children[2]));
+	gameObject->SetRotation(VectorBuilder::buildVector4(node->children[3]));
 
 	return gameObject;
 }
 
-SceneNode* GameObjectBuilder::buildSceneNode(Node* node, Database* database)
+SceneNode* GameObjectBuilder::BuildSceneNode(Node* node, Database* database)
 {
 	std::string meshName = node->children[0]->value;
-	SceneNode* sceneNode = new SceneNode(static_cast<Mesh*>(database->getTable("Meshes")->getResource(meshName)));
+	SceneNode* sceneNode = new SceneNode(static_cast<Mesh*>(database->GetTable("Meshes")->GetResource(meshName)));
 	sceneNode->SetColour(VectorBuilder::buildVector4(node->children[1]));
 
 	if (node->children.size() > 2)
@@ -39,7 +39,7 @@ SceneNode* GameObjectBuilder::buildSceneNode(Node* node, Database* database)
 	return sceneNode;
 }
 
-PhysicsNode* GameObjectBuilder::buildPhysicsNode(Node* node, GameObject* parent)
+PhysicsNode* GameObjectBuilder::BuildPhysicsNode(Node* node, GameObject* parent)
 {
 	PhysicsNode* physicsnode = new PhysicsNode();
 
@@ -49,7 +49,7 @@ PhysicsNode* GameObjectBuilder::buildPhysicsNode(Node* node, GameObject* parent)
 	{
 		if (child->nodeType == "Enabled")
 		{
-			physicsnode->setEnabled(child->value == "True");
+			physicsnode->SetEnabled(child->value == "True");
 		}
 		else if (child->nodeType == "TransmitCollision")
 		{
@@ -61,12 +61,12 @@ PhysicsNode* GameObjectBuilder::buildPhysicsNode(Node* node, GameObject* parent)
 		}
 		else if (child->nodeType == "CollisionShape")
 		{
-			physicsnode->setCollisionShape(child->value);
+			physicsnode->SetCollisionShape(child->value);
 		}
 		else if (child->nodeType == "Mass")
 		{
 			physicsnode->SetInverseMass(stof(child->value));
-			physicsnode->SetInverseInertia(physicsnode->getCollisionShape()->BuildInverseInertia(physicsnode->GetInverseMass()));
+			physicsnode->SetInverseInertia(physicsnode->GetCollisionShape()->BuildInverseInertia(physicsnode->GetInverseMass()));
 		}
 		else if (child->nodeType == "Elasticity")
 		{
@@ -78,15 +78,15 @@ PhysicsNode* GameObjectBuilder::buildPhysicsNode(Node* node, GameObject* parent)
 		}
 		else if (child->nodeType == "Damping")
 		{
-			physicsnode->setDamping(stof(child->value));
+			physicsnode->SetDamping(stof(child->value));
 		}
 		else if (child->nodeType == "isStatic")
 		{
-			physicsnode->setStatic(child->value == "True");
+			physicsnode->SetStatic(child->value == "True");
 		}
 		else if (child->nodeType == "isCollision")
 		{
-			physicsnode->setIsCollision(child->value == "True");
+			physicsnode->SetIsCollision(child->value == "True");
 		}
 	}
 

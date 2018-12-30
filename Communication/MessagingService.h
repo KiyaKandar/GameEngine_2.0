@@ -35,14 +35,14 @@
 class MessagingService 
 {
 public:
-	virtual void addDeliveryPoint(const std::string& bufferName) = 0;
-	virtual MessageDeliveryBuffer* getDeliveryPoint(const std::string& bufferName) = 0;
+	virtual void AddDeliveryPoint(const std::string& bufferName) = 0;
+	virtual MessageDeliveryBuffer* GetDeliveryPoint(const std::string& bufferName) = 0;
 
 	REGISTER_PURE_VIRTUAL_SERVICE()
 
-	virtual void deliverAllMessages() = 0;
-	virtual void clearAllMessages() = 0;
-	virtual void cancelOutgoingMessages() = 0;
-	virtual void cancelDeliveredMessages() = 0;
-	virtual void deleteAllTrackedSenders() = 0;
+	virtual void DeliverAllMessages() = 0;
+	virtual void ClearAllMessages() = 0;
+	virtual void CancelOutgoingMessages() = 0;
+	virtual void CancelDeliveredMessages() = 0;
+	virtual void DeleteAllTrackedSenders() = 0;
 };

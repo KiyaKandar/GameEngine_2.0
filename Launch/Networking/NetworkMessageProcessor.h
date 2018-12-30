@@ -12,15 +12,14 @@ class GameObject;
 class NetworkMessageProcessor
 {
 public:
-	static bool isJoinGameMessage(ENetPacket* packet);
-	static bool isKinematicStateMessage(ENetPacket* packet);
+	static bool IsJoinGameMessage(ENetPacket* packet);
+	static bool IsKinematicStateMessage(ENetPacket* packet);
 
-	static int getClientNumber(ENetPacket* joinGamePacket);
-	static void joinGame(int clientID, PlayerBase* playerbase, GameplaySystem* game,
+	static int GetClientNumber(ENetPacket* joinGamePacket);
+	static void JoinGame(int clientID, PlayerBase* playerbase, GameplaySystem* game,
 		InputRecorder* playerInputRecorder);
-	static GameObject* getUpdatedDeadReckoningGameObject(std::string objectName,
+	static GameObject* GetUpdatedDeadReckoningGameObject(std::string objectName,
 		KinematicState& kinematicState, Database* database);
-	static GameObject* getUpdatedDeadReckoningGameObject(std::string objectName,
+	static GameObject* GetUpdatedDeadReckoningGameObject(std::string objectName,
 		MinionKinematicState& kinematicState, Database* database);
 };
-

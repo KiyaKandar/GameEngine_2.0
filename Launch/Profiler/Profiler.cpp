@@ -15,9 +15,10 @@ Profiler::Profiler(Keyboard* keyboard, Database* database, FPSCounter* fpsCounte
 	this->database = database;
 	this->keyboard = keyboard;
 
-	incomingMessages = MessageProcessor::MessageProcessor(std::vector<MessageType>{MessageType::TEXT}, DeliverySystem::getPostman()->getDeliveryPoint("Profiler"));
+	incomingMessages = MessageProcessor::MessageProcessor(std::vector<MessageType>{MessageType::TEXT},
+	                                                      DeliverySystem::GetPostman()->GetDeliveryPoint("Profiler"));
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::TEXT, [&externalText = externalText](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::TEXT, [&externalText = externalText](Message* message)
 	{
 		TextMessage* textMessage = static_cast<TextMessage*>(message);
 
@@ -30,17 +31,17 @@ Profiler::Profiler(Keyboard* keyboard, Database* database, FPSCounter* fpsCounte
 	f6Listener = SinglePressKeyListener(KEYBOARD_F6, keyboard);
 }
 
-void Profiler::updateNextFrame(const float& deltatime)
+void Profiler::UpdateNextFrame(const float& deltatime)
 {
-	fpsCounter->calculateFPS(deltatime);
+	fpsCounter->CalculateFps(deltatime);
 
-	if (f5Listener.keyPressed())
+	if (f5Listener.KeyPressed())
 	{
 		profilerEnabled = !profilerEnabled;
 		depth = 0;
 	}
 
-	if (f6Listener.keyPressed())
+	if (f6Listener.KeyPressed())
 	{
 		++depth;
 	}
@@ -55,33 +56,32 @@ void Profiler::updateNextFrame(const float& deltatime)
 			messages.clear();
 
 			memoryWatcher.Update();
-			updateProfiling();
+			UpdateProfiling();
 		}
 
-		displayChildTimers();
+		DisplayChildTimers();
 	}
 }
 
-void Profiler::addSubsystemTimer(string name, GameTimer* timer)
+void Profiler::AddSubsystemTimer(string name, GameTimer* timer)
 {
-	timers.insert({ name, timer });
+	timers.insert({name, timer});
 }
 
-void Profiler::updateProfiling()
+void Profiler::UpdateProfiling()
 {
 	nextLine = Y_OFFSET;
 
 	if (timersDisplayed)
 	{
-
-		updateFPS();
-		updateMemory();
-		updateTimers();
+		UpdateFps();
+		UpdateMemory();
+		UpdateTimers();
 
 		for (std::string text : externalText)
 		{
 			messages.push_back(TextMeshMessage("RenderingSystem", text,
-				NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
+			                                   NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
 			nextLine += NEXT_LINE_OFFSET;
 		}
 
@@ -89,59 +89,60 @@ void Profiler::updateProfiling()
 	}
 }
 
-void Profiler::updateFPS()
+void Profiler::UpdateFps()
 {
 	TextMeshMessage message("RenderingSystem", "FPS : " + std::to_string(fpsCounter->fps),
-		NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true);
+	                        NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true);
 
 	messages.push_back(message);
 	nextLine += NEXT_LINE_OFFSET;
 }
 
-void Profiler::updateMemory()
+void Profiler::UpdateMemory()
 {
 	messages.push_back(TextMeshMessage("RenderingSystem", "Memory Usage : " + std::to_string(memoryWatcher.percent),
-		NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
+	                                   NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
 	nextLine += NEXT_LINE_OFFSET;
 
-	for (size_t i = 0; i < database->getAllTables().size(); i++)
+	for (size_t i = 0; i < database->GetAllTables().size(); i++)
 	{
-		std::string text = database->getAllTables()[i]->getName() + ": " +
-			std::to_string(database->getAllTables()[i]->getAllResources()->getCurrentSize());
+		std::string text = database->GetAllTables()[i]->GetName() + ": " +
+			std::to_string(database->GetAllTables()[i]->GetAllResources()->GetCurrentSize());
 		messages.push_back(TextMeshMessage("RenderingSystem", text,
-			NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
+		                                   NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
 		nextLine += NEXT_LINE_OFFSET;
 	}
 }
 
-void Profiler::updateTimers()
+void Profiler::UpdateTimers()
 {
 	for (std::pair<std::string, GameTimer*> subsystemTimer : timers)
 	{
 		nextLine += NEXT_LINE_OFFSET;
 
-		std::string profilerText = subsystemTimer.first + "	" + std::to_string(subsystemTimer.second->getTimeTakenForSection());
+		std::string profilerText = subsystemTimer.first + "	" + std::to_string(
+			subsystemTimer.second->getTimeTakenForSection());
 		NCLVector3 position(-500.0f, nextLine, 0);
 
 		messages.push_back(TextMeshMessage("RenderingSystem", profilerText,
-			position, TEXT_SIZE, TEXT_COLOUR, true, true));
+		                                   position, TEXT_SIZE, TEXT_COLOUR, true, true));
 
-		saveProfilingInfo(subsystemTimer.second, 1, -500.0f);
+		SaveProfilingInfo(subsystemTimer.second, 1, -500.0f);
 	}
 }
 
-void Profiler::displayChildTimers()
+void Profiler::DisplayChildTimers()
 {
-	if (profilerTextSender.readyToSendNextMessageGroup())
+	if (profilerTextSender.ReadyToSendNextMessageGroup())
 	{
-		profilerTextSender.setMessageGroup(messages);
-		profilerTextSender.sendMessageGroup();
+		profilerTextSender.SetMessageGroup(messages);
+		profilerTextSender.SendMessageGroup();
 		timersDisplayed = true;
 		externalText.clear();
 	}
 }
 
-void Profiler::saveProfilingInfo(GameTimer* parentTimer, int currentDepth, float parentXOffset)
+void Profiler::SaveProfilingInfo(GameTimer* parentTimer, int currentDepth, float parentXOffset)
 {
 	std::vector<GameTimer*> childTimers = parentTimer->getAllChildTimers();
 
@@ -153,11 +154,12 @@ void Profiler::saveProfilingInfo(GameTimer* parentTimer, int currentDepth, float
 		{
 			nextLine += NEXT_LINE_OFFSET;
 
-			std::string profilerText = childTimer->getTimerName() + "	" + std::to_string(childTimer->getTimeTakenForSection());
+			std::string profilerText = childTimer->getTimerName() + "	" + std::to_string(
+				childTimer->getTimeTakenForSection());
 			messages.push_back(TextMeshMessage("RenderingSystem", profilerText,
-				NCLVector3(xOffset, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
+			                                   NCLVector3(xOffset, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
 
-			saveProfilingInfo(childTimer, ++currentDepth, xOffset);
+			SaveProfilingInfo(childTimer, ++currentDepth, xOffset);
 		}
 	}
 }

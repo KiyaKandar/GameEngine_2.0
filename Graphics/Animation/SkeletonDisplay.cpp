@@ -2,49 +2,49 @@
 
 #include "Skeleton.h"
 
-void SkeletonDisplay::drawSkeleton(const MeshNode& parentNode, const aiMatrix4x4& parentTransform)
+void SkeletonDisplay::DrawSkeleton(const MeshNode& parentNode, const aiMatrix4x4& parentTransform)
 {
-	if (readyToDrawSkeleton())
+	if (ReadyToDrawSkeleton())
 	{
-		clearPreviousDraw();
-		prepareSkeletonBoneRendering(parentNode, parentTransform);
+		ClearPreviousDraw();
+		PrepareSkeletonBoneRendering(parentNode, parentTransform);
 
-		skeletonBoneMessageSender.setMessageGroup(skeletonBoneMessages);
-		skeletonJointMessageSender.setMessageGroup(skeletonJointMessages);
+		skeletonBoneMessageSender.SetMessageGroup(skeletonBoneMessages);
+		skeletonJointMessageSender.SetMessageGroup(skeletonJointMessages);
 
-		skeletonBoneMessageSender.sendMessageGroup();
-		skeletonJointMessageSender.sendMessageGroup();
+		skeletonBoneMessageSender.SendMessageGroup();
+		skeletonJointMessageSender.SendMessageGroup();
 	}
 }
 
-bool SkeletonDisplay::readyToDrawSkeleton()
+bool SkeletonDisplay::ReadyToDrawSkeleton()
 {
-	return skeletonBoneMessageSender.readyToSendNextMessageGroup() && skeletonJointMessageSender.readyToSendNextMessageGroup();
+	return skeletonBoneMessageSender.ReadyToSendNextMessageGroup() && skeletonJointMessageSender.ReadyToSendNextMessageGroup();
 }
 
-void SkeletonDisplay::clearPreviousDraw()
+void SkeletonDisplay::ClearPreviousDraw()
 {
 	skeletonBoneMessages.clear();
 	skeletonJointMessages.clear();
 }
 
-void SkeletonDisplay::prepareSkeletonBoneRendering(const MeshNode& parentNode, const aiMatrix4x4& parentTransform)
+void SkeletonDisplay::PrepareSkeletonBoneRendering(const MeshNode& parentNode, const aiMatrix4x4& parentTransform)
 {
 	aiVector3D startPosition;
-	getJointPosition(startPosition, parentTransform * parentNode.rawTransform);
-	displayJointNode(startPosition);
+	GetJointPosition(startPosition, parentTransform * parentNode.rawTransform);
+	DisplayJointNode(startPosition);
 
 	for (int i = 0; i < parentNode.node->mNumChildren; ++i)
 	{
 		aiVector3D endPosition;
-		getJointPosition(endPosition, parentTransform * parentNode.children[i].rawTransform);
-		displayBoneLine(startPosition, endPosition);
+		GetJointPosition(endPosition, parentTransform * parentNode.children[i].rawTransform);
+		DisplayBoneLine(startPosition, endPosition);
 	}
 
-	drawChildSkeletonBone(parentNode, parentTransform);
+	DrawChildSkeletonBone(parentNode, parentTransform);
 }
 
-void SkeletonDisplay::drawChildSkeletonBone(const MeshNode& parentNode, const aiMatrix4x4& parentTransform)
+void SkeletonDisplay::DrawChildSkeletonBone(const MeshNode& parentNode, const aiMatrix4x4& parentTransform)
 {
 	const unsigned int numChildren = parentNode.node->mNumChildren;
 
@@ -52,28 +52,28 @@ void SkeletonDisplay::drawChildSkeletonBone(const MeshNode& parentNode, const ai
 	{
 		for (int i = 0; i < numChildren; ++i)
 		{
-			prepareSkeletonBoneRendering(parentNode.children[i], parentTransform);
+			PrepareSkeletonBoneRendering(parentNode.children[i], parentTransform);
 		}
 	}
 	else
 	{
 		aiVector3D jointPosition;
-		getJointPosition(jointPosition, parentTransform * parentNode.rawTransform);
-		displayJointNode(jointPosition);
+		GetJointPosition(jointPosition, parentTransform * parentNode.rawTransform);
+		DisplayJointNode(jointPosition);
 	}
 }
 
-void SkeletonDisplay::getJointPosition(aiVector3D& position, const aiMatrix4x4& jointTrainsform)
+void SkeletonDisplay::GetJointPosition(aiVector3D& position, const aiMatrix4x4& jointTrainsform)
 {
 	jointTrainsform.DecomposeNoScaling(aiQuaternion(), position);
 }
 
-void SkeletonDisplay::displayJointNode(const aiVector3D& position)
+void SkeletonDisplay::DisplayJointNode(const aiVector3D& position)
 {
 	skeletonJointMessages.push_back(DebugSphereMessage("RenderingSystem", position, 0.5f, NCLVector3(1.0f, 0.0f, 0.0f)));
 }
 
-void SkeletonDisplay::displayBoneLine(const aiVector3D& startPosition, const aiVector3D& endPosition)
+void SkeletonDisplay::DisplayBoneLine(const aiVector3D& startPosition, const aiVector3D& endPosition)
 {
 	skeletonBoneMessages.push_back(DebugLineMessage("RenderingSystem", startPosition, endPosition, NCLVector3(0.0f, 1.0f, 0.2f)));
 }

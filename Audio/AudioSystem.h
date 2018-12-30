@@ -11,11 +11,11 @@ public:
 	AudioSystem(Database *database, Camera *camera);
 	~AudioSystem() = default;
 
-	void updateNextFrame(const float& deltaTime) override;
+	void UpdateNextFrame(const float& deltaTime) override;
 
-	void clearSoundNodesWhenUnloadingLevel()
+	void ClearSoundNodesWhenUnloadingLevel() const
 	{
-		soundManager->clearSoundNodes();
+		soundManager->ClearSoundNodes();
 	}
 
 private:

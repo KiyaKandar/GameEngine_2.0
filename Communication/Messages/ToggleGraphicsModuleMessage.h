@@ -11,7 +11,7 @@ public:
 	ToggleGraphicsModuleMessage(const std::string& destinationName, const std::string& moduleName, const bool enabled);
 	~ToggleGraphicsModuleMessage();
 
-	static ToggleGraphicsModuleMessage builder(Node* node);
+	static ToggleGraphicsModuleMessage Builder(Node* node);
 
 	std::string moduleName;
 	bool enabled;

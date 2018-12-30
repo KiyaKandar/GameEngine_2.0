@@ -20,7 +20,6 @@ ComputeShader::ComputeShader(string compute, bool isVerbose)
 	glAttachShader(program, object[0]);
 }
 
-
 ComputeShader::~ComputeShader()
 {
 	glDetachShader(program, object[0]);
@@ -28,12 +27,14 @@ ComputeShader::~ComputeShader()
 	glDeleteProgram(program);
 }
 
-void ComputeShader::Regenerate() {
+void ComputeShader::Regenerate()
+{
 	program = glCreateProgram();
 
 	object[0] = GenerateShader(compute);
 
-	if (!compute.empty()) {
+	if (!compute.empty())
+	{
 		object[0] = GenerateShader(compute);
 		glAttachShader(program, object[0]);
 	}
@@ -41,12 +42,12 @@ void ComputeShader::Regenerate() {
 	glAttachShader(program, object[0]);
 }
 
-void ComputeShader::UseProgram()
+void ComputeShader::UseProgram() const
 {
 	glUseProgram(program);
 }
 
-void ComputeShader::Compute(NCLVector3 workGroups)
+void ComputeShader::Compute(NCLVector3 workGroups) const
 {
 	glDispatchCompute((GLuint)workGroups.x, (GLuint)workGroups.y, (GLuint)workGroups.z);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
@@ -54,12 +55,14 @@ void ComputeShader::Compute(NCLVector3 workGroups)
 
 GLuint ComputeShader::GenerateShader(string from)
 {
-	if (verbose) cout << " Compiling Shader ... " << endl;
+	if (verbose)
+		cout << " Compiling Shader ... " << endl;
 
 	string load;
-	if (!LoadShaderFile(from, load)) 
+	if (!LoadShaderFile(from, load))
 	{
-		if (verbose) cout << "Compiling failed !" << endl;
+		if (verbose)
+			cout << "Compiling failed !" << endl;
 		loadFailed = true;
 		return 0;
 	}
@@ -73,37 +76,45 @@ GLuint ComputeShader::GenerateShader(string from)
 	GLint status;
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
 
-	if (status == GL_FALSE) 
+	if (status == GL_FALSE)
 	{
-		if (verbose) cout << "Compiling failed !" << endl;
+		if (verbose)
+			cout << "Compiling failed !" << endl;
 
 		char error[512];
 		glGetInfoLogARB(shader, sizeof(error), NULL, error);
 
-		if (verbose) cout << error;
+		if (verbose)
+			cout << error;
 
 		loadFailed = true;
 		return 0;
 	}
 
-	if (verbose) cout << "Compiling success !" << endl << endl;
+	if (verbose)
+		cout << "Compiling success !" << endl << endl;
 
 	loadFailed = false;
 	return shader;
 }
 
-bool ComputeShader::LoadShaderFile(string from, string & into) {
+bool ComputeShader::LoadShaderFile(string from, string& into)
+{
 	ifstream file;
 	string temp;
 
-	if (verbose) cout << "Loading shader text from " << from << endl << endl;
+	if (verbose)
+		cout << "Loading shader text from " << from << endl << endl;
 
 	file.open(from.c_str());
-	if (!file.is_open()) {
-		if (verbose) cout << "File does not exist !" << endl;
+	if (!file.is_open())
+	{
+		if (verbose)
+			cout << "File does not exist !" << endl;
 		return false;
 	}
-	while (!file.eof()) {
+	while (!file.eof())
+	{
 		getline(file, temp);
 
 		if (temp.find("#include") != std::string::npos)
@@ -117,8 +128,10 @@ bool ComputeShader::LoadShaderFile(string from, string & into) {
 	}
 
 	file.close();
-	if (verbose) cout << into << endl << endl;
-	if (verbose) cout << "Loaded shader text !" << endl << endl;
+	if (verbose)
+		cout << into << endl << endl;
+	if (verbose)
+		cout << "Loaded shader text !" << endl << endl;
 	return true;
 }
 
@@ -126,8 +139,10 @@ string ComputeShader::IncludeShader(string includeLine)
 {
 	std::istringstream iss(includeLine);
 
-	vector<string> tokens{ istream_iterator<string>{iss},
-		istream_iterator<string>{} };
+	vector<string> tokens{
+		istream_iterator<string>{ iss },
+		istream_iterator<string>{}
+	};
 
 	string glslToAppend;
 	LoadShaderFile(tokens.at(1), glslToAppend);
@@ -135,8 +150,10 @@ string ComputeShader::IncludeShader(string includeLine)
 	return glslToAppend;
 }
 
-bool ComputeShader::LinkProgram() {
-	if (loadFailed) {
+bool ComputeShader::LinkProgram() const
+{
+	if (loadFailed)
+	{
 		return false;
 	}
 	glLinkProgram(program);

@@ -13,34 +13,37 @@ SceneNode::SceneNode(string meshFile, NCLVector4 colour)
 	distanceFromCamera = 0.0f;
 }
 
-SceneNode::SceneNode(Mesh * mesh, NCLVector4 colour)
+SceneNode::SceneNode(Mesh* mesh, NCLVector4 colour)
 {
 	this->mesh = mesh;
 	this->colour = colour;
 	parent = NULL;
 
-	boundingRadius = mesh->getRadius();
+	boundingRadius = mesh->GetRadius();
 	distanceFromCamera = 0.0f;
 }
 
 SceneNode::~SceneNode(void)
 {
-	for (unsigned int i = 0; i < children.size(); ++i) {
+	for (unsigned int i = 0; i < children.size(); ++i)
+	{
 		delete children[i];
 	}
 }
 
-NCLVector4 SceneNode::getColour()
+NCLVector4 SceneNode::getColour() const
 {
 	return colour;
 }
 
-void SceneNode::AddChild(SceneNode* s) {
+void SceneNode::AddChild(SceneNode* s)
+{
 	children.push_back(s);
 	s->parent = this;
 }
 
-void SceneNode::RemoveChild(SceneNode* s) {
+void SceneNode::RemoveChild(SceneNode* s)
+{
 	children.erase(std::remove(children.begin(),
 		children.end(), s), children.end());
 }
@@ -49,8 +52,10 @@ void SceneNode::RemoveChild(SceneNode* s) {
 * Advanced rendering can be performed here per SceneNode
 * Such as disabling depth testing or reuploading data
 */
-void SceneNode::Draw(Shader& shader) {
-	if (mesh) {
+void SceneNode::Draw(Shader& shader)
+{
+	if (mesh)
+	{
 		for (SubMesh* submesh : mesh->meshes)
 		{
 			submesh->Draw(shader, worldTransform);
@@ -60,7 +65,8 @@ void SceneNode::Draw(Shader& shader) {
 
 void SceneNode::DrawShadow(Shader& shader)
 {
-	if (mesh) {
+	if (mesh)
+	{
 		for (SubMesh* submesh : mesh->meshes)
 		{
 			submesh->DrawShadow(shader, worldTransform);
@@ -68,38 +74,42 @@ void SceneNode::DrawShadow(Shader& shader)
 	}
 }
 
-void SceneNode::takeLocalCopyOfMeshAnimations()
+void SceneNode::TakeLocalCopyOfMeshAnimations()
 {
 	boneInfo = mesh->boneInfo;
 	std::vector<const aiScene*>& importedAnimations = mesh->importedAnimations;
 	for (int i = 0; i < importedAnimations.size(); ++i)
 	{
-		AnimationPlayer::getAnimationService()->addAnimation(mesh->animationFiles[i], parentObject->getName(), mesh,
+		AnimationPlayer::GetAnimationService()->AddAnimation(mesh->animationFiles[i], parentObject->GetName(), mesh,
 			importedAnimations[i]->mAnimations[0], mesh->meshScene->mRootNode, mesh->globalInverseTransform, &boneInfo);
 	}
 }
 
-std::vector<SceneNode*> SceneNode::getChildren()
+std::vector<SceneNode*> SceneNode::GetChildren() const
 {
 	return children;
 }
 
-const float SceneNode::getRadius()
+const float SceneNode::GetRadius() const
 {
 	return boundingRadius;
 }
 
-void SceneNode::Update(float msec) {
-	if (parent) {
+void SceneNode::Update(float msec)
+{
+	if (parent)
+	{
 		worldTransform = parent->worldTransform * transform;
 	}
-	else {
+	else
+	{
 		worldTransform = transform;
 	}
 
 	mesh->SetTransformForAllSubMeshes(worldTransform);
 
-	for (vector<SceneNode*>::iterator i = children.begin(); i != children.end(); ++i) {
+	for (vector<SceneNode*>::iterator i = children.begin(); i != children.end(); ++i)
+	{
 		(*i)->Update(msec);
 	}
 }

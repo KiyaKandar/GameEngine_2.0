@@ -22,20 +22,20 @@ public:
 		PhysicsEngine* physics, UserInterface* userInterface);
 	~Level();
 
-	void loadLevelFile(std::string levelFilePath, GameplaySystem* gameplay);
-	void loadLevelNode(Node* resourceNode, GameplaySystem* gameplay);
+	void LoadLevelFile(std::string levelFilePath, GameplaySystem* gameplay);
+	void LoadLevelNode(Node* resourceNode, GameplaySystem* gameplay);
 
-	void unloadLevelWhileKeepingUserInterface();
-	void unloadLevel() const;
+	void UnloadLevelWhileKeepingUserInterface();
+	void UnloadLevel() const;
 
-	void addObjectsToGame() const;
+	void AddObjectsToGame() const;
 
 private:
-	void loadUINode(Node* resourceNode) const;
-	void loadResource(Node* resourceNode);
+	void LoadUiNode(Node* resourceNode) const;
+	void LoadResource(Node* resourceNode);
 
-	void loadGameplayScripts(Node* resourceNode, GameplaySystem* gameplay) const;
-	void loadgameLogicScripts(Node* resourceNode, GameplaySystem* gameplay) const;
+	void LoadGameplayScripts(Node* resourceNode, GameplaySystem* gameplay) const;
+	void LoadgameLogicScripts(Node* resourceNode, GameplaySystem* gameplay) const;
 
 	XMLParser parser;
 	Database *database;

@@ -14,7 +14,7 @@ GameObjectLogic::GameObjectLogic(Database* database, std::string script)
 
 	scriptFile = script;
 	XMLParser parser;
-	parser.loadXMLFile(script);
+	parser.LoadXmlFile(script);
 	parsedScript = parser.parsedXml;
 }
 
@@ -22,20 +22,20 @@ GameObjectLogic::~GameObjectLogic()
 {
 }
 
-void GameObjectLogic::compileParsedXMLIntoScript()
+void GameObjectLogic::CompileParsedXmlIntoScript()
 {
 	Node* resources = parsedScript->children[RESOURCE_NODE];
 
-	compileGameLogic(parsedScript->children[GAME_LOGIC_NODE], resources->children);
-	compilePaintGameLogic(parsedScript->children[PAINT_GAME_LOGIC_NODE], resources->children);
+	CompileGameLogic(parsedScript->children[GAME_LOGIC_NODE], resources->children);
+	CompilePaintGameLogic(parsedScript->children[PAINT_GAME_LOGIC_NODE], resources->children);
 
 	for (GameLogic& logic : logics)
 	{
-		logic.executeActionsOnStart();
+		logic.ExecuteActionsOnStart();
 	}
 }
 
-void GameObjectLogic::notify(const std::string& messageType, Message* message, std::string gameObject)
+void GameObjectLogic::Notify(const std::string& messageType, Message* message, std::string gameObject)
 {
 	CollisionMessage* collisionmessage = static_cast<CollisionMessage*>(message);
 
@@ -43,59 +43,59 @@ void GameObjectLogic::notify(const std::string& messageType, Message* message, s
 	{
 		if (gameObject == logic.gameObject)
 		{
-			logic.notifyMessageActions(messageType, message);
+			logic.NotifyMessageActions(messageType, message);
 		}
 		
 	}
 }
 
-void GameObjectLogic::updatelogic(const float& deltaTime)
+void GameObjectLogic::Updatelogic(const float& deltaTime)
 {
 	for (GameLogic& logic : logics)
 	{
-		logic.executeMessageBasedActions();
-		logic.executeTimeBasedActions(deltaTime);
-		logic.clearNotifications();
+		logic.ExecuteMessageBasedActions();
+		logic.ExecuteTimeBasedActions(deltaTime);
+		logic.ClearNotifications();
 	}
 }
 
-void GameObjectLogic::compileGameLogic(Node* gameLogicNode, const std::vector<Node*>& resources)
+void GameObjectLogic::CompileGameLogic(Node* gameLogicNode, const std::vector<Node*>& resources)
 {
-	ActionBuilder::setExecutableBuilder([](Node* node)
+	ActionBuilder::SetExecutableBuilder([](Node* node)
 	{
-		return SendMessageActionBuilder::buildSendMessageAction(node);
+		return SendMessageActionBuilder::BuildSendMessageAction(node);
 	});
 
-	compileLogicFromNodes(gameLogicNode, resources);
+	CompileLogicFromNodes(gameLogicNode, resources);
 }
 
-void GameObjectLogic::compilePaintGameLogic(Node* paintGameNode, const std::vector<Node*>& resources)
+void GameObjectLogic::CompilePaintGameLogic(Node* paintGameNode, const std::vector<Node*>& resources)
 {
-	ActionBuilder::setExecutableBuilder([](Node* node)
+	ActionBuilder::SetExecutableBuilder([](Node* node)
 	{
-		return PaintGameActionBuilder::buildExecutable(node);
+		return PaintGameActionBuilder::BuildExecutable(node);
 	});
 
-	compileLogicFromNodes(paintGameNode, resources);
+	CompileLogicFromNodes(paintGameNode, resources);
 }
 
-void GameObjectLogic::compileLogicFromNodes(Node* logicNode, const std::vector<Node*>& resources)
+void GameObjectLogic::CompileLogicFromNodes(Node* logicNode, const std::vector<Node*>& resources)
 {
 	for (Node* resource : resources)
 	{
-		GameObject* gObj = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(resource->value));
+		GameObject* gObj = static_cast<GameObject*>(database->GetTable("GameObjects")->GetResource(resource->value));
 
-		changeResource(&logicNode, resource->value);
+		ChangeResource(&logicNode, resource->value);
 
 		logics.push_back(GameLogic());
-		logics[logics.size() - 1].compileParsedXMLIntoScript(logicNode);
+		logics[logics.size() - 1].CompileParsedXmlIntoScript(logicNode);
 		logics[logics.size() - 1].gameObject = resource->value;
 
-		changeResourceBack(&logicNode, resource->value);
+		ChangeResourceBack(&logicNode, resource->value);
 	}
 }
 
-void GameObjectLogic::changeResource(Node** node, std::string id)
+void GameObjectLogic::ChangeResource(Node** node, std::string id)
 {
 	if ((*node)->value == "var")
 	{
@@ -103,11 +103,11 @@ void GameObjectLogic::changeResource(Node** node, std::string id)
 	}
 	for (Node* child : (*node)->children)
 	{
-		changeResource(&child, id);
+		ChangeResource(&child, id);
 	}
 }
 
-void GameObjectLogic::changeResourceBack(Node** node, std::string id)
+void GameObjectLogic::ChangeResourceBack(Node** node, std::string id)
 {
 	if ((*node)->value == id)
 	{
@@ -115,6 +115,6 @@ void GameObjectLogic::changeResourceBack(Node** node, std::string id)
 	}
 	for (Node* child : (*node)->children)
 	{
-		changeResourceBack(&child, id);
+		ChangeResourceBack(&child, id);
 	}
 }

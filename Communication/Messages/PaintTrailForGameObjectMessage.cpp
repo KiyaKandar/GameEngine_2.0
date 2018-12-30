@@ -13,7 +13,7 @@ PaintTrailForGameObjectMessage::~PaintTrailForGameObjectMessage()
 {
 }
 
-PaintTrailForGameObjectMessage PaintTrailForGameObjectMessage::builder(Node * node)
+PaintTrailForGameObjectMessage PaintTrailForGameObjectMessage::Builder(Node * node)
 {
 	std::string nodeDestination = "";
 	std::string nodeResourceName = "";

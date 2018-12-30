@@ -11,12 +11,12 @@ public:
 	KeyboardMouseRecorder(Keyboard* keyboard, Mouse* mouse);
 	~KeyboardMouseRecorder() {}
 
-	 void fillInputs() override;
+	void FillInputs() override;
 
-	 void setKeyboard(Keyboard* keyboard)
-	 {
-		 this->keyboard = keyboard;
-	 }
+	void setKeyboard(Keyboard* keyboard)
+	{
+		this->keyboard = keyboard;
+	}
 
 private:
 	Keyboard* keyboard;

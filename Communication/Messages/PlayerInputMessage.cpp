@@ -8,9 +8,9 @@ PlayerInputMessage::PlayerInputMessage(const std::string& destinationName, Playe
 	this->player = player;
 	this->data = data;
 
-	addIntegerInformation("playerID", std::to_string(player->getPlayerID()));
-	addIntegerInformation("playerName", "player" + std::to_string(player->getPlayerID()));
-	addIntegerInformation("key", std::to_string(data.key));
+	AddIntegerInformation("playerID", std::to_string(player->getPlayerID()));
+	AddIntegerInformation("playerName", "player" + std::to_string(player->getPlayerID()));
+	AddIntegerInformation("key", std::to_string(data.key));
 }
 
 PlayerInputMessage::~PlayerInputMessage()

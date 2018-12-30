@@ -10,15 +10,15 @@ SoundNode::SoundNode(Sound* sound, NCLVector3 position, SoundPriority priority, 
 {
 	this->position = position;
 	this->priority = priority;
-	setVolume(volume);
+	SetVolume(volume);
 	this->isLooping = isLooping;
-	setRadius(radius);
+	SetRadius(radius);
 	this->pitch = pitch;
 	this->identifier = identifier;
 	timeLeft = 0.0f;
 	enabled = true;
 	oalSource = nullptr;
-	setSound(sound);
+	SetSound(sound);
 	isGlobal = false;
 }
 
@@ -27,15 +27,15 @@ SoundNode::SoundNode(Sound* sound, NCLVector3 *position, SoundPriority priority,
 {
 	this->movingPosition = position;
 	this->priority = priority;
-	setVolume(volume);
+	SetVolume(volume);
 	this->isLooping = isLooping;
-	setRadius(radius);
+	SetRadius(radius);
 	this->pitch = pitch;
 	this->identifier = identifier;
 	timeLeft = 0.0f;
 	enabled = true;
 	oalSource = nullptr;
-	setSound(sound);
+	SetSound(sound);
 	this->isGlobal = isGloabl;
 }
 
@@ -43,7 +43,7 @@ SoundNode::~SoundNode()
 {
 }
 
-SoundNode SoundNode::builder(PlaySoundMessage* message, Sound* sound)
+SoundNode SoundNode::Builder(PlaySoundMessage* message, Sound* sound)
 {
 	SoundNode soundNode(sound, message->position, message->priority, message->volume,
 		message->isLooping, message->radius, message->pitch, message->soundNodeIdentifier);
@@ -52,7 +52,7 @@ SoundNode SoundNode::builder(PlaySoundMessage* message, Sound* sound)
 	return soundNode;
 }
 
-SoundNode SoundNode::builder(PlayMovingSoundMessage* message, Sound* sound)
+SoundNode SoundNode::Builder(PlayMovingSoundMessage* message, Sound* sound)
 {
 	SoundNode soundNode(sound, message->position, message->priority, message->volume,
 		message->isLooping, message->radius, message->pitch, message->isGlobal, message->soundNodeIdentifier);
@@ -62,7 +62,7 @@ SoundNode SoundNode::builder(PlayMovingSoundMessage* message, Sound* sound)
 	return soundNode;
 }
 
-bool SoundNode::compareSourcesByPriority(SoundNode& a, SoundNode& b)
+bool SoundNode::CompareSourcesByPriority(SoundNode& a, SoundNode& b)
 {
 	if (a.priority > b.priority)
 	{
@@ -74,18 +74,18 @@ bool SoundNode::compareSourcesByPriority(SoundNode& a, SoundNode& b)
 	}
 }
 
-void SoundNode::setSound(Sound * s)
+void SoundNode::SetSound(Sound * s)
 {
 	sound = s;
-	detachSource();
+	DetachSource();
 
 	if (s) 
 	{
-		timeLeft = s->getLength();
+		timeLeft = s->GetLength();
 	}
 }
 
-void SoundNode::attachSource(OALSource *s)
+void SoundNode::AttachSource(OALSource *s)
 {
 	oalSource = s;
 	
@@ -98,13 +98,13 @@ void SoundNode::attachSource(OALSource *s)
 	
 	alSourcef(oalSource->source, AL_MAX_DISTANCE, radius);
 	alSourcef(oalSource->source, AL_REFERENCE_DISTANCE, radius * 0.2f);
-	alSourcei(oalSource->source, AL_BUFFER, sound->getBuffer());
-	alSourcef(oalSource->source, AL_SEC_OFFSET, (ALfloat)((sound->getLength() / 1000.0f) - (timeLeft / 1000.0f)));
+	alSourcei(oalSource->source, AL_BUFFER, sound->GetBuffer());
+	alSourcef(oalSource->source, AL_SEC_OFFSET, (ALfloat)((sound->GetLength() / 1000.0f) - (timeLeft / 1000.0f)));
 	alSourcePlay(oalSource->source);
 	state = SoundState::PLAYING;
 }
 
-void SoundNode::detachSource()
+void SoundNode::DetachSource()
 {
 	if (!oalSource) 
 	{
@@ -118,13 +118,13 @@ void SoundNode::detachSource()
 	oalSource = nullptr;
 }
 
-void SoundNode::update(float msec)
+void SoundNode::Update(float msec)
 {
 	timeLeft -= msec;
 
 	while (isLooping && timeLeft < 0.0f)
 	{
-		timeLeft += sound->getLength();
+		timeLeft += sound->GetLength();
 	}
 
 	if (oalSource)
@@ -136,7 +136,7 @@ void SoundNode::update(float msec)
 		}
 		else if (isMoving && !isGlobal)
 		{
-			position = gObj->getPosition();
+			position = gObj->GetPosition();
 			ALfloat pos[] = { position.x, position.y, position.z };
 			alSourcefv(oalSource->source, AL_POSITION, pos);
 		}
@@ -154,7 +154,7 @@ void SoundNode::update(float msec)
 	}
 }
 
-void SoundNode::pauseSound()
+void SoundNode::PauseSound()
 {
 	state = SoundState::PAUSED;
 
@@ -164,7 +164,7 @@ void SoundNode::pauseSound()
 	}
 }
 
-void SoundNode::unpauseSound()
+void SoundNode::UnpauseSound()
 {
 	state = SoundState::PLAYING;
 	alSourcePlay(oalSource->source);

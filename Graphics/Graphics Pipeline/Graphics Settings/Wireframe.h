@@ -9,21 +9,21 @@ public:
 	Wireframe(const std::string identifier, const NCLVector2 resolution, Camera* camera);
 	~Wireframe();
 
-	void linkShaders() override;
-	void initialise() override;
-	void apply() override;
+	void LinkShaders() override;
+	void Initialise() override;
+	void Apply() override;
 
-	void regenerateShaders() override;
+	void RegenerateShaders() override;
 
-	void addLine(NCLVector3 from, NCLVector3 to, NCLVector3 colour);
-	void addSphere(NCLVector3 position, float radius, NCLVector3 colour);
+	void AddLine(NCLVector3 from, NCLVector3 to, NCLVector3 colour);
+	void AddSphere(NCLVector3 position, float radius, NCLVector3 colour);
 
 private:
-	void locateUniforms() override;
+	void LocateUniforms() override;
 
-	void buildLinesFromSpheres();
-	void splitSphere(int circleIndex);
-	void renderLines();
+	void BuildLinesFromSpheres();
+	void SplitSphere(int circleIndex);
+	void RenderLines();
 
 	Shader* debugShader;
 

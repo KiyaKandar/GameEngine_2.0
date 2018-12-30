@@ -30,29 +30,29 @@ public:
 	GameObject();
 	~GameObject();
 
-	void setSceneNode(SceneNode* sceneNode);
-	void setPhysicsNode(PhysicsNode* physicsNode);
+	void SetSceneNode(SceneNode* sceneNode);
+	void SetPhysicsNode(PhysicsNode* physicsNode);
 
-	SceneNode* getSceneNode();
-	PhysicsNode* getPhysicsNode();
+	SceneNode* GetSceneNode();
+	PhysicsNode* GetPhysicsNode();
 
-	void update(float dt);
-	void setPosition(NCLVector3 position);
-	void setRotation(NCLVector4 rotation);
-	void setScale(NCLVector3 scale);
-	void setEnabled(bool isEnabled);
+	void Update(float dt);
+	void SetPosition(NCLVector3 position);
+	void SetRotation(NCLVector4 rotation);
+	void SetScale(NCLVector3 scale);
+	void SetEnabled(bool isEnabled);
 
-	 const NCLVector3& getScale() const 
+	 const NCLVector3& GetScale() const 
 	{
 		return scale;
 	}
 
-	const NCLVector3& getPosition() const
+	const NCLVector3& GetPosition() const
 	{
 		return position;
 	}
 
-	bool getEnabled()
+	bool GetEnabled() const
 	{
 		return isEnabled;
 	}

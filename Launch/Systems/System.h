@@ -18,18 +18,18 @@ public:
 	System(ThreadPool* threadPool);
 	~System();
 
-	void updateNextSystemFrame();
+	void UpdateNextSystemFrame();
 	void StartConcurrentSubsystems();
 	void SynchroniseAndStopConcurrentSubsystems();
 
-	void addSubsystem(Subsystem* subsystem);
-	void addConcurrentSubsystem(Subsystem* subsystem);
+	void AddSubsystem(Subsystem* subsystem);
+	void AddConcurrentSubsystem(Subsystem* subsystem);
 
-	void removeSubsystem(std::string subsystemName);
+	void RemoveSubsystem(std::string subsystemName);
 
-	void RegisterWithProfiler(Profiler* profiler);
+	void RegisterWithProfiler(Profiler* profiler) const;
 
-	std::vector<Subsystem*> getSubSystems();
+	std::vector<Subsystem*> GetSubSystems();
 
 private:
 	MessageStorage messageBuffers;
@@ -42,4 +42,3 @@ private:
 	vector<TaskFuture<void>> updates;
 	bool running;
 };
-

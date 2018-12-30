@@ -3,12 +3,11 @@
 
 DebugDrawData* OGLRenderer::orthoDebugData = NULL;
 DebugDrawData* OGLRenderer::perspectiveDebugData = NULL;
-OGLRenderer*   OGLRenderer::debugDrawingRenderer = NULL;
-Shader*		   OGLRenderer::debugDrawShader = NULL;
+OGLRenderer* OGLRenderer::debugDrawingRenderer = NULL;
+Shader* OGLRenderer::debugDrawShader = NULL;
 
-bool		   OGLRenderer::drawnDebugOrtho = false;
-bool		   OGLRenderer::drawnDebugPerspective = false;
-
+bool OGLRenderer::drawnDebugOrtho = false;
+bool OGLRenderer::drawnDebugPerspective = false;
 
 /*
 Creates an OpenGL 3.2 CORE PROFILE rendering context. Sets itself
@@ -33,69 +32,78 @@ OGLRenderer::OGLRenderer(HWND windowHandle, NCLVector2 size)
 
 	pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
 	pfd.nVersion = 1;
-	pfd.dwFlags = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;   //It must be double buffered, it must support OGL(!), and it must allow us to draw to it...
-	pfd.iPixelType = PFD_TYPE_RGBA;	//We want our front / back buffer to have 4 channels!
-	pfd.cColorBits = 32;				//4 channels of 8 bits each!
-	pfd.cDepthBits = 24;				//24 bit depth buffer
-	pfd.cStencilBits = 8;				//plus an 8 bit stencil buffer
+	pfd.dwFlags = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
+	//It must be double buffered, it must support OGL(!), and it must allow us to draw to it...
+	pfd.iPixelType = PFD_TYPE_RGBA; //We want our front / back buffer to have 4 channels!
+	pfd.cColorBits = 32; //4 channels of 8 bits each!
+	pfd.cDepthBits = 24; //24 bit depth buffer
+	pfd.cStencilBits = 8; //plus an 8 bit stencil buffer
 	pfd.iLayerType = PFD_MAIN_PLANE;
 
-	GLuint		PixelFormat;
+	GLuint PixelFormat;
 	if (!(PixelFormat = ChoosePixelFormat(deviceContext, &pfd)))
-	{	// Did Windows Find A Matching Pixel Format for our PFD?
+	{
+		// Did Windows Find A Matching Pixel Format for our PFD?
 		throw runtime_error("OGLRenderer::OGLRenderer(): Failed to choose a pixel format!");
 	}
 
 	if (!SetPixelFormat(deviceContext, PixelFormat, &pfd))
-	{		// Are We Able To Set The Pixel Format?
+	{
+		// Are We Able To Set The Pixel Format?
 		throw runtime_error("OGLRenderer::OGLRenderer(): Failed to set a pixel format!");
 	}
 
-	HGLRC		tempContext;		//We need a temporary OpenGL context to check for OpenGL 3.2 compatibility...stupid!!!
+	HGLRC tempContext; //We need a temporary OpenGL context to check for OpenGL 3.2 compatibility...stupid!!!
 	if (!(tempContext = wglCreateContext(deviceContext)))
-	{	// Are We Able To get the temporary context?
+	{
+		// Are We Able To get the temporary context?
 		wglDeleteContext(tempContext);
 		throw runtime_error("OGLRenderer::OGLRenderer(): Cannot create a temporary context!");
 	}
 
 	if (!wglMakeCurrent(deviceContext, tempContext))
-	{	// Try To Activate The Rendering Context
+	{
+		// Try To Activate The Rendering Context
 		wglDeleteContext(tempContext);
 		throw runtime_error("OGLRenderer::OGLRenderer(): Cannot create a temporary context!");
 	}
 
 	//Now we have a temporary context, we can find out if we support OGL 3.x
 	char* ver = (char*)glGetString(GL_VERSION); // ver must equal "3.2.0" (or greater!)
-	int major = ver[0] - '0';		//casts the 'correct' major version integer from our version string
-	int minor = ver[2] - '0';		//casts the 'correct' minor version integer from our version string
+	int major = ver[0] - '0'; //casts the 'correct' major version integer from our version string
+	int minor = ver[2] - '0'; //casts the 'correct' minor version integer from our version string
 
 	if (major < 3)
-	{					//Graphics hardware does not support OGL 3! Erk...
+	{
+		//Graphics hardware does not support OGL 3! Erk...
 		wglDeleteContext(tempContext);
 		return;
 	}
 
 	if (major == 3 && minor < 2)
-	{	//Graphics hardware does not support ENOUGH of OGL 3! Erk...
+	{
+		//Graphics hardware does not support ENOUGH of OGL 3! Erk...
 		wglDeleteContext(tempContext);
 		return;
 	}
 	//We do support OGL 3! Let's set it up...
 
 	int attribs[] = {
-		WGL_CONTEXT_MAJOR_VERSION_ARB, major,	//TODO: Maybe lock this to 3? We might actually get an OpenGL 4.x context...
+		WGL_CONTEXT_MAJOR_VERSION_ARB, major,
+		//TODO: Maybe lock this to 3? We might actually get an OpenGL 4.x context...
 		WGL_CONTEXT_MINOR_VERSION_ARB, minor,
 		WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB
-#ifdef OPENGL_DEBUGGING 
+#ifdef OPENGL_DEBUGGING
 		| WGL_CONTEXT_DEBUG_BIT_ARB
 #endif		//No deprecated stuff!! DIE DIE DIE glBegin!!!!
-		,WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,		//We want everything OpenGL 3.2 provides...
-		0					//That's enough attributes...
+		,WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB, //We want everything OpenGL 3.2 provides...
+		0 //That's enough attributes...
 	};
 
 	//Everywhere else in the Renderers, we use function pointers provided by GLEW...but we can't initialise GLEW yet! So we have to use the 'Wiggle' API
 	//to get a pointer to the function that will create our OpenGL 3.2 context...
-	PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+	PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress(
+		"wglCreateContextAttribsARB");
 	renderContext = wglCreateContextAttribsARB(deviceContext, 0, attribs);
 
 	// Check for the context, and try to make it the current rendering context
@@ -106,13 +114,15 @@ OGLRenderer::OGLRenderer(HWND windowHandle, NCLVector2 size)
 		return;
 	}
 
-	wglDeleteContext(tempContext);	//We don't need the temporary context any more!
+	wglDeleteContext(tempContext); //We don't need the temporary context any more!
 
-	glewExperimental = GL_TRUE;	//This forces GLEW to give us function pointers for everything (gets around GLEW using 'old fashioned' methods
-								//for determining whether a OGL context supports a particular function or not
+	glewExperimental = GL_TRUE;
+	//This forces GLEW to give us function pointers for everything (gets around GLEW using 'old fashioned' methods
+	//for determining whether a OGL context supports a particular function or not
 
 	if (glewInit() != GLEW_OK)
-	{	//Try to initialise GLEW
+	{
+		//Try to initialise GLEW
 		return;
 	}
 	//If we get this far, everything's going well!
@@ -123,9 +133,9 @@ OGLRenderer::OGLRenderer(HWND windowHandle, NCLVector2 size)
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
 #endif
 
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);			//When we clear the screen, we want it to be dark grey
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f); //When we clear the screen, we want it to be dark grey
 
-	currentShader = 0;							//0 is the 'null' object name for shader programs...
+	currentShader = 0; //0 is the 'null' object name for shader programs...
 
 	Resize(int(size.x), int(size.y));
 
@@ -181,7 +191,7 @@ Swaps the buffers, ready for the next frame's rendering. Should be called
 every frame, at the end of RenderScene(), or whereever appropriate for
 your application.
 */
-void OGLRenderer::swapBuffers()
+void OGLRenderer::SwapBuffers() const
 {
 	//if(debugDrawingRenderer == this) {
 	//	if(!drawnDebugOrtho) {
@@ -198,6 +208,7 @@ void OGLRenderer::swapBuffers()
 	//function keeps all the tutorial code 100% cross-platform (kinda).
 	::SwapBuffers(deviceContext);
 }
+
 /*
 Used by some later tutorials when we want to have framerate-independent
 updates on certain datatypes. Really, OGLRenderer should have its own
@@ -228,14 +239,14 @@ void OGLRenderer::UpdateShaderMatrices(Shader* shader)
 	glUniformMatrix4fv(glGetUniformLocation(shader->GetProgram(), "textureMatrix"), 1, false, (float*)&textureMatrix);
 }
 
-void OGLRenderer::SetCurrentShader(Shader*s)
+void OGLRenderer::SetCurrentShader(Shader* s)
 {
 	currentShader = s;
 
 	glUseProgram(s->GetProgram());
 }
 
-void OGLRenderer::SetTextureRepeating(GLuint target, bool repeating)
+void OGLRenderer::SetTextureRepeating(GLuint target, bool repeating) const
 {
 	glBindTexture(GL_TEXTURE_2D, target);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, repeating ? GL_REPEAT : GL_CLAMP);
@@ -282,18 +293,20 @@ void OGLRenderer::DebugCallback(GLuint source, GLuint type, GLuint id, GLuint se
 }
 #endif
 
-void	OGLRenderer::DrawDebugPerspective(NCLMatrix4*matrix)
+void OGLRenderer::DrawDebugPerspective(NCLMatrix4* matrix)
 {
 	glUseProgram(debugDrawShader->GetProgram());
 
 	if (matrix)
 	{
-		glUniformMatrix4fv(glGetUniformLocation(debugDrawShader->GetProgram(), "viewProjMatrix"), 1, false, (float*)matrix);
+		glUniformMatrix4fv(glGetUniformLocation(debugDrawShader->GetProgram(), "viewProjMatrix"), 1, false,
+			(float*)matrix);
 	}
 	else
 	{
-		NCLMatrix4 temp = projMatrix*viewMatrix;
-		glUniformMatrix4fv(glGetUniformLocation(debugDrawShader->GetProgram(), "viewProjMatrix"), 1, false, (float*)&temp);
+		NCLMatrix4 temp = projMatrix * viewMatrix;
+		glUniformMatrix4fv(glGetUniformLocation(debugDrawShader->GetProgram(), "viewProjMatrix"), 1, false,
+			(float*)&temp);
 	}
 
 	perspectiveDebugData->Draw();
@@ -303,19 +316,20 @@ void	OGLRenderer::DrawDebugPerspective(NCLMatrix4*matrix)
 	SetCurrentShader(currentShader);
 }
 
-
-void	OGLRenderer::DrawDebugOrtho(NCLMatrix4*matrix)
+void OGLRenderer::DrawDebugOrtho(NCLMatrix4* matrix)
 {
 	glUseProgram(debugDrawShader->GetProgram());
 
 	if (matrix)
 	{
-		glUniformMatrix4fv(glGetUniformLocation(debugDrawShader->GetProgram(), "viewProjMatrix"), 1, false, (float*)matrix);
+		glUniformMatrix4fv(glGetUniformLocation(debugDrawShader->GetProgram(), "viewProjMatrix"), 1, false,
+			(float*)matrix);
 	}
 	else
 	{
 		static NCLMatrix4 ortho = NCLMatrix4::orthographic(-1, 1, 720, 0, 0, 480);
-		glUniformMatrix4fv(glGetUniformLocation(debugDrawShader->GetProgram(), "viewProjMatrix"), 1, false, (float*)&ortho);
+		glUniformMatrix4fv(glGetUniformLocation(debugDrawShader->GetProgram(), "viewProjMatrix"), 1, false,
+			(float*)&ortho);
 	}
 
 	orthoDebugData->Draw();
@@ -325,17 +339,18 @@ void	OGLRenderer::DrawDebugOrtho(NCLMatrix4*matrix)
 	SetCurrentShader(currentShader);
 }
 
-void	OGLRenderer::DrawDebugLine(DebugDrawMode mode, const NCLVector3 &from, const NCLVector3 &to, const NCLVector3 &fromColour, const NCLVector3 &toColour)
+void OGLRenderer::DrawDebugLine(DebugDrawMode mode, const NCLVector3& from, const NCLVector3& to,
+	const NCLVector3& fromColour, const NCLVector3& toColour)
 {
-	DebugDrawData*target = (mode == DEBUGDRAW_ORTHO ? target = orthoDebugData : target = perspectiveDebugData);
-
+	DebugDrawData* target = (mode == DEBUGDRAW_ORTHO ? target = orthoDebugData : target = perspectiveDebugData);
 
 	target->AddLine(from, to, fromColour, toColour);
 }
 
-void	OGLRenderer::DrawDebugBox(DebugDrawMode mode, const NCLVector3 &at, const NCLVector3 &scale, const NCLVector3 &colour)
+void OGLRenderer::DrawDebugBox(DebugDrawMode mode, const NCLVector3& at, const NCLVector3& scale,
+	const NCLVector3& colour)
 {
-	DebugDrawData*target = (mode == DEBUGDRAW_ORTHO ? target = orthoDebugData : target = perspectiveDebugData);
+	DebugDrawData* target = (mode == DEBUGDRAW_ORTHO ? target = orthoDebugData : target = perspectiveDebugData);
 
 	target->AddLine(at + NCLVector3(-scale.x * 0.5f, scale.y * 0.5f, 0),
 		at + NCLVector3(-scale.x * 0.5f, -scale.y * 0.5f, 0), colour, colour);
@@ -348,35 +363,32 @@ void	OGLRenderer::DrawDebugBox(DebugDrawMode mode, const NCLVector3 &at, const N
 
 	target->AddLine(at + NCLVector3(scale.x * 0.5f, scale.y * 0.5f, 0),
 		at + NCLVector3(-scale.x * 0.5f, scale.y * 0.5f, 0), colour, colour);
-
 }
 
-void	OGLRenderer::DrawDebugCross(DebugDrawMode mode, const NCLVector3 &at, const NCLVector3 &scale, const NCLVector3 &colour)
+void OGLRenderer::DrawDebugCross(DebugDrawMode mode, const NCLVector3& at, const NCLVector3& scale,
+	const NCLVector3& colour)
 {
-	DebugDrawData*target = (mode == DEBUGDRAW_ORTHO ? target = orthoDebugData : target = perspectiveDebugData);
+	DebugDrawData* target = (mode == DEBUGDRAW_ORTHO ? target = orthoDebugData : target = perspectiveDebugData);
 
 	target->AddLine(at + NCLVector3(-scale.x * 0.5f, -scale.y * 0.5f, 0),
 		at + NCLVector3(scale.x * 0.5f, scale.y * 0.5f, 0), colour, colour);
 
 	target->AddLine(at + NCLVector3(scale.x * 0.5f, -scale.y * 0.5f, 0),
 		at + NCLVector3(-scale.x * 0.5f, scale.y * 0.5f, 0), colour, colour);
-
 }
 
-void	OGLRenderer::DrawDebugCircle(DebugDrawMode mode, const NCLVector3 &at, const float radius, const NCLVector3 &colour)
+void OGLRenderer::DrawDebugCircle(DebugDrawMode mode, const NCLVector3& at, const float radius,
+	const NCLVector3& colour)
 {
-	DebugDrawData*target = (mode == DEBUGDRAW_ORTHO ? target = orthoDebugData : target = perspectiveDebugData);
+	DebugDrawData* target = (mode == DEBUGDRAW_ORTHO ? target = orthoDebugData : target = perspectiveDebugData);
 
 	const int stepCount = 18;
 	const float divisor = 360.0f / stepCount;
 
-
 	for (int i = 0; i < stepCount; ++i)
 	{
-
 		float startx = radius * (float)cos(DegToRad(i * divisor)) + at.x;
 		float endx = radius * (float)cos(DegToRad((i + 1) * divisor)) + at.x;
-
 
 		float starty = radius * (float)sin(DegToRad(i * divisor)) + at.y;
 		float endy = radius * (float)sin(DegToRad((i + 1) * divisor)) + at.y;
@@ -386,16 +398,13 @@ void	OGLRenderer::DrawDebugCircle(DebugDrawMode mode, const NCLVector3 &at, cons
 	}
 }
 
-
-
-
 DebugDrawData::DebugDrawData()
 {
 	glGenVertexArrays(1, &array);
 	glGenBuffers(2, buffers);
 }
 
-void DebugDrawData::Draw()
+void DebugDrawData::Draw() const
 {
 	//if (lines.empty())
 	//{

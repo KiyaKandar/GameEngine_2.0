@@ -24,68 +24,68 @@ PipelineConfiguration::~PipelineConfiguration()
 {
 }
 
-void PipelineConfiguration::initialiseModules(Database* database)
+void PipelineConfiguration::InitialiseModules(Database* database)
 {
 	paintTrail = new PaintTrail("PaintTrail", resolution, database);
-	paintTrail->linkShaders();
-	paintTrail->initialise();
+	paintTrail->LinkShaders();
+	paintTrail->Initialise();
 
-	gBuffer = new GBuffer("gbuffer", resolution, window, camera, sceneManager->getSceneNodesInFrustum());
-	gBuffer->linkShaders();
-	gBuffer->initialise();
+	gBuffer = new GBuffer("gbuffer", resolution, window, camera, sceneManager->GetSceneNodesInFrustum());
+	gBuffer->LinkShaders();
+	gBuffer->Initialise();
 	gBuffer->paintTextureMatrix = &paintTrail->textureMatrices;
 	gBuffer->paintTrailTexture = &paintTrail->paintTrailTexture;
 
 	skybox = new Skybox("Skybox", resolution, &camera->viewMatrix);
-	skybox->linkShaders();
-	skybox->initialise();
+	skybox->LinkShaders();
+	skybox->Initialise();
 	skybox->GBufferFBO = &gBuffer->gBuffer;
 
-	ssao = new SSAO("SSAO", resolution, camera, gBuffer->getGBuffer());
-	ssao->linkShaders();
-	ssao->initialise();
+	ssao = new SSAO("SSAO", resolution, camera, gBuffer->GetGBuffer());
+	ssao->LinkShaders();
+	ssao->Initialise();
 
-	shadowTex = new Shadows("Shadows", resolution, sceneManager->getAllLights(), sceneManager->getAllNodes());
-	shadowTex->linkShaders();
-	shadowTex->initialise();
+	shadowTex = new Shadows("Shadows", resolution, sceneManager->GetAllLights(), sceneManager->GetAllNodes());
+	shadowTex->LinkShaders();
+	shadowTex->Initialise();
 
-	bpLighting = new BPLighting("BPLighting", resolution, camera, gBuffer->getGBuffer(), 
-		sceneManager->getAllLights(), ssao->getSSAOTextures(), shadowTex->getShadowData());
-	bpLighting->linkShaders();
-	bpLighting->initialise();
+	bpLighting = new BPLighting("BPLighting", resolution, camera, gBuffer->GetGBuffer(), 
+		sceneManager->GetAllLights(), ssao->GetSSAOTextures(), shadowTex->getShadowData());
+	bpLighting->LinkShaders();
+	bpLighting->Initialise();
 	bpLighting->SSAOApplied = &ssao->applied;
 	bpLighting->ShadowsApplied = &shadowTex->applied;
 
 	uiModule = new UIModule("UIModule", resolution, database);
-	uiModule->linkShaders();
-	uiModule->initialise();
+	uiModule->LinkShaders();
+	uiModule->Initialise();
 
 	gameText = new GameText("GameText", resolution, camera);
-	gameText->linkShaders();
-	gameText->initialise();
+	gameText->LinkShaders();
+	gameText->Initialise();
 
 	scoreCounter = new ScoreCounter("ScoreCounter", resolution, database);
-	scoreCounter->linkShaders();
-	scoreCounter->initialise();
+	scoreCounter->LinkShaders();
+	scoreCounter->Initialise();
 	scoreCounter->paintTrailTexture = &paintTrail->paintTrailTexture;
 
 	wireframe = new Wireframe("Wireframe", resolution, camera);
-	wireframe->linkShaders();
-	wireframe->initialise();
+	wireframe->LinkShaders();
+	wireframe->Initialise();
 
-	gBuffer->setReflectionTextureID(skybox->textureID);
+	gBuffer->SetReflectionTextureId(skybox->textureID);
 }
 
-void PipelineConfiguration::buildPipeline(GraphicsPipeline* pipeline)
+void PipelineConfiguration::BuildPipeline(GraphicsPipeline* pipeline)
 {
-	pipeline->addModule(paintTrail);
-	pipeline->addModule(gBuffer);
-	pipeline->addModule(skybox);
-	pipeline->addModule(shadowTex);
-	pipeline->addModule(ssao);
-	pipeline->addModule(bpLighting);
-	pipeline->addModule(uiModule);
-	pipeline->addModule(gameText);
-	pipeline->addModule(scoreCounter);
-	pipeline->addModule(wireframe);
+	pipeline->AddModule(paintTrail);
+	pipeline->AddModule(gBuffer);
+	pipeline->AddModule(skybox);
+	pipeline->AddModule(shadowTex);
+	pipeline->AddModule(ssao);
+	pipeline->AddModule(bpLighting);
+	pipeline->AddModule(uiModule);
+	pipeline->AddModule(gameText);
+	pipeline->AddModule(scoreCounter);
+	pipeline->AddModule(wireframe);
 }

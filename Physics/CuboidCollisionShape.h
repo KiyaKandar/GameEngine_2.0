@@ -26,7 +26,7 @@ public:
 	CuboidCollisionShape(const NCLVector3& halfdims);
 	virtual ~CuboidCollisionShape();
 
-	void setScale(NCLVector3 scale, float invMass) override
+	void SetScale(NCLVector3 scale, float invMass) override
 	{
 		halfDims = scale;
 		BuildInverseInertia(invMass);

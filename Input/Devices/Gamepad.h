@@ -30,12 +30,12 @@ struct XButtonIDs
 
 	XButtonIDs(); // Default constructor
 
-				  // Member variables
-				  //---------------------//
+	// Member variables
+	//---------------------//
 
 	int A, B, X, Y; // 'Action' buttons
 
-					// Directional Pad (D-Pad)
+	// Directional Pad (D-Pad)
 	int DPadUp, DPadDown, DPadLeft, DPadRight;
 
 	// Shoulder ('Bumper') buttons
@@ -45,7 +45,7 @@ struct XButtonIDs
 	int LThumbstick, RThumbstick;
 
 	int Start; // 'START' button
-	int Back;  // 'BACK' button
+	int Back; // 'BACK' button
 };
 
 class Gamepad
@@ -58,9 +58,8 @@ public:
 	void Update();
 	void RefreshState(); //Update button states for next frame
 
-
-						 //Thumbsticks
-						 //Return true if stick is in deadzone
+	//Thumbsticks
+	//Return true if stick is in deadzone
 	bool LStickInDeadzone() const;
 	bool RStickInDeadzone() const;
 
@@ -81,24 +80,22 @@ public:
 
 	//Utility functions
 	XINPUT_STATE GetState() const;
-	int	 GetIndex() const;
+	int GetIndex() const;
 	void SetIndex(const int index);
 	bool Connected();
-
-	
 
 	// Vibrate the gamepad (0.0f none, 1.0f max speed)
 	void Rumble(const float a_fLeftMotor = 0.0f, const float a_fRightMotor = 0.0f) const;
 
-	int	gamepadIndex; //eg 1, 2, 3, 4
+	int gamepadIndex; //eg 1, 2, 3, 4
 private:
 	XINPUT_STATE state; //Current gamepad state
 
-	static const int ButtonCount = 14;		//Total gamepad buttons
-	bool bPrev_ButtonStates[ButtonCount];	//Previous frame button states
-	bool bButtonStates[ButtonCount];		//Current frame button states
+	static const int ButtonCount = 14; //Total gamepad buttons
+	bool bPrev_ButtonStates[ButtonCount]; //Previous frame button states
+	bool bButtonStates[ButtonCount]; //Current frame button states
 
-	bool bGamepad_ButtonsDown[ButtonCount];	//Buttons pressed on current frame
+	bool bGamepad_ButtonsDown[ButtonCount]; //Buttons pressed on current frame
 };
 
 // Externally define the 'XButtonIDs' struct as 'XButtons'

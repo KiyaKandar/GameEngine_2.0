@@ -14,19 +14,19 @@ TableCreation::TableCreation(Database* database)
 {
 	this->database = database;
 
-	tableAdditions.push_back(std::bind(&TableCreation::addGameObjectsTable, this));
-	tableAdditions.push_back(std::bind(&TableCreation::addMeshesTable, this));
-	tableAdditions.push_back(std::bind(&TableCreation::addSoundsTable, this));
-	tableAdditions.push_back(std::bind(&TableCreation::addLightsTable, this));
-	tableAdditions.push_back(std::bind(&TableCreation::addUIMeshTable, this));
+	tableAdditions.push_back(std::bind(&TableCreation::AddGameObjectsTable, this));
+	tableAdditions.push_back(std::bind(&TableCreation::AddMeshesTable, this));
+	tableAdditions.push_back(std::bind(&TableCreation::AddSoundsTable, this));
+	tableAdditions.push_back(std::bind(&TableCreation::AddLightsTable, this));
+	tableAdditions.push_back(std::bind(&TableCreation::AddUiMeshTable, this));
 
-	addTablesToDatabase();}
+	AddTablesToDatabase();}
 
 TableCreation::~TableCreation()
 {
 }
 
-void TableCreation::addTablesToDatabase() const
+void TableCreation::AddTablesToDatabase() const
 {
 	for (const auto addTableToDatabase : tableAdditions)
 	{
@@ -34,26 +34,26 @@ void TableCreation::addTablesToDatabase() const
 	}
 }
 
-void TableCreation::addGameObjectsTable() const
+void TableCreation::AddGameObjectsTable() const
 {
-	database->addTable("GameObjects", new Table<Resource>("GameObjects", MAX_MEMORY_PER_TABLE, [&database = database](Node* node)
+	database->AddTable("GameObjects", new Table<Resource>("GameObjects", MAX_MEMORY_PER_TABLE, [&database = database](Node* node)
 	{
-		return GameObjectBuilder::buildGameObject(node, database);	
+		return GameObjectBuilder::BuildGameObject(node, database);	
 	}));
 }
 
 
-void TableCreation::addMeshesTable() const
+void TableCreation::AddMeshesTable() const
 {
-	database->addTable("Meshes", new Table<Resource>("Meshes", MAX_MEMORY_PER_TABLE, [](Node* node)
+	database->AddTable("Meshes", new Table<Resource>("Meshes", MAX_MEMORY_PER_TABLE, [](Node* node)
 	{
 		Mesh* mesh;
 
 		if (node->children[0]->nodeType.compare("MeshType") == 0)
 		{
 			mesh = Mesh::GenerateHeightMap(30,30);
-			mesh->setName(node->name);
-			mesh->loadTexture(node->children[1]->value);
+			mesh->SetName(node->name);
+			mesh->LoadTexture(node->children[1]->value);
 			mesh->perlin = stoi(node->children[2]->value);
 		}
 		else
@@ -62,7 +62,7 @@ void TableCreation::addMeshesTable() const
 
 			if (node->children.size() > 1)
 			{
-				mesh->setTextureFile(node->children[1]->value);
+				mesh->SetTextureFile(node->children[1]->value);
 			}
 		}
 
@@ -70,29 +70,29 @@ void TableCreation::addMeshesTable() const
 	}));
 }
 
-void TableCreation::addUIMeshTable() const
+void TableCreation::AddUiMeshTable() const
 {
-	database->addTable("UIMeshes", new Table<Resource>("UIMeshes", MAX_MEMORY_PER_TABLE, [](Node* node)
+	database->AddTable("UIMeshes", new Table<Resource>("UIMeshes", MAX_MEMORY_PER_TABLE, [](Node* node)
 	{
 		Mesh* mesh = new Mesh(node->children[0]->value, 1);
-		mesh->setName(node->name);
+		mesh->SetName(node->name);
 		return mesh;
 	}));
 }
 
-void TableCreation::addSoundsTable() const
+void TableCreation::AddSoundsTable() const
 {
-	database->addTable("SoundObjects", new Table<Resource>("SoundObjects", MAX_MEMORY_PER_TABLE, [](Node* node)
+	database->AddTable("SoundObjects", new Table<Resource>("SoundObjects", MAX_MEMORY_PER_TABLE, [](Node* node)
 	{
 		Sound *sound = new Sound(node->value);
-		sound->setName(node->name);
+		sound->SetName(node->name);
 		return sound;
 	}));
 }
 
-void TableCreation::addLightsTable() const
+void TableCreation::AddLightsTable() const
 {
-	database->addTable("Lights", new Table<Resource>("Lights", MAX_MEMORY_PER_TABLE, [](Node* node)
+	database->AddTable("Lights", new Table<Resource>("Lights", MAX_MEMORY_PER_TABLE, [](Node* node)
 	{
 		std::string resourceName = node->name;
 
@@ -115,7 +115,7 @@ void TableCreation::addLightsTable() const
 		bool isShadowCasting = (node->children[4]->value == "enabled");
 
 		Light* light = new Light(position, colour, radius, intensity, isShadowCasting);
-		light->setName(resourceName);
+		light->SetName(resourceName);
 
 		return light;
 	}));

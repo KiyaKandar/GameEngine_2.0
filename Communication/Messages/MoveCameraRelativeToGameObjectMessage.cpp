@@ -18,7 +18,7 @@ MoveCameraRelativeToGameObjectMessage::~MoveCameraRelativeToGameObjectMessage()
 {
 }
 
-MoveCameraRelativeToGameObjectMessage MoveCameraRelativeToGameObjectMessage::builder(Node* node)
+MoveCameraRelativeToGameObjectMessage MoveCameraRelativeToGameObjectMessage::Builder(Node* node)
 {
 	std::string nodeDestination = "";
 	//std::string nodeResourcename = MoveCameraRelativeToGameObjectMessage::resourceName;

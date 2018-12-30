@@ -15,12 +15,12 @@ public:
 	MessageBuffer() {}
 	~MessageBuffer() {}
 
-	void insertOutgoingMessage(MessageType message)
+	void InsertOutgoingMessage(MessageType message)
 	{
 		outgoingMessages.push(message);
 	}
 
-	void sendMessages(MessageStorage* messageStorage)
+	void SendMessages(MessageStorage* messageStorage)
 	{
 		while (!outgoingMessages.empty())
 		{
@@ -28,11 +28,11 @@ public:
 			outgoingMessages.pop();
 
 			sentMessages.push(message);
-			messageStorage->deliverMessage(&sentMessages.back());
+			messageStorage->DeliverMessage(&sentMessages.back());
 		}
 	}
 
-	void clearSentMessages()
+	void ClearSentMessages()
 	{
 		while (!sentMessages.empty())
 		{
@@ -40,7 +40,7 @@ public:
 		}
 	}
 
-	void clearOutgoingMessages()
+	void ClearOutgoingMessages()
 	{
 		while (!outgoingMessages.empty())
 		{

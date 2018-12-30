@@ -9,7 +9,7 @@
 System::System(ThreadPool* threadPool)
 {
 	letterBox = new LetterBox();
-	DeliverySystem::provide(letterBox);
+	DeliverySystem::Provide(letterBox);
 	this->threadPool = threadPool;
 	timer = new GameTimer();
 	running = false;
@@ -33,17 +33,17 @@ System::~System()
 	delete timer;
 }
 
-void System::updateNextSystemFrame()
+void System::UpdateNextSystemFrame()
 {
 	timer->beginTimedSection();
 
 	for (Subsystem* subsystem : subsystems)
 	{
-		subsystem->updateSubsystem();
+		subsystem->UpdateSubsystem();
 	}
 
-	DeliverySystem::getPostman()->clearAllMessages();
-	DeliverySystem::getPostman()->deliverAllMessages();
+	DeliverySystem::GetPostman()->ClearAllMessages();
+	DeliverySystem::GetPostman()->DeliverAllMessages();
 
 	timer->endTimedSection();
 }
@@ -54,13 +54,13 @@ void System::StartConcurrentSubsystems()
 
 	for (Subsystem* subsystem : concurrentSubsystems)
 	{
-		updates.push_back(threadPool->submitJob([](const bool* running, Subsystem* subsystem)
+		updates.push_back(threadPool->SubmitJob([](const bool* running, Subsystem* subsystem)
 		{
 			while (*running)
 			{
-				subsystem->updateSubsystem();
-				DeliverySystem::getPostman()->clearAllMessages();
-				DeliverySystem::getPostman()->deliverAllMessages();
+				subsystem->UpdateSubsystem();
+				DeliverySystem::GetPostman()->ClearAllMessages();
+				DeliverySystem::GetPostman()->DeliverAllMessages();
 			}
 		}, &running, subsystem));
 	}
@@ -76,23 +76,24 @@ void System::SynchroniseAndStopConcurrentSubsystems()
 	}
 }
 
-void System::addSubsystem(Subsystem* subsystem)
+void System::AddSubsystem(Subsystem* subsystem)
 {
 	subsystems.push_back(subsystem);
 }
 
-void System::addConcurrentSubsystem(Subsystem* subsystem)
+void System::AddConcurrentSubsystem(Subsystem* subsystem)
 {
 	concurrentSubsystems.push_back(subsystem);
 }
 
-void System::removeSubsystem(std::string subsystemName)
+void System::RemoveSubsystem(std::string subsystemName)
 {
 	bool erased = false;
 
-	for (auto concurrentSubsystemIterator = concurrentSubsystems.begin(); concurrentSubsystemIterator != concurrentSubsystems.end(); ++concurrentSubsystemIterator)
+	for (auto concurrentSubsystemIterator = concurrentSubsystems.begin(); concurrentSubsystemIterator !=
+	     concurrentSubsystems.end(); ++concurrentSubsystemIterator)
 	{
-		if ((*concurrentSubsystemIterator)->getSubsystemName() == subsystemName)
+		if ((*concurrentSubsystemIterator)->GetSubsystemName() == subsystemName)
 		{
 			concurrentSubsystems.erase(concurrentSubsystemIterator);
 			erased = true;
@@ -104,7 +105,7 @@ void System::removeSubsystem(std::string subsystemName)
 	{
 		for (auto subsystemIterator = subsystems.begin(); subsystemIterator != subsystems.end(); ++subsystemIterator)
 		{
-			if ((*subsystemIterator)->getSubsystemName() == subsystemName)
+			if ((*subsystemIterator)->GetSubsystemName() == subsystemName)
 			{
 				subsystems.erase(subsystemIterator);
 				break;
@@ -113,12 +114,12 @@ void System::removeSubsystem(std::string subsystemName)
 	}
 }
 
-void System::RegisterWithProfiler(Profiler* profiler)
+void System::RegisterWithProfiler(Profiler* profiler) const
 {
-	profiler->addSubsystemTimer("System Frame", timer);
+	profiler->AddSubsystemTimer("System Frame", timer);
 }
 
-std::vector<Subsystem*> System::getSubSystems()
+std::vector<Subsystem*> System::GetSubSystems()
 {
 	vector<Subsystem*> allSubsystems;
 	allSubsystems.insert(std::end(allSubsystems), std::begin(subsystems), std::end(subsystems));

@@ -13,14 +13,14 @@ public:
 		Database* database);
 	~UIModule();
 
-	void initialise() override;
-	void apply() override;
+	void Initialise() override;
+	void Apply() override;
 
-	void linkShaders() override;
-	void regenerateShaders() override;
+	void LinkShaders() override;
+	void RegenerateShaders() override;
 
 protected:
-	void locateUniforms() override;
+	void LocateUniforms() override;
 	Database* database;
 	Shader* UIShader;
 	Shader* UITextShader;
@@ -28,8 +28,8 @@ protected:
 	NCLMatrix4 UIprojMatrix;
 	std::vector<Button*>* UIObjects;
 
-	void renderButtons(std::vector<Button>& buttons);
-	void renderButtonsText(std::vector<Button>& buttons);
+	void RenderButtons(std::vector<Button>& buttons);
+	void RenderButtonsText(std::vector<Button>& buttons);
 	//Perhaps have UIobjects stored in the database, each with their own textMesh?
 	TextMesh* textMesh;
 	//maybe text has a font object?

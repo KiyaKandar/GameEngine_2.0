@@ -26,46 +26,46 @@ public:
 	Sound(std::string filePath);
 	~Sound();
 
-	char* getData() const
+	char* GetData() const
 	{
 		return data;
 	}
 
-	int getBitRate() const
+	int GetBitRate() const
 	{
 		return bitRate;
 	}
 
-	float getFrequency() const
+	float GetFrequency() const
 	{
 		return freqRate;
 	}
 
-	int getChannels() const
+	int GetChannels() const
 	{
 		return channels;
 	}
 
-	int getSize() const
+	int GetSize() const
 	{
 		return size;
 	}
 
-	ALuint getBuffer() const
+	ALuint GetBuffer() const
 	{
 		return buffer;
 	}
 
-	std::string getSoundFile()
+	std::string getSoundFile() const
 	{
 		return file;
 	}
 
-	ALenum getOALFormat();
-	double getLength();
+	ALenum GetOalFormat();
+	double GetLength();
 
-	void loadFromWAV(string filename);
-	void loadWAVChunkInfo(ifstream &file, string &name, unsigned int &size);
+	void LoadFromWav(string filename);
+	void LoadWavChunkInfo(ifstream &file, string &name, unsigned int &size);
 
 private:
 	ALuint buffer;

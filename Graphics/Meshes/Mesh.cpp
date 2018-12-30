@@ -412,7 +412,7 @@ vector<VertexBoneData> Mesh::LoadBones(const aiMesh * mesh, vector<BoneInfo>& bo
 	return localBoneData;
 }
 
-void Mesh::loadTexture(std::string textureFile)
+void Mesh::LoadTexture(std::string textureFile)
 {
 	Texture texture;
 

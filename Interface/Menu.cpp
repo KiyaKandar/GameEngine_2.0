@@ -2,7 +2,7 @@
 
 Menu::Menu(std::string buttonFile, Database* database)
 {
-	menu = UserInterfaceBuilder::buildButtons(buttonFile, database);
+	menu = UserInterfaceBuilder::BuildButtons(buttonFile, database);
 
 	for (int i = 0; i < (int)menu.size(); ++i)
 	{
@@ -77,7 +77,7 @@ void Menu::ExecuteSelectedButton()
 	}
 }
 
-void Menu::moveSelectedDown()
+void Menu::MoveSelectedDown()
 {
 	if (selectedRowIndex < currentColumnSize - 1)
 	{
@@ -87,7 +87,7 @@ void Menu::moveSelectedDown()
 	}
 }
 
-void Menu::moveSelectedUp()
+void Menu::MoveSelectedUp()
 {
 	if (selectedRowIndex > 0)
 	{
@@ -106,7 +106,7 @@ void Menu::moveSelectedRight()
 	HighlightSelectedButton();
 }
 
-void Menu::moveSelectedLeft()
+void Menu::MoveSelectedLeft()
 {
 	if (currentSelectedButton->parent != nullptr)
 	{
@@ -120,7 +120,7 @@ void Menu::moveSelectedLeft()
 	}
 }
 
-std::vector<Button*>* Menu::getAllButtonsInMenu()
+std::vector<Button*>* Menu::GetAllButtonsInMenu()
 {
 	return &allButtons;
 }

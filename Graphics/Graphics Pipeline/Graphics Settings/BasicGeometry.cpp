@@ -18,35 +18,35 @@ BasicGeometry::~BasicGeometry()
 	delete basicShader;
 }
 
-void BasicGeometry::linkShaders()
+void BasicGeometry::LinkShaders()
 {
 	basicShader->LinkProgram();
 }
 
-void BasicGeometry::regenerateShaders()
+void BasicGeometry::RegenerateShaders()
 {
 	basicShader->Regenerate();
 }
 
-void BasicGeometry::initialise()
+void BasicGeometry::Initialise()
 {
 }
 
-void BasicGeometry::apply()
+void BasicGeometry::Apply()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	setCurrentShader(basicShader);
-	viewMatrix = camera->buildViewMatrix();
+	SetCurrentShader(basicShader);
+	viewMatrix = camera->BuildViewMatrix();
 
 	for (unsigned int i = 0; i < nodesInFrame->size(); ++i)
 	{
-		updateShaderMatrices();		
+		UpdateShaderMatrices();		
 		nodesInFrame->at(i)->Draw(*currentShader);
 		
 	}
 
 }
 
-void BasicGeometry::locateUniforms()
+void BasicGeometry::LocateUniforms()
 {
 }

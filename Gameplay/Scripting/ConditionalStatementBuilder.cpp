@@ -3,7 +3,7 @@
 #include "../Communication/Message.h"
 #include "../Resource Management/XMLParser.h"
 
-Condition ConditionalStatementBuilder::buildOrCondition(Node* node)
+Condition ConditionalStatementBuilder::BuildOrCondition(Node* node)
 {
 	std::vector<Node> children;
 
@@ -18,14 +18,14 @@ Condition ConditionalStatementBuilder::buildOrCondition(Node* node)
 
 		for (Node childCondition : children)
 		{
-			condition = condition || message.getDataField(childCondition.nodeType) == childCondition.value;
+			condition = condition || message.GetDataField(childCondition.nodeType) == childCondition.value;
 		}
 
 		return condition;
 	};
 }
 
-Condition ConditionalStatementBuilder::buildAndCondition(Node* node)
+Condition ConditionalStatementBuilder::BuildAndCondition(Node* node)
 {
 	std::vector<Node> children;
 
@@ -40,19 +40,19 @@ Condition ConditionalStatementBuilder::buildAndCondition(Node* node)
 
 		for (Node childCondition : children)
 		{
-			condition = condition && message.getDataField(childCondition.nodeType) == childCondition.value;
+			condition = condition && message.GetDataField(childCondition.nodeType) == childCondition.value;
 		}
 
 		return condition;
 	};
 }
 
-Condition ConditionalStatementBuilder::buildSingleIfCondition(Node* node)
+Condition ConditionalStatementBuilder::BuildSingleIfCondition(Node* node)
 {
 	Node* conditionNode = node->children[0];
 
 	return [conditionNode = *conditionNode](Message message)
 	{
-		return message.getDataField(conditionNode.nodeType) == conditionNode.value;
+		return message.GetDataField(conditionNode.nodeType) == conditionNode.value;
 	};
 }

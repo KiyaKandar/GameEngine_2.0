@@ -12,25 +12,25 @@ MessageStorage::~MessageStorage()
 {
 }
 
-void MessageStorage::addMessageBuffer(const std::string& bufferName)
+void MessageStorage::AddMessageBuffer(const std::string& bufferName)
 {
 	activeMessageBuffers.insert(std::pair<std::string, MessageDeliveryBuffer*>(bufferName, new MessageDeliveryBuffer()));
 }
 
-void MessageStorage::deliverMessage(Message* message, unsigned int threadId)
+void MessageStorage::DeliverMessage(Message* message, unsigned int threadId)
 {
-	activeMessageBuffers.at(message->getDestination())->push(message, threadId);
+	activeMessageBuffers.at(message->GetDestination())->Push(message, threadId);
 }
 
-MessageDeliveryBuffer* MessageStorage::getMessageBufferByName(const std::string& bufferName)
+MessageDeliveryBuffer* MessageStorage::GetMessageBufferByName(const std::string& bufferName)
 {
 	return activeMessageBuffers.at(bufferName);
 }
 
-void MessageStorage::clearMessageStorage()
+void MessageStorage::ClearMessageStorage()
 {
 	for (auto iter = activeMessageBuffers.begin(); iter != activeMessageBuffers.end(); iter++)
 	{
-		iter->second->clearAll();
+		iter->second->ClearAll();
 	}
 }

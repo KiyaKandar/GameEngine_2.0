@@ -68,13 +68,13 @@ public:
 	PhysicsEngine(Database* database, Keyboard* keyboard);
 	~PhysicsEngine();
 
-	void addPhysicsObject(PhysicsNode* obj);
+	void AddPhysicsObject(PhysicsNode* obj);
 	void RemovePhysicsObject(PhysicsNode* obj);
 	void RemoveAllPhysicsObjects();
 
 	void AddConstraint(Constraint* c) { constraints.push_back(c); }
 	
-	void updateNextFrame(const float& deltaTime) override;
+	void UpdateNextFrame(const float& deltaTime) override;
 
 	void InitialiseOctrees(int entityLimit);
 	void OctreeChanged(const NCLMatrix4 &matrix)

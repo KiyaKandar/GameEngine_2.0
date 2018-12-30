@@ -9,11 +9,11 @@ public:
 	Resource(std::string name, size_t size);
 	virtual ~Resource();
 
-	std::string getName();
-	void setName(std::string newName);
+	std::string GetName();
+	void SetName(std::string newName);
 
-	size_t getSize();
-	void setSize(size_t newSize);
+	size_t GetSize();
+	void SetSize(size_t newSize);
 
 private:
 	std::string name;

@@ -18,12 +18,12 @@ public:
 		MessageDeliveryBuffer* subsystemBuffer);
 	~MessageProcessor();
 
-	void addActionToExecuteOnMessage(const MessageType& typeOfMessageToPerformOn, const Action& action);
-	void processMessagesInBuffer();
+	void AddActionToExecuteOnMessage(const MessageType& typeOfMessageToPerformOn, const Action& action);
+	void ProcessMessagesInBuffer();
 
 private:
-	void getReceivedMessagesFromDeliveryBuffer(std::vector<Message*>& receivedMessages);
-	void processMessageByPerformingAssignedActions(Message* message);
+	void GetReceivedMessagesFromDeliveryBuffer(std::vector<Message*>& receivedMessages);
+	void ProcessMessageByPerformingAssignedActions(Message* message);
 
 	MessageDeliveryBuffer* subsystemMessageBuffer;
 	std::unordered_map<int, std::vector<Action>*> actionsToExecute;

@@ -6,52 +6,52 @@
 
 BlockedTransformComponents AnimationTransformHelper::defaultBlockedComponents = BlockedTransformComponents();
 
-void AnimationTransformHelper::calculateNodeTransformation(aiMatrix4x4& transformation, NodeAnimation& nodeAnimation, 
+void AnimationTransformHelper::CalculateNodeTransformation(aiMatrix4x4& transformation, NodeAnimation& nodeAnimation, 
 	const double& animationTime, const BlockedTransformComponents& blockedComponents)
 {
 	DecomposedMatrix storedTransformation;
-	if (blockedComponents.hasAnyComponentBlocked())
+	if (blockedComponents.HasAnyComponentBlocked())
 	{
 		transformation.Decompose(storedTransformation.scale, storedTransformation.rotation, storedTransformation.translation);
 	}
 
 	aiMatrix4x4 translationTransform, rotationTransform, scalingTransform;
 
-	calculateKeyFrameTranslation(translationTransform, nodeAnimation, animationTime, 
+	CalculateKeyFrameTranslation(translationTransform, nodeAnimation, animationTime, 
 		blockedComponents.blockTranslation, storedTransformation.translation);
-	calculateKeyFrameRotation(rotationTransform, nodeAnimation, animationTime,
+	CalculateKeyFrameRotation(rotationTransform, nodeAnimation, animationTime,
 		blockedComponents.blockRotation, storedTransformation.rotation);
-	calculateKeyFrameScale(scalingTransform, nodeAnimation, animationTime, 
+	CalculateKeyFrameScale(scalingTransform, nodeAnimation, animationTime, 
 		blockedComponents.blockScale, storedTransformation.scale);
 
 	transformation = translationTransform * rotationTransform * scalingTransform;
 }
 
-void AnimationTransformHelper::removeBlockedComponentsFromTransform(aiMatrix4x4& result, const aiMatrix4x4& originalTransformation, 
+void AnimationTransformHelper::RemoveBlockedComponentsFromTransform(aiMatrix4x4& result, const aiMatrix4x4& originalTransformation, 
 	const BlockedTransformComponents& blockedComponents)
 {
 	DecomposedMatrix transformationComponents;
 	originalTransformation.Decompose(transformationComponents.scale, transformationComponents.rotation, transformationComponents.translation);
 
-	composeMatrix(result, transformationComponents, blockedComponents);
+	ComposeMatrix(result, transformationComponents, blockedComponents);
 }
 
-void AnimationTransformHelper::interpolateVector3(aiVector3D& result, const aiVector3D& start, const aiVector3D& end, const float factor)
+void AnimationTransformHelper::InterpolateVector3(aiVector3D& result, const aiVector3D& start, const aiVector3D& end, const float factor)
 {
 	aiVector3D delta = end - start;
 	result = start + (float)factor * delta;
 }
 
-void AnimationTransformHelper::interpolateDecomposedMatrices(DecomposedMatrix& result, const DecomposedMatrix& start, 
+void AnimationTransformHelper::InterpolateDecomposedMatrices(DecomposedMatrix& result, const DecomposedMatrix& start, 
 	const DecomposedMatrix& end, const float factor)
 {
-	AnimationTransformHelper::interpolateVector3(result.translation, start.translation, end.translation, factor);
-	AnimationTransformHelper::interpolateVector3(result.scale, start.scale, end.scale, factor);
+	AnimationTransformHelper::InterpolateVector3(result.translation, start.translation, end.translation, factor);
+	AnimationTransformHelper::InterpolateVector3(result.scale, start.scale, end.scale, factor);
 	aiQuaternion::Interpolate(result.rotation, start.rotation, end.rotation, factor);
 	result.rotation = result.rotation.Normalize();
 }
 
-void AnimationTransformHelper::composeMatrix(aiMatrix4x4& result, const DecomposedMatrix& decomposedMatrix,
+void AnimationTransformHelper::ComposeMatrix(aiMatrix4x4& result, const DecomposedMatrix& decomposedMatrix,
 	const BlockedTransformComponents& blockedComponents)
 {
 	aiMatrix4x4 translationTransform;
@@ -76,7 +76,7 @@ void AnimationTransformHelper::composeMatrix(aiMatrix4x4& result, const Decompos
 	result = translationTransform * rotationTransform * scalingTransform;
 }
 
-void AnimationTransformHelper::calculateKeyFrameTranslation(aiMatrix4x4& translationTransform, NodeAnimation& nodeAnimation,
+void AnimationTransformHelper::CalculateKeyFrameTranslation(aiMatrix4x4& translationTransform, NodeAnimation& nodeAnimation,
 	const double& animationTime, const bool blocked, const aiVector3D& defaultTranslation)
 {
 	if (blocked)
@@ -86,12 +86,12 @@ void AnimationTransformHelper::calculateKeyFrameTranslation(aiMatrix4x4& transla
 	else
 	{
 		aiVector3D translation;
-		AnimationTransformHelper::calculateInterpolatedKeyFrameTranslation(translation, nodeAnimation, animationTime);
+		AnimationTransformHelper::CalculateInterpolatedKeyFrameTranslation(translation, nodeAnimation, animationTime);
 		aiMatrix4x4::Translation(translation, translationTransform);
 	}
 }
 
-void AnimationTransformHelper::calculateKeyFrameRotation(aiMatrix4x4& rotationTransform, NodeAnimation& nodeAnimation, 
+void AnimationTransformHelper::CalculateKeyFrameRotation(aiMatrix4x4& rotationTransform, NodeAnimation& nodeAnimation, 
 	const double& animationTime, const bool blocked, const aiQuaternion& defaultRotation)
 {
 	if (blocked)
@@ -101,12 +101,12 @@ void AnimationTransformHelper::calculateKeyFrameRotation(aiMatrix4x4& rotationTr
 	else
 	{
 		aiQuaternion rotation;
-		AnimationTransformHelper::calculateInterpolatedKeyFrameRotation(rotation, nodeAnimation, animationTime);
+		AnimationTransformHelper::CalculateInterpolatedKeyFrameRotation(rotation, nodeAnimation, animationTime);
 		rotationTransform = aiMatrix4x4(rotation.GetMatrix());
 	}
 }
 
-void AnimationTransformHelper::calculateKeyFrameScale(aiMatrix4x4& scalingTransform, NodeAnimation& nodeAnimation,
+void AnimationTransformHelper::CalculateKeyFrameScale(aiMatrix4x4& scalingTransform, NodeAnimation& nodeAnimation,
 	const double& animationTime, const bool blocked, const aiVector3D& defaultScale)
 {
 	if (blocked)
@@ -116,12 +116,12 @@ void AnimationTransformHelper::calculateKeyFrameScale(aiMatrix4x4& scalingTransf
 	else
 	{
 		aiVector3D scale;
-		AnimationTransformHelper::calculateInterpolatedKeyFrameScale(scale, nodeAnimation, animationTime);
+		AnimationTransformHelper::CalculateInterpolatedKeyFrameScale(scale, nodeAnimation, animationTime);
 		aiMatrix4x4::Scaling(scale, scalingTransform);
 	}
 }
 
-void AnimationTransformHelper::calculateInterpolatedKeyFrameTranslation(aiVector3D& translation, NodeAnimation& nodeAnimation, const double& animationTime)
+void AnimationTransformHelper::CalculateInterpolatedKeyFrameTranslation(aiVector3D& translation, NodeAnimation& nodeAnimation, const double& animationTime)
 {
 	const aiNodeAnim* animation = nodeAnimation.animation;
 	if (animation->mNumPositionKeys == 1) 
@@ -130,16 +130,16 @@ void AnimationTransformHelper::calculateInterpolatedKeyFrameTranslation(aiVector
 	}
 	else
 	{
-		unsigned int positionIndex = findPositionKeyFrameIndex(nodeAnimation, animationTime);
+		unsigned int positionIndex = FindPositionKeyFrameIndex(nodeAnimation, animationTime);
 		unsigned int nextPositionIndex = (positionIndex + 1);
 
 		double keyFrameTimeDifference = (animation->mPositionKeys[nextPositionIndex].mTime - animation->mPositionKeys[positionIndex].mTime);
 		double interpolationFactor = (animationTime - animation->mPositionKeys[positionIndex].mTime) / keyFrameTimeDifference;
-		interpolateVector3(translation, animation->mPositionKeys[positionIndex].mValue, animation->mPositionKeys[nextPositionIndex].mValue, interpolationFactor);
+		InterpolateVector3(translation, animation->mPositionKeys[positionIndex].mValue, animation->mPositionKeys[nextPositionIndex].mValue, interpolationFactor);
 	}
 }
 
-void AnimationTransformHelper::calculateInterpolatedKeyFrameRotation(aiQuaternion& rotation, NodeAnimation& nodeAnimation, const double& animationTime)
+void AnimationTransformHelper::CalculateInterpolatedKeyFrameRotation(aiQuaternion& rotation, NodeAnimation& nodeAnimation, const double& animationTime)
 {
 	const aiNodeAnim* animation = nodeAnimation.animation;
 	if (animation->mNumRotationKeys == 1)
@@ -148,7 +148,7 @@ void AnimationTransformHelper::calculateInterpolatedKeyFrameRotation(aiQuaternio
 	}
 	else
 	{
-		unsigned int rotationIndex = findRotationKeyFrameIndex(nodeAnimation, animationTime);
+		unsigned int rotationIndex = FindRotationKeyFrameIndex(nodeAnimation, animationTime);
 		unsigned int nextRotationIndex = rotationIndex + 1;
 
 		double keyFrameTimeDifference = (animation->mRotationKeys[nextRotationIndex].mTime - animation->mRotationKeys[rotationIndex].mTime);
@@ -160,7 +160,7 @@ void AnimationTransformHelper::calculateInterpolatedKeyFrameRotation(aiQuaternio
 	}
 }
 
-void AnimationTransformHelper::calculateInterpolatedKeyFrameScale(aiVector3D& scale, NodeAnimation& nodeAnimation, const double& animationTime)
+void AnimationTransformHelper::CalculateInterpolatedKeyFrameScale(aiVector3D& scale, NodeAnimation& nodeAnimation, const double& animationTime)
 {
 	const aiNodeAnim* animation = nodeAnimation.animation;
 	if (animation->mNumScalingKeys == 1) 
@@ -169,16 +169,16 @@ void AnimationTransformHelper::calculateInterpolatedKeyFrameScale(aiVector3D& sc
 	}
 	else
 	{
-		unsigned int scalingIndex = findScalingKeyFrameIndex(nodeAnimation, animationTime);
+		unsigned int scalingIndex = FindScalingKeyFrameIndex(nodeAnimation, animationTime);
 		unsigned int nextScalingIndex = scalingIndex + 1;
 
 		double keyFrameTimeDifference = (animation->mScalingKeys[nextScalingIndex].mTime - animation->mScalingKeys[scalingIndex].mTime);
 		double interpolationFactor = (animationTime - animation->mScalingKeys[scalingIndex].mTime) / keyFrameTimeDifference;
-		interpolateVector3(scale, animation->mScalingKeys[scalingIndex].mValue, animation->mScalingKeys[nextScalingIndex].mValue, interpolationFactor);
+		InterpolateVector3(scale, animation->mScalingKeys[scalingIndex].mValue, animation->mScalingKeys[nextScalingIndex].mValue, interpolationFactor);
 	}
 }
 
-unsigned int AnimationTransformHelper::findPositionKeyFrameIndex(NodeAnimation& nodeAnimation, const double& animationTime)
+unsigned int AnimationTransformHelper::FindPositionKeyFrameIndex(NodeAnimation& nodeAnimation, const double& animationTime)
 {
 	for (unsigned int i = nodeAnimation.lastPositionKeyFrameIndex; i < nodeAnimation.animation->mNumPositionKeys - 1; i++)
 	{
@@ -192,7 +192,7 @@ unsigned int AnimationTransformHelper::findPositionKeyFrameIndex(NodeAnimation& 
 	return 0;
 }
 
-unsigned int AnimationTransformHelper::findRotationKeyFrameIndex(NodeAnimation& nodeAnimation, const double& animationTime)
+unsigned int AnimationTransformHelper::FindRotationKeyFrameIndex(NodeAnimation& nodeAnimation, const double& animationTime)
 {
 	for (unsigned int i = nodeAnimation.lastRotationKeyFrameIndex; i < nodeAnimation.animation->mNumRotationKeys - 1; i++)
 	{
@@ -206,7 +206,7 @@ unsigned int AnimationTransformHelper::findRotationKeyFrameIndex(NodeAnimation& 
 	return 0;
 }
 
-unsigned int AnimationTransformHelper::findScalingKeyFrameIndex(NodeAnimation& nodeAnimation, const double& animationTime)
+unsigned int AnimationTransformHelper::FindScalingKeyFrameIndex(NodeAnimation& nodeAnimation, const double& animationTime)
 {
 	for (unsigned int i = nodeAnimation.lastScalingKeyFrameIndex; i < nodeAnimation.animation->mNumScalingKeys - 1; i++)
 	{

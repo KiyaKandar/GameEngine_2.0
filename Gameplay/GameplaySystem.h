@@ -16,36 +16,36 @@ public:
 	GameplaySystem(Database* database);
 	~GameplaySystem();
 
-	void updateNextFrame(const float& deltaTime) override;
+	void UpdateNextFrame(const float& deltaTime) override;
 
-	void connectPlayerbase(PlayerBase* playerbase);
-	void compileGameplayScript(std::string levelScript);
-	void setDefaultGameplayScript();
+	void ConnectPlayerbase(PlayerBase* playerbase);
+	void CompileGameplayScript(std::string levelScript);
+	void SetDefaultGameplayScript();
 
-	void addGameObjectScript(std::string scriptFile);
-	void deleteGameObjectScripts();
-	void compileGameObjectScripts();
+	void AddGameObjectScript(std::string scriptFile);
+	void DeleteGameObjectScripts();
+	void CompileGameObjectScripts();
 
 	std::string getGameplayFile()
 	{
 		return gameplayScript;
 	}
 
-	std::vector<GameObjectLogic>* getGameObjectLogics()
+	std::vector<GameObjectLogic>* GetGameObjectLogics()
 	{
 		return &objects;
 	}
 
 private:
-	void updateGameplayWhenTimed(const float& deltaTime);
-	void updateGameplayWithTimeRemaining(const float& deltaTime);
-	void updateGameOverScreen();
+	void UpdateGameplayWhenTimed(const float& deltaTime);
+	void UpdateGameplayWithTimeRemaining(const float& deltaTime);
+	void UpdateGameOverScreen();
 
-	void updateGameLogic(const float& deltaTime);
-	void updateGameObjectLogics(const float& deltaTime);
-	void removeScriptsInbuffer();
+	void UpdateGameLogic(const float& deltaTime);
+	void UpdateGameObjectLogics(const float& deltaTime);
+	void RemoveScriptsInbuffer();
 
-	void updateGameTimer(const float& deltaTime);
+	void UpdateGameTimer(const float& deltaTime);
 
 	GameLogic gameLogic;
 	std::vector<GameObjectLogic> objects;

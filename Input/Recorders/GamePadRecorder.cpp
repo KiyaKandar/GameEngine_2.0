@@ -10,7 +10,7 @@ GamePadRecorder::~GamePadRecorder()
 {
 }
 
-void GamePadRecorder::fillInputs()
+void GamePadRecorder::FillInputs()
 {
 	gamepad->Update();
 

@@ -165,7 +165,7 @@ const std::map<std::string, int> InputUtility::keyIDs =
 	{ "XBOX_Back", 13 }
 };
 
-int InputUtility::getKeyID(std::string keyName)
+int InputUtility::GetKeyId(std::string keyName)
 {
 	return keyIDs.at(keyName);
 }

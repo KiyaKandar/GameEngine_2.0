@@ -12,11 +12,11 @@ InputManager::InputManager(PlayerBase* playerbase)
 	: Subsystem("InputManager")
 {
 	incomingMessages = MessageProcessor(std::vector<MessageType> { MessageType::TEXT },
-		DeliverySystem::getPostman()->getDeliveryPoint("InputManager"));
+		DeliverySystem::GetPostman()->GetDeliveryPoint("InputManager"));
 
-	inputControl.registerNewInputUserByDeliveryPoint("InputManager");
+	inputControl.RegisterNewInputUserByDeliveryPoint("InputManager");
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::TEXT, [&inputControl = inputControl, &blocked = blocked](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::TEXT, [&inputControl = inputControl, &blocked = blocked](Message* message)
 	{
 		TextMessage* textMessage = static_cast<TextMessage*>(message);
 
@@ -26,19 +26,19 @@ InputManager::InputManager(PlayerBase* playerbase)
 
 		if (tokens[0] == "RegisterInputUser")
 		{
-			inputControl.registerNewInputUserByDeliveryPoint(tokens[1]);
+			inputControl.RegisterNewInputUserByDeliveryPoint(tokens[1]);
 		}
 		else if (tokens[0] == "BlockAllInputs")
 		{
-			inputControl.blockAllInputUsersOtherThanCaller(tokens[1]);
+			inputControl.BlockAllInputUsersOtherThanCaller(tokens[1]);
 		}
 		else if (tokens[0] == "UnblockAll")
 		{
-			inputControl.unlockBlockedUsers();
+			inputControl.UnlockBlockedUsers();
 		}
 		else
 		{
-			blocked = InputControl::isBlocked(textMessage->text);
+			blocked = InputControl::IsBlocked(textMessage->text);
 		}
 	});
 
@@ -51,29 +51,29 @@ InputManager::~InputManager()
 	delete playerbase;
 }
 
-void InputManager::updateNextFrame(const float& deltatime)
+void InputManager::UpdateNextFrame(const float& deltatime)
 {
 	if (!blocked)
 	{
 		timer->beginTimedSection();
 
-		for (Player* player : playerbase->getPlayers())
+		for (Player* player : playerbase->GetPlayers())
 		{
-			player->getInputRecorder()->clearInputs();
-			player->getInputRecorder()->fillInputs();
+			player->getInputRecorder()->ClearInputs();
+			player->getInputRecorder()->FillInputs();
 
-			std::vector<ButtonInputData> inputData = player->getInputRecorder()->getInputs();
+			std::vector<ButtonInputData> inputData = player->getInputRecorder()->GetInputs();
 
-			sendInputMessagesForKeys(inputData, player);
+			SendInputMessagesForKeys(inputData, player);
 		}
 
 		timer->endTimedSection();
 	}
 }
 
-void InputManager::sendInputMessagesForKeys(std::vector<ButtonInputData>& inputData, Player* player)
+void InputManager::SendInputMessagesForKeys(std::vector<ButtonInputData>& inputData, Player* player)
 {
-	if (inputMessageSender.readyToSendNextMessageGroup())
+	if (inputMessageSender.ReadyToSendNextMessageGroup())
 	{
 		std::vector<PlayerInputMessage> messages;
 
@@ -82,7 +82,7 @@ void InputManager::sendInputMessagesForKeys(std::vector<ButtonInputData>& inputD
 			messages.push_back(PlayerInputMessage("Gameplay", player, inputData[i]));
 		}
 
-		inputMessageSender.setMessageGroup(messages);
-		inputMessageSender.sendMessageGroup();
+		inputMessageSender.SetMessageGroup(messages);
+		inputMessageSender.SendMessageGroup();
 	}
 }

@@ -23,8 +23,12 @@ public:
 		string geometry = "", bool isVerbose = false);
 	~Shader(void);
 
-	GLuint	GetProgram() { return program; }
-	bool	LinkProgram();
+	GLuint GetProgram() const
+	{
+		return program;
+	}
+
+	bool LinkProgram() const;
 
 	/*
 	Recompile the shaders without having to restart.
@@ -32,38 +36,38 @@ public:
 	*/
 	void Regenerate();
 
-	void ApplyTexture(int unit, unsigned int texture)
+	void ApplyTexture(int unit, unsigned int texture) const
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_2D, texture);
 	}
 
-	void SetInt(const std::string &name, int value) const
+	void SetInt(const std::string& name, int value) const
 	{
 		glUniform1i(glGetUniformLocation(program, name.c_str()), value);
 	}
 
-	void SetVec3(const std::string &name, const NCLVector3 &value) const
+	void SetVec3(const std::string& name, const NCLVector3& value) const
 	{
 		glUniform3fv(glGetUniformLocation(program, name.c_str()), 1, (float*)&value);
 	}
 
-	void SetVec3(const std::string &name, float x, float y, float z) const
+	void SetVec3(const std::string& name, float x, float y, float z) const
 	{
 		glUniform3f(glGetUniformLocation(program, name.c_str()), x, y, z);
 	}
 
 protected:
-	void	SetDefaultAttributes();
-	bool	LoadShaderFile(string from, string & into);
+	void SetDefaultAttributes() const;
+	bool LoadShaderFile(string from, string& into);
 	string IncludeShader(string includeLine);
-	GLuint	GenerateShader(string from, GLenum type);
+	GLuint GenerateShader(string from, GLenum type);
 
-	GLuint	objects[3];
-	GLuint	program;
+	GLuint objects[3];
+	GLuint program;
 
-	bool	loadFailed;
-	bool	verbose; //I added this stuff (Kiya)
+	bool loadFailed;
+	bool verbose; //I added this stuff (Kiya)
 
 	string vFile;
 	string fFile;

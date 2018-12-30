@@ -34,7 +34,7 @@ std::vector<int> InputFilter::getListenedKeys(std::string &configInfo, std::stri
 	while (position != std::string::npos)
 	{
 		std::string token = appendStr.substr(0, position);
-		listenedKeys.push_back(InputUtility::getKeyID(token));
+		listenedKeys.push_back(InputUtility::GetKeyId(token));
 
 		appendStr = appendStr.substr(position + 1, size);
 		position = appendStr.find(separator);

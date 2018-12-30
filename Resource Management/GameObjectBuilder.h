@@ -11,8 +11,8 @@
 class GameObjectBuilder
 {
 public:
-	static GameObject* buildGameObject(Node* node, Database* database);
-	static SceneNode* buildSceneNode(Node* node, Database* database);
-	static PhysicsNode* buildPhysicsNode(Node* node, GameObject* parent);
+	static GameObject* BuildGameObject(Node* node, Database* database);
+	static SceneNode* BuildSceneNode(Node* node, Database* database);
+	static PhysicsNode* BuildPhysicsNode(Node* node, GameObject* parent);
 };
 

@@ -13,12 +13,12 @@ LetterBox::~LetterBox()
 	delete messageStorage;
 }
 
-void LetterBox::addDeliveryPoint(const std::string& bufferName)
+void LetterBox::AddDeliveryPoint(const std::string& bufferName)
 {
-	messageStorage->addMessageBuffer(bufferName);
+	messageStorage->AddMessageBuffer(bufferName);
 }
 
-MessageDeliveryBuffer* LetterBox::getDeliveryPoint(const std::string& bufferName)
+MessageDeliveryBuffer* LetterBox::GetDeliveryPoint(const std::string& bufferName)
 {
-	return messageStorage->getMessageBufferByName(bufferName);
+	return messageStorage->GetMessageBufferByName(bufferName);
 }

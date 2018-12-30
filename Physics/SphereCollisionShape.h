@@ -28,7 +28,7 @@ public:
 	SphereCollisionShape(float radius);
 	virtual ~SphereCollisionShape();
 
-	void setScale(NCLVector3 scale, float invMass) override
+	void SetScale(NCLVector3 scale, float invMass) override
 	{
 		m_Radius = scale.x;
 		BuildInverseInertia(invMass);

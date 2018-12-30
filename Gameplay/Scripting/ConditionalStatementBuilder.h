@@ -5,8 +5,8 @@
 class ConditionalStatementBuilder
 {
 public:
-	static Condition buildOrCondition(Node* node);
-	static Condition buildAndCondition(Node* node);
-	static Condition buildSingleIfCondition(Node* node);
+	static Condition BuildOrCondition(Node* node);
+	static Condition BuildAndCondition(Node* node);
+	static Condition BuildSingleIfCondition(Node* node);
 };
 

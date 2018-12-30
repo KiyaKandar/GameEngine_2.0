@@ -16,37 +16,37 @@ class Level;
 class TableCreation;
 class Keyboard;
 class Profiler;
+class UserInterface;
 
 class Startup
 {
-
 public:
 	Startup(ThreadPool* threadpool);
 	~Startup();
 
-	void initialiseRenderingSystem();
-	void startUserInterface();
-	void startRenderingSystem();
-	void setupMeshes();
-	void renderLoadingScreen();
-	void initialiseSubsystems();
-	void startGameLoop();
+	void InitialiseRenderingSystem();
+	void StartUserInterface() const;
+	void StartRenderingSystem() const;
+	void SetupMeshes() const;
+	void RenderLoadingScreen() const;
+	void InitialiseSubsystems();
+	void StartGameLoop() const;
 
-	void loadMainMenu();
-	void loadLevel(std::string levelFile, bool online);
-	void switchLevel();
-	void unloadLevel();
+	void LoadMainMenu() const;
+	void LoadLevel(std::string levelFile, bool online) const;
+	void SwitchLevel() const;
+	void UnloadLevel() const;
 
-	void beginOnlineLobby();
+	void BeginOnlineLobby();
 
 private:
-	void initialiseAudioSystem();
-	void initialiseInputSystem();
-	void initialiseDatabaseAndTables();
-	void initialiseLevelSystem();
-	void initialiseGameplaySystem();
+	void InitialiseAudioSystem();
+	void InitialiseInputSystem();
+	void InitialiseDatabaseAndTables();
+	void InitialiseLevelSystem();
+	void InitialiseGameplaySystem();
 
-	void addSystemsToEngine();
+	void AddSystemsToEngine() const;
 
 	System* engine;
 	GameLoop* game;
@@ -80,4 +80,3 @@ private:
 	std::vector<SceneNode*>* nodes;
 	NCLVector2 resolution;
 };
-

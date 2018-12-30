@@ -31,7 +31,7 @@ XButtonIDs::XButtonIDs()
 	Back = 13;
 }
 
-Gamepad::Gamepad() 
+Gamepad::Gamepad()
 {
 	//Iterate through all gamepad buttons
 	for (int i = 0; i < ButtonCount; i++)
@@ -40,11 +40,9 @@ Gamepad::Gamepad()
 		bButtonStates[i] = false;
 		bGamepad_ButtonsDown[i] = false;
 	}
-
-	
 }
 
-Gamepad::Gamepad(int index) 
+Gamepad::Gamepad(int index)
 {
 	//index or 1, 2, 3 etc matches to 0, 1, 2 etc
 	gamepadIndex = index - 1;
@@ -56,19 +54,18 @@ Gamepad::Gamepad(int index)
 		bButtonStates[i] = false;
 		bGamepad_ButtonsDown[i] = false;
 	}
-
-	
 }
 
 Gamepad::~Gamepad()
-{}
+{
+}
 
 //Update gamepad state
 void Gamepad::Update()
 {
 	state = GetState(); //Obtain current gamepad state
 
-						// Iterate through all gamepad buttons
+	// Iterate through all gamepad buttons
 	for (int i = 0; i < ButtonCount; i++)
 	{
 		//Set button state for current frame
@@ -202,7 +199,6 @@ float Gamepad::RightTrigger() const
 	{
 		return 0.0f; //Trigger was not pressed
 	}
-
 }
 
 //Return true if button is pressed, false if not
@@ -217,7 +213,7 @@ bool Gamepad::GetButtonPressed(const int button) const
 }
 
 //Frame-specific version of 'GetButtonPressed' function
-bool Gamepad::GetButtonDown(const  int button) const
+bool Gamepad::GetButtonDown(const int button) const
 {
 	return bGamepad_ButtonsDown[button];
 }
@@ -274,11 +270,10 @@ bool Gamepad::Connected()
 
 	if (Result == ERROR_SUCCESS)
 	{
-		return true;  //The gamepad is connected
+		return true; //The gamepad is connected
 	}
 	else
 	{
 		return false; //The gamepad is not connected
 	}
 }
-

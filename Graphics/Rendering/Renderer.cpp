@@ -16,11 +16,11 @@ Renderer::Renderer() : OGLRenderer(0, NCLVector2())
 }
 
 Renderer::Renderer(GameTimer* parentTimer, Window* window, Camera* camera)
-	: OGLRenderer(window->getHandle(), window->getScreenSize())
+	: OGLRenderer(window->GetHandle(), window->GetScreenSize())
 {
 	this->window = window;
 	this->camera = camera;
-	this->resolution = window->getScreenSize();
+	this->resolution = window->GetScreenSize();
 	this->parentTimer = parentTimer;
 
 	parentTimer->addChildTimer("Update Scene Management");
@@ -31,8 +31,8 @@ Renderer::Renderer(GameTimer* parentTimer, Window* window, Camera* camera)
 	globalOrthographicMatrix = NCLMatrix4::orthographic(-1.0f,10000.0f, width / 2.0f, -width / 2.0f, height / 2.0f, -height / 2.0f);
 
 	loadingScreenMesh = new SceneNode("../Data/Resources/Meshes/cube.obj", NCLVector4(1,0,0,1));
-	loadingScreenMesh->GetMesh()->loadTexture("../Data/Resources/Textures/loadingtexture.png");
-	loadingScreenMesh->GetMesh()->setupMesh();
+	loadingScreenMesh->GetMesh()->LoadTexture("../Data/Resources/Textures/loadingtexture.png");
+	loadingScreenMesh->GetMesh()->SetupMesh();
 	loadingScreenMesh->SetTransform(NCLVector3(0, 0, -10));
 	loadingScreenMesh->SetModelScale(NCLVector3(1, 1, 1));
 	loadingScreenMesh->Update(0.0f);
@@ -53,11 +53,11 @@ Renderer::~Renderer()
 	delete loadingScreenShader;
 }
 
-void Renderer::renderLoadingScreen(const float& deltatime)
+void Renderer::RenderLoadingScreen(const float& deltatime)
 {
-	camera->setPosition(NCLVector3(0, 0, 0));
-	camera->setPitch(0);
-	camera->setYaw(0);
+	camera->SetPosition(NCLVector3(0, 0, 0));
+	camera->SetPitch(0);
+	camera->SetYaw(0);
 
 	loadingScreenMesh->SetTransform(loadingScreenMesh->GetTransform()
 		* NCLMatrix4::rotation(5.0f, NCLVector3(0,1,0)));
@@ -67,7 +67,7 @@ void Renderer::renderLoadingScreen(const float& deltatime)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	glUseProgram(loadingScreenShader->GetProgram());
-	viewMatrix = camera->buildViewMatrix();
+	viewMatrix = camera->BuildViewMatrix();
 
 	glUniform4fv(glGetUniformLocation(loadingScreenShader->GetProgram(), "colour"), 1, (float*)&loadingScreenMesh->getColour());
 	glUniformMatrix4fv(glGetUniformLocation(loadingScreenShader->GetProgram(), "viewMatrix"), 1, false, (float*)&viewMatrix);
@@ -75,17 +75,17 @@ void Renderer::renderLoadingScreen(const float& deltatime)
 	glUniform1i(glGetUniformLocation(loadingScreenShader->GetProgram(), "hasTexture"), 1);
 
 	loadingScreenMesh->Draw(*loadingScreenShader);
-	swapBuffers();
+	SwapBuffers();
 }
 
-void Renderer::initialise(SceneManager* sceneManager, Database* database)
+void Renderer::Initialise(SceneManager* sceneManager, Database* database)
 {
 	graphicsConfig = PipelineConfiguration(sceneManager, window, camera, resolution);
-	graphicsConfig.initialiseModules(database);
-	graphicsConfig.buildPipeline(&pipeline);
+	graphicsConfig.InitialiseModules(database);
+	graphicsConfig.BuildPipeline(&pipeline);
 
 	XMLParser graphicsconfigParser;
-	graphicsconfigParser.loadXMLFile("../Data/Resources/Graphics Config/graphicsConfigXML.xml");
+	graphicsconfigParser.LoadXmlFile("../Data/Resources/Graphics Config/graphicsConfigXML.xml");
 	Node* node = graphicsconfigParser.parsedXml;
 
 	for (size_t i = 0; i < node->children.size(); i++)
@@ -95,71 +95,71 @@ void Renderer::initialise(SceneManager* sceneManager, Database* database)
 
 		if (enabled == "Enabled")
 		{
-			pipeline.toggleModule(graphicsModuleName, true);
+			pipeline.ToggleModule(graphicsModuleName, true);
 		}
 		else
 		{
-			pipeline.toggleModule(graphicsModuleName, false);
+			pipeline.ToggleModule(graphicsModuleName, false);
 		}
 	}
 
 	this->sceneManager = sceneManager;
 }
 
-void Renderer::update(const float& deltatime)
+void Renderer::Update(const float& deltatime)
 {
-	updateScene(deltatime);
-	renderScene();
+	UpdateScene(deltatime);
+	RenderScene();
 }
 
-void Renderer::addSceneNode(SceneNode* sceneNode)
+void Renderer::AddSceneNode(SceneNode* sceneNode)
 {
-	(*sceneManager->getAllNodes())->push_back(sceneNode);
+	(*sceneManager->GetAllNodes())->push_back(sceneNode);
 }
 
-void Renderer::removeSceneNodeByResourceName(std::string resourcename)
+void Renderer::RemoveSceneNodeByResourceName(std::string resourcename)
 {
-	for (auto sceneNodeIterator = (*sceneManager->getAllNodes())->begin(); sceneNodeIterator != (*sceneManager->getAllNodes())->end(); ++ sceneNodeIterator)
+	for (auto sceneNodeIterator = (*sceneManager->GetAllNodes())->begin(); sceneNodeIterator != (*sceneManager->GetAllNodes())->end(); ++ sceneNodeIterator)
 	{
-		if ((*sceneNodeIterator)->getParent()->getName() == resourcename)
+		if ((*sceneNodeIterator)->GetParent()->GetName() == resourcename)
 		{
-			(*sceneManager->getAllNodes())->erase(sceneNodeIterator);
+			(*sceneManager->GetAllNodes())->erase(sceneNodeIterator);
 			break;
 		}
 	}
 }
 
-void Renderer::toggleModule(const std::string& moduleName, bool enabled)
+void Renderer::ToggleModule(const std::string& moduleName, bool enabled)
 {
-	pipeline.toggleModule(moduleName, enabled);
+	pipeline.ToggleModule(moduleName, enabled);
 }
 
-GraphicsModule* Renderer::getGraphicsModule(const std::string& moduleName)
+GraphicsModule* Renderer::GetGraphicsModule(const std::string& moduleName)
 {
-	return pipeline.getGraphicsModule(moduleName);
+	return pipeline.GetGraphicsModule(moduleName);
 }
 
-void Renderer::updateScene(const float& msec)
+void Renderer::UpdateScene(const float& msec)
 {
 	parentTimer->beginChildTimedSection("Update Scene Management");
 
-	camera->updateCamera();
-	camera->buildViewMatrix();
-	camera->updateViewFrustum(CommonGraphicsData::SHARED_PROJECTION_MATRIX);
-	pipeline.updateModules(msec);
-	sceneManager->clearMeshLists();
-	sceneManager->buildMeshLists();
+	camera->UpdateCamera();
+	camera->BuildViewMatrix();
+	camera->UpdateViewFrustum(CommonGraphicsData::SHARED_PROJECTION_MATRIX);
+	pipeline.UpdateModules(msec);
+	sceneManager->ClearMeshLists();
+	sceneManager->BuildMeshLists();
 
 	parentTimer->endChildTimedSection("Update Scene Management");
 }
 
-void Renderer::renderScene()
+void Renderer::RenderScene()
 {
 	parentTimer->beginChildTimedSection("Render Modules");
 
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	pipeline.executeModules();
-	swapBuffers();
+	pipeline.ExecuteModules();
+	SwapBuffers();
 
 	parentTimer->endChildTimedSection("Render Modules");
 }

@@ -12,7 +12,7 @@ public:
 		const std::string& resourceName);
 	~PaintTrailForGameObjectMessage();
 
-	static PaintTrailForGameObjectMessage builder(Node* node);
+	static PaintTrailForGameObjectMessage Builder(Node* node);
 
 	std::string resourceName;
 };

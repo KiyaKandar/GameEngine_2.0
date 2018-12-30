@@ -30,9 +30,8 @@ const float UPDATE_TIMESTEP = 1.0f / 60.0f;
 NetworkClient::NetworkClient(InputRecorder* keyboardAndMouse, Database* database,
 	PlayerBase* playerbase, GameplaySystem* gameplay) : Subsystem("NetworkClient")
 {
-	incomingMessages = MessageProcessor(std::vector<MessageType> {MessageType::TEXT}, 
-		DeliverySystem::getPostman()->getDeliveryPoint("NetworkClient"));
-
+	incomingMessages = MessageProcessor(std::vector<MessageType>{MessageType::TEXT},
+		DeliverySystem::GetPostman()->GetDeliveryPoint("NetworkClient"));
 
 	this->keyboardAndMouse = keyboardAndMouse;
 	this->playerbase = playerbase;
@@ -42,50 +41,57 @@ NetworkClient::NetworkClient(InputRecorder* keyboardAndMouse, Database* database
 	joinedGame = false;
 	updateRealTimeAccum = 0.0f;
 
-
-	incomingMessages.addActionToExecuteOnMessage(MessageType::TEXT, [&database = this->database, &objectsToToTransmitStatesFor = objectsToToTransmitStatesFor,
-		&networkedCollision = networkedCollision, &transmitNetworkedCollision = transmitNetworkedCollision, &colliders = colliders, 
-		&scoresToSend = scoresToSend](Message* message)
-	{
-		TextMessage* textMessage = static_cast<TextMessage*>(message);
-
-		istringstream iss(textMessage->text);
-		vector<string> tokens{ istream_iterator<string>{iss},
-			std::istream_iterator<string>{} };
-
-		if (tokens[0] == "insertMinion")
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::TEXT,
+		[&database = this->database, &objectsToToTransmitStatesFor =
+			objectsToToTransmitStatesFor,
+			&networkedCollision = networkedCollision, &
+			transmitNetworkedCollision = transmitNetworkedCollision, &colliders
+			= colliders,
+			&scoresToSend = scoresToSend](Message* message)
 		{
-			GameObject* gameObject = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(tokens[1]));
+			TextMessage* textMessage = static_cast<TextMessage*>(message);
 
-			objectsToToTransmitStatesFor.push_back(gameObject);
-			colliders.push_back(tokens[1]);
-		}
-		else if (tokens[0] == "collision")
-		{
-			for (size_t i = 0; i < colliders.size(); ++i)
+			istringstream iss(textMessage->text);
+			vector<string> tokens{
+				istream_iterator<string>{iss},
+				std::istream_iterator<string>{}
+			};
+
+			if (tokens[0] == "insertMinion")
 			{
-				if (colliders[i] == tokens[2])
+				GameObject* gameObject = static_cast<GameObject*>(database->GetTable("GameObjects")->GetResource(tokens[1]));
+
+				objectsToToTransmitStatesFor.push_back(gameObject);
+				colliders.push_back(tokens[1]);
+			}
+			else if (tokens[0] == "collision")
+			{
+				for (size_t i = 0; i < colliders.size(); ++i)
 				{
-					networkedCollision.colliderIndex = i;
-					networkedCollision.playerID = stoi(tokens[1].substr(tokens[1].find_first_of("0123456789")));
-					transmitNetworkedCollision = true;
-					break;
+					if (colliders[i] == tokens[2])
+					{
+						networkedCollision.colliderIndex = i;
+						networkedCollision.playerID = stoi(
+							tokens[1].substr(
+								tokens[1].find_first_of("0123456789")));
+						transmitNetworkedCollision = true;
+						break;
+					}
 				}
 			}
-		}
-		else if (tokens[0] == "insertCollider")
-		{
-			colliders.push_back(tokens[1]);
-		}
-		else if (tokens[0] == "sendscore")
-		{
-			PlayerScore sc;
-			sc.playerID = stoi(tokens[1]);
-			sc.playerScore = stoi(tokens[2]);
+			else if (tokens[0] == "insertCollider")
+			{
+				colliders.push_back(tokens[1]);
+			}
+			else if (tokens[0] == "sendscore")
+			{
+				PlayerScore sc;
+				sc.playerID = stoi(tokens[1]);
+				sc.playerScore = stoi(tokens[2]);
 
-			scoresToSend.push_back(sc);
-		}
-	});
+				scoresToSend.push_back(sc);
+			}
+		});
 
 	waitingInLobbyText = PeriodicTextModifier("Waiting for players", ".", 3);
 
@@ -98,13 +104,13 @@ NetworkClient::~NetworkClient()
 {
 }
 
-void NetworkClient::updateNextFrame(const float& deltaTime)
+void NetworkClient::UpdateNextFrame(const float& deltaTime)
 {
 	timer->beginTimedSection();
 
 	if (!inLobby)
 	{
-		DeliverySystem::getPostman()->insertMessage(TextMessage("GameLoop", "deltatime enable"));
+		DeliverySystem::GetPostman()->InsertMessage(TextMessage("GameLoop", "deltatime enable"));
 		timeSinceLastBroadcast += deltaTime;
 		msCounter += deltaTime;
 		updateRealTimeAccum += deltaTime;
@@ -112,11 +118,11 @@ void NetworkClient::updateNextFrame(const float& deltaTime)
 		timer->beginChildTimedSection("Broadcast Kinematic State");
 		if (timeSinceLastBroadcast >= UPDATE_FREQUENCY && joinedGame)
 		{
-			broadcastKinematicState();
+			BroadcastKinematicState();
 
 			if (clientID == 0)
 			{
-				broadcastMinionState();
+				BroadcastMinionState();
 			}
 		}
 		timer->endChildTimedSection("Broadcast Kinematic State");
@@ -124,11 +130,11 @@ void NetworkClient::updateNextFrame(const float& deltaTime)
 		timer->beginChildTimedSection("Dead Reckoning");
 		if (updateRealTimeAccum >= UPDATE_TIMESTEP)
 		{
-			updateDeadReckoningForConnectedClients();
+			UpdateDeadReckoningForConnectedClients();
 
 			if (clientID != 0)
 			{
-				updateDeadReckoningForMinions();
+				UpdateDeadReckoningForMinions();
 			}
 
 			updateRealTimeAccum = 0.0f;
@@ -138,47 +144,53 @@ void NetworkClient::updateNextFrame(const float& deltaTime)
 		for (int i = 0; i < numberOfOtherPlayersToWaitFor; ++i)
 		{
 			const std::string playerName = "player" + to_string(i);
-			GameObject* client = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(playerName));
+			GameObject* client = static_cast<GameObject*>(database->GetTable("GameObjects")->GetResource(playerName));
 
-			DeliverySystem::getPostman()->insertMessage(TextMeshMessage("RenderingSystem", playerName,
-				client->getPhysicsNode()->GetPosition() + NCLVector3(24, 14, 0), NCLVector3(7, 7, 1), NCLVector3(1, 1, 1), false));
+			DeliverySystem::GetPostman()->InsertMessage(TextMeshMessage("RenderingSystem", playerName,
+				client->GetPhysicsNode()->GetPosition() +
+				NCLVector3(24, 14, 0), NCLVector3(7, 7, 1),
+				NCLVector3(1, 1, 1), false));
 		}
 
 		if (transmitNetworkedCollision)
 		{
 			transmitNetworkedCollision = false;
-			broadcastCollision();
+			BroadcastCollision();
 		}
 
 		if (clientID != 0)
 		{
-			displayPlayerScores();
+			DisplayPlayerScores();
 		}
 
-		broadcastPlayerScores();
+		BroadcastPlayerScores();
 	}
 	else
 	{
 		waitingInLobbyText.addTextWhenTimeHasReachedMaximum(30);
-		DeliverySystem::getPostman()->insertMessage(TextMessage("GameLoop", "deltatime disable"));
+		DeliverySystem::GetPostman()->InsertMessage(TextMessage("GameLoop", "deltatime disable"));
 
-		DeliverySystem::getPostman()->insertMessage(TextMeshMessage("RenderingSystem", waitingInLobbyText.getCurrentString(),
-			NCLVector3(-200, 0, 0), NCLVector3(20, 20, 1), NCLVector3(1, 1, 1), true));
+		DeliverySystem::GetPostman()->InsertMessage(TextMeshMessage("RenderingSystem",
+			waitingInLobbyText.getCurrentString(),
+			NCLVector3(-200, 0, 0), NCLVector3(20, 20, 1),
+			NCLVector3(1, 1, 1), true));
 	}
 
 	timer->beginChildTimedSection("Process Network Messages");
 	if (connectedToServer)
 	{
-		processNetworkMessages(deltaTime);
-		DeliverySystem::getPostman()->insertMessage(TextMessage("Profiler", "Incoming K/Bs : " + std::to_string(network.m_IncomingKb)));
-		DeliverySystem::getPostman()->insertMessage(TextMessage("Profiler", "Outgoing K/Bs : " + std::to_string(network.m_OutgoingKb)));
+		ProcessNetworkMessages(deltaTime);
+		DeliverySystem::GetPostman()->InsertMessage(
+			TextMessage("Profiler", "Incoming K/Bs : " + std::to_string(network.m_IncomingKb)));
+		DeliverySystem::GetPostman()->InsertMessage(
+			TextMessage("Profiler", "Outgoing K/Bs : " + std::to_string(network.m_OutgoingKb)));
 	}
 	timer->endChildTimedSection("Process Network Messages");
 
 	timer->endTimedSection();
 }
 
-void NetworkClient::connectToServer()
+void NetworkClient::ConnectToServer()
 {
 	if (network.Initialize(0))
 	{
@@ -187,84 +199,83 @@ void NetworkClient::connectToServer()
 	}
 }
 
-void NetworkClient::waitForOtherClients(int numberToWaitFor)
+void NetworkClient::WaitForOtherClients(int numberToWaitFor)
 {
 	numberOfOtherPlayersToWaitFor = numberToWaitFor;
 	inLobby = true;
 }
 
-void NetworkClient::broadcastKinematicState()
+void NetworkClient::BroadcastKinematicState()
 {
 	timeSinceLastBroadcast = 0.0f;
 
 	const std::string playerName = "player" + to_string(clientID);
-	GameObject* client = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(playerName));
+	GameObject* client = static_cast<GameObject*>(database->GetTable("GameObjects")->GetResource(playerName));
 
 	KinematicState state;
 	state.clientID = clientID;
-	state.position = client->getPhysicsNode()->GetPosition();
-	state.linearVelocity = client->getPhysicsNode()->GetLinearVelocity();
-	state.linearAcceleration = client->getPhysicsNode()->GetAcceleration();
+	state.position = client->GetPhysicsNode()->GetPosition();
+	state.linearVelocity = client->GetPhysicsNode()->GetLinearVelocity();
+	state.linearAcceleration = client->GetPhysicsNode()->GetAcceleration();
 
 	ENetPacket* packet = enet_packet_create(&state, sizeof(KinematicState), 0);
 	enet_peer_send(serverConnection, 0, packet);
 }
 
-void NetworkClient::broadcastMinionState()
+void NetworkClient::BroadcastMinionState()
 {
 	for (size_t i = 0; i < objectsToToTransmitStatesFor.size(); ++i)
 	{
 		MinionKinematicState state;
 		state.minionIndex = i;
-		state.position = objectsToToTransmitStatesFor[i]->getPosition();
-		state.linearVelocity = objectsToToTransmitStatesFor[i]->getPhysicsNode()->GetLinearVelocity();
-		state.linearAcceleration = objectsToToTransmitStatesFor[i]->getPhysicsNode()->GetAcceleration();
+		state.position = objectsToToTransmitStatesFor[i]->GetPosition();
+		state.linearVelocity = objectsToToTransmitStatesFor[i]->GetPhysicsNode()->GetLinearVelocity();
+		state.linearAcceleration = objectsToToTransmitStatesFor[i]->GetPhysicsNode()->GetAcceleration();
 
 		ENetPacket* packet = enet_packet_create(&state, sizeof(MinionKinematicState), 0);
 		enet_peer_send(serverConnection, 0, packet);
 	}
 }
 
-void NetworkClient::broadcastPlayerScores()
+void NetworkClient::BroadcastPlayerScores()
 {
 	for (PlayerScore ps : scoresToSend)
 	{
 		ENetPacket* packet = enet_packet_create(&ps, sizeof(PlayerScore), 0);
 		enet_peer_send(serverConnection, 0, packet);
-
-		
 	}
 	scoresToSend.clear();
 }
 
-void NetworkClient::broadcastCollision()
+void NetworkClient::BroadcastCollision() const
 {
 	ENetPacket* packet = enet_packet_create(&networkedCollision, sizeof(NetworkedCollision), 0);
 	enet_peer_send(serverConnection, 0, packet);
 }
 
-void NetworkClient::updateDeadReckoningForConnectedClients()
+void NetworkClient::UpdateDeadReckoningForConnectedClients()
 {
 	for (auto client = clientDeadReckonings.begin(); client != clientDeadReckonings.end(); ++client)
 	{
-		client->second.predictPosition(UPDATE_TIMESTEP);
-		client->second.blendStates(client->first->getPhysicsNode());
+		client->second.PredictPosition(UPDATE_TIMESTEP);
+		client->second.BlendStates(client->first->GetPhysicsNode());
 	}
 }
 
-void NetworkClient::updateDeadReckoningForMinions()
+void NetworkClient::UpdateDeadReckoningForMinions()
 {
 	for (auto client = minionDeadReckonings.begin(); client != minionDeadReckonings.end(); ++client)
 	{
-		client->second.predictPosition(UPDATE_TIMESTEP);
-		client->second.blendStates(client->first->getPhysicsNode());
+		client->second.PredictPosition(UPDATE_TIMESTEP);
+		client->second.BlendStates(client->first->GetPhysicsNode());
 	}
 }
 
-void NetworkClient::displayPlayerScores()
+void NetworkClient::DisplayPlayerScores()
 {
 	int i = 0;
-	for (auto scoreHolderIterator = playerScores.begin(); scoreHolderIterator != playerScores.end(); ++scoreHolderIterator)
+	for (auto scoreHolderIterator = playerScores.begin(); scoreHolderIterator != playerScores.end(); ++
+	     scoreHolderIterator)
 	{
 		int score = scoreHolderIterator->second;
 		std::string name = scoreHolderIterator->first + " : " + std::to_string(score);
@@ -276,134 +287,149 @@ void NetworkClient::displayPlayerScores()
 			name += " ";
 		}
 
-		NCLVector4 colour = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(scoreHolderIterator->first))->stats.colourToPaint;
+		NCLVector4 colour = static_cast<GameObject*>(database
+		                                             ->GetTable("GameObjects")->GetResource(scoreHolderIterator->first))
+		                    ->stats.colourToPaint;
 
-		DeliverySystem::getPostman()->insertMessage(TextMeshMessage("RenderingSystem", name, NCLVector3(290, (i * -20.0f) + 320, 0), NCLVector3(20, 20, 1),
-			NCLVector3(colour.x, colour.y, colour.z), true, true));
+		DeliverySystem::GetPostman()->InsertMessage(TextMeshMessage("RenderingSystem", name,
+			NCLVector3(290, (i * -20.0f) + 320, 0),
+			NCLVector3(20, 20, 1),
+			NCLVector3(colour.x, colour.y, colour.z), true,
+			true));
 
 		++i;
 
-		
 		string pid = scoreHolderIterator->first.substr(scoreHolderIterator->first.find_first_of("0123456789"));
 
-		DeliverySystem::getPostman()->insertMessage(TextMessage("Gameplay", "sendscore " + pid + " " + to_string(scoreHolderIterator->second)));
+		DeliverySystem::GetPostman()->InsertMessage(
+			TextMessage("Gameplay", "sendscore " + pid + " " + to_string(scoreHolderIterator->second)));
 	}
 }
 
-void NetworkClient::processNetworkMessages(const float& deltaTime)
+void NetworkClient::ProcessNetworkMessages(const float& deltaTime)
 {
 	network.ServiceNetwork(deltaTime, [&serverConnection = serverConnection, &gameplay = gameplay,
-		&keyboardAndMouse = keyboardAndMouse, &playerbase = playerbase, &clientID = clientID, &inLobby = inLobby,
-		&joinedGame = joinedGame, &database = database, &numberOfOtherPlayersToWaitFor = numberOfOtherPlayersToWaitFor,
-		&msCounter = msCounter, &clientDeadReckonings = clientDeadReckonings, &minionDeadReckonings = minionDeadReckonings,
-		&objectsToToTransmitStatesFor = objectsToToTransmitStatesFor, &colliders = colliders, &playerScores = playerScores](const ENetEvent& evnt)
-	{
-		if (evnt.type == ENET_EVENT_TYPE_RECEIVE)
+			&keyboardAndMouse = keyboardAndMouse, &playerbase = playerbase, &clientID = clientID, &
+			inLobby = inLobby,
+			&joinedGame = joinedGame, &database = database, &numberOfOtherPlayersToWaitFor =
+			numberOfOtherPlayersToWaitFor,
+			&msCounter = msCounter, &clientDeadReckonings = clientDeadReckonings, &
+			minionDeadReckonings = minionDeadReckonings,
+			&objectsToToTransmitStatesFor = objectsToToTransmitStatesFor, &colliders = colliders, &
+			playerScores = playerScores](const ENetEvent& evnt)
 		{
-			if (evnt.packet->dataLength == sizeof(IntegerData))
+			if (evnt.type == ENET_EVENT_TYPE_RECEIVE)
 			{
-				IntegerData message;
-				memcpy(&message, evnt.packet->data, sizeof(IntegerData));
-
-				if (message.type == NEW_ID)
+				if (evnt.packet->dataLength == sizeof(IntegerData))
 				{
-					clientID = message.data;
+					IntegerData message;
+					memcpy(&message, evnt.packet->data, sizeof(IntegerData));
+
+					if (message.type == NEW_ID)
+					{
+						clientID = message.data;
+
+						if (clientID != 0)
+						{
+							DeliverySystem::GetPostman()->InsertMessage(
+								ToggleGraphicsModuleMessage(
+									"RenderingSystem", "ScoreCounter", false));
+						}
+
+						PaintGameActionBuilder::localPlayer = "player" + to_string(clientID);
+						NetworkMessageProcessor::JoinGame(
+							clientID, playerbase, gameplay, keyboardAndMouse);
+						joinedGame = true;
+					}
+					else if (message.type == CURRENT_NUMBER_OF_PLAYERS)
+					{
+						if (message.data == numberOfOtherPlayersToWaitFor)
+						{
+							DeliverySystem::GetPostman()->InsertMessage(
+								TextMessage("GameLoop", "deltatime enable"));
+							inLobby = false;
+						}
+					}
+				}
+				else if (evnt.packet->dataLength == sizeof(KinematicState) && joinedGame)
+				{
+					KinematicState recievedState;
+					memcpy(&recievedState, evnt.packet->data, sizeof(KinematicState));
+
+					if (recievedState.clientID != clientID)
+					{
+						const std::string playerName = "player" + to_string(recievedState.clientID);
+
+						GameObject* client = NetworkMessageProcessor::
+							GetUpdatedDeadReckoningGameObject(playerName,
+								recievedState, database);
+
+						clientDeadReckonings[client] = DeadReckoning(recievedState);
+					}
+				}
+				else if (evnt.packet->dataLength == sizeof(MinionKinematicState) && joinedGame)
+				{
+					MinionKinematicState recievedState;
+					memcpy(&recievedState, evnt.packet->data, sizeof(MinionKinematicState));
 
 					if (clientID != 0)
 					{
-						DeliverySystem::getPostman()->insertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "ScoreCounter", false));
-					}
+						GameObject* client = NetworkMessageProcessor::
+							GetUpdatedDeadReckoningGameObject(
+								objectsToToTransmitStatesFor[recievedState.minionIndex]->GetName(),
+								recievedState, database);
 
-					PaintGameActionBuilder::localPlayer = "player" + to_string(clientID);
-					NetworkMessageProcessor::joinGame(clientID, playerbase, gameplay, keyboardAndMouse);
-					joinedGame = true;
+						minionDeadReckonings[client] = MinionDeadReckoning(recievedState);
+					}
 				}
-				else if (message.type == CURRENT_NUMBER_OF_PLAYERS)
+				else if (evnt.packet->dataLength == sizeof(NetworkedCollision) && joinedGame)
 				{
-					if (message.data == numberOfOtherPlayersToWaitFor)
+					NetworkedCollision recievedState;
+					memcpy(&recievedState, evnt.packet->data, sizeof(NetworkedCollision));
+
+					if (recievedState.playerID != clientID)
 					{
-						DeliverySystem::getPostman()->insertMessage(TextMessage("GameLoop", "deltatime enable"));
-						inLobby = false;
+						const std::string playerName = "player" + to_string(recievedState.playerID);
+
+						DeliverySystem::GetPostman()->InsertMessage(CollisionMessage(
+							"Gameplay", CollisionData(),
+							playerName, colliders[recievedState.colliderIndex]));
 					}
 				}
-			}
-			else if (evnt.packet->dataLength == sizeof(KinematicState) && joinedGame)
-			{
-				KinematicState recievedState;
-				memcpy(&recievedState, evnt.packet->data, sizeof(KinematicState));
-
-				if (recievedState.clientID != clientID)
+				else if (evnt.packet->dataLength == sizeof(RandomIntegers) && joinedGame)
 				{
-					const std::string playerName = "player" + to_string(recievedState.clientID);
+					RandomIntegers recievedState;
+					memcpy(&recievedState, evnt.packet->data, sizeof(RandomIntegers));
 
-					GameObject* client = NetworkMessageProcessor::getUpdatedDeadReckoningGameObject(playerName,
-						recievedState, database);
-
-					clientDeadReckonings[client] = DeadReckoning(recievedState);
-				}
-			}
-			else if (evnt.packet->dataLength == sizeof(MinionKinematicState) && joinedGame)
-			{
-				MinionKinematicState recievedState;
-				memcpy(&recievedState, evnt.packet->data, sizeof(MinionKinematicState));
-
-				if (clientID != 0)
-				{
-
-					GameObject* client = NetworkMessageProcessor::getUpdatedDeadReckoningGameObject(objectsToToTransmitStatesFor[recievedState.minionIndex]->getName(),
-						recievedState, database);
-
-					minionDeadReckonings[client] = MinionDeadReckoning(recievedState);
-				}
-			}
-			else if (evnt.packet->dataLength == sizeof(NetworkedCollision) && joinedGame)
-			{
-				NetworkedCollision recievedState;
-				memcpy(&recievedState, evnt.packet->data, sizeof(NetworkedCollision));
-
-				if (recievedState.playerID != clientID)
-				{
-					const std::string playerName = "player" + to_string(recievedState.playerID);
-
-					DeliverySystem::getPostman()->insertMessage(CollisionMessage("Gameplay", CollisionData(),
-						playerName, colliders[recievedState.colliderIndex]));
-				}
-			}
-			else if (evnt.packet->dataLength == sizeof(RandomIntegers) && joinedGame)
-			{
-				RandomIntegers recievedState;
-				memcpy(&recievedState, evnt.packet->data, sizeof(RandomIntegers));
-
-				if (recievedState.first)
-				{
-					PaintGameActionBuilder::r1 = recievedState.r1;
-
-					for (int i = 0; i < 10; ++i)
+					if (recievedState.first)
 					{
-						PaintGameActionBuilder::others[i] = recievedState.others[i];
-					}
-				}
-				else
-				{
-					PaintGameActionBuilder::r1ToSet = recievedState.r1;
+						PaintGameActionBuilder::r1 = recievedState.r1;
 
-					for (int i = 0; i < 10; ++i)
+						for (int i = 0; i < 10; ++i)
+						{
+							PaintGameActionBuilder::others[i] = recievedState.others[i];
+						}
+					}
+					else
 					{
-						PaintGameActionBuilder::othersToSet[i] = recievedState.others[i];
+						PaintGameActionBuilder::r1ToSet = recievedState.r1;
+
+						for (int i = 0; i < 10; ++i)
+						{
+							PaintGameActionBuilder::othersToSet[i] = recievedState.others[i];
+						}
 					}
 				}
-			}
-			else if (evnt.packet->dataLength == sizeof(PlayerScore) && joinedGame)
-			{
-				PlayerScore recievedScore;
-				memcpy(&recievedScore, evnt.packet->data, sizeof(PlayerScore));
+				else if (evnt.packet->dataLength == sizeof(PlayerScore) && joinedGame)
+				{
+					PlayerScore recievedScore;
+					memcpy(&recievedScore, evnt.packet->data, sizeof(PlayerScore));
 
-				std::string playerName = "player" + to_string(recievedScore.playerID);
-				playerScores[playerName] = recievedScore.playerScore;
+					std::string playerName = "player" + to_string(recievedScore.playerID);
+					playerScores[playerName] = recievedScore.playerScore;
+				}
 			}
-			
-		}
 
-		enet_packet_destroy(evnt.packet);
-	});
+			enet_packet_destroy(evnt.packet);
+		});
 }

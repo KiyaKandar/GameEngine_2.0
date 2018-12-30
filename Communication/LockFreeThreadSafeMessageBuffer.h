@@ -12,7 +12,7 @@ class LockFreeThreadSafeMessageBuffer
 public:
 	LockFreeThreadSafeMessageBuffer()
 	{
-		numberOfMessageSenders = ThreadPool::getTotalNumberOfThreads();
+		numberOfMessageSenders = ThreadPool::GetTotalNumberOfThreads();
 		outgoingMessages = new std::queue<MessageType>[numberOfMessageSenders];
 		sentMessages = new std::queue<MessageType>[numberOfMessageSenders];
 	}
@@ -23,14 +23,14 @@ public:
 		delete[] sentMessages;
 	}
 
-	void insertOutgoingMessage(MessageType message)
+	void InsertOutgoingMessage(MessageType message)
 	{
-		outgoingMessages[ThreadPool::getLocalThreadId()].push(message);
+		outgoingMessages[ThreadPool::GetLocalThreadId()].push(message);
 	}
 
-	void sendMessages(MessageStorage* messageStorage)
+	void SendMessages(MessageStorage* messageStorage)
 	{
-		unsigned int localThreadId = ThreadPool::getLocalThreadId();
+		unsigned int localThreadId = ThreadPool::GetLocalThreadId();
 
 		std::queue<MessageType>& outgoingQueue = outgoingMessages[localThreadId];
 
@@ -40,13 +40,13 @@ public:
 			outgoingQueue.pop();
 
 			sentMessages[localThreadId].push(message);
-			messageStorage->deliverMessage(&sentMessages[localThreadId].back(), localThreadId);
+			messageStorage->DeliverMessage(&sentMessages[localThreadId].back(), localThreadId);
 		}
 	}
 
-	void clearSentMessages()
+	void ClearSentMessages()
 	{
-		unsigned int localThreadId = ThreadPool::getLocalThreadId();
+		unsigned int localThreadId = ThreadPool::GetLocalThreadId();
 
 		while (!sentMessages[localThreadId].empty() && sentMessages[localThreadId].front().processed)
 		{
@@ -54,7 +54,7 @@ public:
 		}
 	}
 
-	void cancelOutgoingMessages()
+	void CancelOutgoingMessages()
 	{
 		for (unsigned int i = 0; i < numberOfMessageSenders; ++i)
 		{

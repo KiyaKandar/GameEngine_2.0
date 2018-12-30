@@ -17,30 +17,30 @@ Shadows::Shadows(const std::string identifier, const NCLVector2 resolution,
 	this->models = models;
 }
 
-void Shadows::linkShaders()
+void Shadows::LinkShaders()
 {
 	shadowShader->LinkProgram();
 }
 
-void Shadows::regenerateShaders()
+void Shadows::RegenerateShaders()
 {
 	shadowShader->Regenerate();
 }
 
-void Shadows::initialise()
+void Shadows::Initialise()
 {
 	//Shadow prep
-	initShadowTex();
-	initShadowBuffer();
+	InitShadowTex();
+	InitShadowBuffer();
 }
 
-void Shadows::apply()
+void Shadows::Apply()
 {
-	drawShadowScene();
+	DrawShadowScene();
 	applied = true;
 }
 
-void Shadows::initShadowTex()
+void Shadows::InitShadowTex()
 {
 	glGenTextures(1, &shadowData->shadowTex);
 	glBindTexture(GL_TEXTURE_2D, shadowData->shadowTex);
@@ -59,7 +59,7 @@ void Shadows::initShadowTex()
 	GraphicsUtility::CheckGLError("Shadow textures");
 }
 
-void Shadows::initShadowBuffer()
+void Shadows::InitShadowBuffer()
 {
 	glGenFramebuffers(1, &shadowFBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
@@ -73,10 +73,10 @@ void Shadows::initShadowBuffer()
 	GraphicsUtility::VerifyBuffer("Shadow Buffer", false);
 }
 
-void Shadows::drawShadowScene()
+void Shadows::DrawShadowScene()
 {
 	glCullFace(GL_FRONT);
-	setCurrentShader(shadowShader);
+	SetCurrentShader(shadowShader);
 
 	glViewport(0, 0, SHADOWSIZE, SHADOWSIZE);
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);

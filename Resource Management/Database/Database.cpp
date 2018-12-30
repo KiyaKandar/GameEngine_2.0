@@ -8,30 +8,30 @@ Database::~Database()
 {
 }
 
-void Database::addTable(const std::string tableName, Table<Resource>* table)
+void Database::AddTable(const std::string tableName, Table<Resource>* table)
 {
 	tables[tableName] = table;
 	tablesVector.push_back(table);
 }
 
-Table<Resource>* Database::getTable(const std::string tableName)
+Table<Resource>* Database::GetTable(const std::string tableName)
 {
 	return tables.at(tableName);
 }
 
-std::vector<Table<Resource>*> Database::getAllTables() const
+std::vector<Table<Resource>*> Database::GetAllTables() const
 {
 	return tablesVector;
 }
 
-void Database::addResourceToTable(const std::string tableName, Resource* resource)
+void Database::AddResourceToTable(const std::string tableName, Resource* resource)
 {
-	tables.at(tableName)->addNewResource(resource);
+	tables.at(tableName)->AddNewResource(resource);
 }
 
-void Database::addResourceToTable(const std::string tableName, Node* node)
+void Database::AddResourceToTable(const std::string tableName, Node* node)
 {
-	tables.at(tableName)->addNewResource(node);
+	tables.at(tableName)->AddNewResource(node);
 }
 
 const size_t Database::CurrentSize() const
@@ -40,7 +40,7 @@ const size_t Database::CurrentSize() const
 
 	for (auto table : tables)
 	{
-		memory += table.second->getAllResources()->getCurrentSize();
+		memory += table.second->GetAllResources()->GetCurrentSize();
 	}
 
 	return memory;
@@ -52,7 +52,7 @@ const size_t Database::MaxSize() const
 
 	for (auto table : tables)
 	{
-		memory += table.second->getAllResources()->getMaxSize();
+		memory += table.second->GetAllResources()->GetMaxSize();
 	}
 
 	return memory;

@@ -20,115 +20,115 @@ Level::~Level()
 {
 }
 
-void Level::loadLevelFile(std::string levelFilePath, GameplaySystem* gameplay)
+void Level::LoadLevelFile(std::string levelFilePath, GameplaySystem* gameplay)
 {
-	gameplay->deleteGameObjectScripts();
-	parser.loadXMLFile(levelFilePath);
+	gameplay->DeleteGameObjectScripts();
+	parser.LoadXmlFile(levelFilePath);
 	levelNode = *parser.parsedXml;
 
 	for (Node* child : levelNode.children)
 	{
-		loadLevelNode(child, gameplay);
+		LoadLevelNode(child, gameplay);
 	}
 
-	addObjectsToGame();
+	AddObjectsToGame();
 }
 
-void Level::loadLevelNode(Node* resourceNode, GameplaySystem* gameplay)
+void Level::LoadLevelNode(Node* resourceNode, GameplaySystem* gameplay)
 {
 	if (resourceNode->nodeType == "UI")
 	{
-		loadUINode(resourceNode);
+		LoadUiNode(resourceNode);
 	}
 	else if (resourceNode->nodeType == "GamePlay")
 	{
-		loadGameplayScripts(resourceNode, gameplay);
+		LoadGameplayScripts(resourceNode, gameplay);
 	}
 	else if (resourceNode->nodeType == "GameLogic")
 	{
-		loadgameLogicScripts(resourceNode, gameplay);
+		LoadgameLogicScripts(resourceNode, gameplay);
 	}
 	else
 	{
-		loadResource(resourceNode);
+		LoadResource(resourceNode);
 	}
 }
 
-void Level::unloadLevelWhileKeepingUserInterface()
+void Level::UnloadLevelWhileKeepingUserInterface()
 {
 	MoveCameraRelativeToGameObjectMessage::resourceName = "";
-	(*sceneManager->getAllNodes())->clear();
-	(*sceneManager->getAllLights())->clear();
+	(*sceneManager->GetAllNodes())->clear();
+	(*sceneManager->GetAllLights())->clear();
 	physics->RemoveAllPhysicsObjects();
 
-	std::vector<Table<Resource>*> tables = database->getAllTables();
+	std::vector<Table<Resource>*> tables = database->GetAllTables();
 
 	for (Table<Resource>* table : tables)
 	{
-		if (table->getName() != "UIMeshes")
+		if (table->GetName() != "UIMeshes")
 		{
-			table->getAllResources()->deleteAllResources();
+			table->GetAllResources()->DeleteAllResources();
 		}
 	}
 }
 
-void Level::unloadLevel() const
+void Level::UnloadLevel() const
 {
 	MoveCameraRelativeToGameObjectMessage::resourceName = "";
-	(*sceneManager->getAllNodes())->clear();
-	(*sceneManager->getAllLights())->clear();
+	(*sceneManager->GetAllNodes())->clear();
+	(*sceneManager->GetAllLights())->clear();
 	physics->RemoveAllPhysicsObjects();
 
-	std::vector<Table<Resource>*> tables = database->getAllTables();
+	std::vector<Table<Resource>*> tables = database->GetAllTables();
 
 	for (Table<Resource>* table : tables)
 	{
-		table->getAllResources()->deleteAllResources();
+		table->GetAllResources()->DeleteAllResources();
 	}
 }
 
-void Level::addObjectsToGame() const
+void Level::AddObjectsToGame() const
 {
-	auto gameObjectResources = database->getTable("GameObjects")->getAllResources()->getResourceBuffer();
+	auto gameObjectResources = database->GetTable("GameObjects")->GetAllResources()->GetResourceBuffer();
 	for (auto gameObjectIterator = gameObjectResources.begin(); gameObjectIterator != gameObjectResources.end(); gameObjectIterator++)
 	{
-		(*sceneManager->getAllNodes())->push_back(static_cast<GameObject*>((*gameObjectIterator).second)->getSceneNode());
-		PhysicsNode* pnode = static_cast<GameObject*>((*gameObjectIterator).second)->getPhysicsNode();
+		(*sceneManager->GetAllNodes())->push_back(static_cast<GameObject*>((*gameObjectIterator).second)->GetSceneNode());
+		PhysicsNode* pnode = static_cast<GameObject*>((*gameObjectIterator).second)->GetPhysicsNode();
 		if (pnode != nullptr)
-			physics->addPhysicsObject(pnode);
+			physics->AddPhysicsObject(pnode);
 	}
 
-	auto lightsResources = database->getTable("Lights")->getAllResources()->getResourceBuffer();
+	auto lightsResources = database->GetTable("Lights")->GetAllResources()->GetResourceBuffer();
 	for (auto lightsIterator = lightsResources.begin(); lightsIterator != lightsResources.end(); lightsIterator++)
 	{
-		(*sceneManager->getAllLights())->push_back(static_cast<Light*>((*lightsIterator).second));
+		(*sceneManager->GetAllLights())->push_back(static_cast<Light*>((*lightsIterator).second));
 	}
 }
 
-void Level::loadUINode(Node* resourceNode) const
+void Level::LoadUiNode(Node* resourceNode) const
 {
-	userInterface->setMenuFile(resourceNode->children[0]->value);
+	userInterface->SetMenuFile(resourceNode->children[0]->value);
 }
 
-void Level::loadGameplayScripts(Node* resourceNode, GameplaySystem* gameplay) const
+void Level::LoadGameplayScripts(Node* resourceNode, GameplaySystem* gameplay) const
 {
-	gameplay->compileGameplayScript(LEVELDIR + resourceNode->children[0]->value);
+	gameplay->CompileGameplayScript(LEVELDIR + resourceNode->children[0]->value);
 }
 
-void Level::loadgameLogicScripts(Node* resourceNode, GameplaySystem* gameplay) const
+void Level::LoadgameLogicScripts(Node* resourceNode, GameplaySystem* gameplay) const
 {
 	for (Node* grandChild : resourceNode->children)
 	{
-		gameplay->addGameObjectScript(LEVELDIR + grandChild->value);
+		gameplay->AddGameObjectScript(LEVELDIR + grandChild->value);
 	}
 }
 
-void Level::loadResource(Node* resourceNode)
+void Level::LoadResource(Node* resourceNode)
 {
-	parser.loadXMLFile(LEVELDIR + resourceNode->value);
+	parser.LoadXmlFile(LEVELDIR + resourceNode->value);
 
 	for (Node* grandchild : parser.parsedXml->children)
 	{
-		database->addResourceToTable(grandchild->nodeType, grandchild);
+		database->AddResourceToTable(grandchild->nodeType, grandchild);
 	}
 }

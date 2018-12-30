@@ -21,7 +21,8 @@ public:
 	}
 
 	template <class T>
-	static GLuint RebufferData(const GLenum& target, const GLuint& bufferID, const size_t& offset, const size_t& size, const T* data)
+	static GLuint RebufferData(const GLenum& target, const GLuint& bufferID, const size_t& offset, const size_t& size,
+		const T* data)
 	{
 		glBindBuffer(target, bufferID);
 		glBufferSubData(target, offset, size, data);
@@ -34,7 +35,8 @@ public:
 		GLenum type, GLint minMagParam, int attachment, bool clamp)
 	{
 		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, (GLsizei)resolution.x, (GLsizei)resolution.y, 0, format, type, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, (GLsizei)resolution.x, (GLsizei)resolution.y, 0, format, type,
+			NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minMagParam);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, minMagParam);
 
@@ -47,7 +49,7 @@ public:
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachment, GL_TEXTURE_2D, textureID, 0);
 	}
 
-	static void loadCubeMap(unsigned int * textureID, std::vector<std::string> textures)
+	static void LoadCubeMap(unsigned int* textureID, std::vector<std::string> textures)
 	{
 		glGenTextures(1, textureID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, *textureID);
@@ -55,7 +57,7 @@ public:
 		int width, height, nrChannels;
 		for (unsigned int i = 0; i < textures.size(); i++)
 		{
-			unsigned char *data = stbi_load(textures[i].c_str(), &width, &height, &nrChannels, 0);
+			unsigned char* data = stbi_load(textures[i].c_str(), &width, &height, &nrChannels, 0);
 			if (data)
 			{
 				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
@@ -85,17 +87,24 @@ public:
 	static void CheckGLError(std::string tag)
 	{
 		GLenum err;
-		while ((err = glGetError()) != GL_NO_ERROR) {
+		while ((err = glGetError()) != GL_NO_ERROR)
+		{
 			//cerr << "OpenGL error: " << err << endl;
 
 			string error;
 
-			switch (err) {
-			case GL_INVALID_OPERATION:      error = "INVALID_OPERATION";      break;
-			case GL_INVALID_ENUM:           error = "INVALID_ENUM";           break;
-			case GL_INVALID_VALUE:          error = "INVALID_VALUE";          break;
-			case GL_OUT_OF_MEMORY:          error = "OUT_OF_MEMORY";          break;
-			case GL_INVALID_FRAMEBUFFER_OPERATION:  error = "INVALID_FRAMEBUFFER_OPERATION";  break;
+			switch (err)
+			{
+			case GL_INVALID_OPERATION: error = "INVALID_OPERATION";
+				break;
+			case GL_INVALID_ENUM: error = "INVALID_ENUM";
+				break;
+			case GL_INVALID_VALUE: error = "INVALID_VALUE";
+				break;
+			case GL_OUT_OF_MEMORY: error = "OUT_OF_MEMORY";
+				break;
+			case GL_INVALID_FRAMEBUFFER_OPERATION: error = "INVALID_FRAMEBUFFER_OPERATION";
+				break;
 			}
 
 			cerr << tag << "  -  GL_" << error.c_str() << "\n";
@@ -112,7 +121,8 @@ public:
 		}
 	}
 
-	static bool VerifyBuffer(std::string name, bool successMsg) {
+	static bool VerifyBuffer(std::string name, bool successMsg)
+	{
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
 			return false;
@@ -122,5 +132,4 @@ public:
 			return true;
 		}
 	}
-
 };

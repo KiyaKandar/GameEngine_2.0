@@ -27,23 +27,23 @@ public:
 		glDeleteTextures(1, &ssaoColorBufferBlur);
 	}
 
-	void linkShaders() override;
-	void initialise() override;
-	void apply() override;
+	void LinkShaders() override;
+	void Initialise() override;
+	void Apply() override;
 
-	void regenerateShaders() override;
+	void RegenerateShaders() override;
 
-	void setViewMatrix(NCLMatrix4 mat)
+	void SetViewMatrix(NCLMatrix4 mat)
 	{
 		viewMatrix = mat;
 	}
 
-	float lerp(float a, float b, float f)
+	float Lerp(float a, float b, float f)
 	{
 		return a + f * (b - a);
 	}
 
-	SSAOTextures* getSSAOTextures()
+	SSAOTextures* GetSSAOTextures()
 	{
 		return ambientTextures;
 	}
@@ -51,23 +51,23 @@ public:
 	bool applied;
 
 private:
-	void locateUniforms() override;
+	void LocateUniforms() override;
 
 	Camera* camera;
 	SSAOTextures* ambientTextures;
 	GBufferData* SGBuffer;
 
 	//Init Functions
-	void initSSAOBuffers();
-	void generateSampleKernel();
-	void generateNoiseTexture();
+	void InitSsaoBuffers();
+	void GenerateSampleKernel();
+	void GenerateNoiseTexture();
 
 	/*
 	  Render Functions.
 	  MUST TAKE PLACE IN THIS ORDER.
 	*/
-	void generateSSAOTex();
-	void SSAOBlurTex();
+	void GenerateSsaoTex();
+	void SsaoBlurTex();
 
 	//SSAO Vars
 	GLuint ssaoFBO;

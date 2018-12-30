@@ -23,20 +23,20 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 		MessageType::APPLY_FORCE, MessageType::APPLY_IMPULSE, MessageType::UPDATE_POSITION, MessageType::ABSOLUTE_TRANSFORM,
 		MessageType::MOVE_GAMEOBJECT, MessageType::SCALE_GAMEOBJECT, MessageType::ROTATE_GAMEOBJECT, MessageType::TOGGLE_GAMEOBJECT };
 
-	incomingMessages = MessageProcessor(types, DeliverySystem::getPostman()->getDeliveryPoint("Physics"));
+	incomingMessages = MessageProcessor(types, DeliverySystem::GetPostman()->GetDeliveryPoint("Physics"));
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::TOGGLE_GAMEOBJECT, [database = database](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::TOGGLE_GAMEOBJECT, [database = database](Message* message)
 	{
 		ToggleGameObjectMessage* toggleMessage = static_cast<ToggleGameObjectMessage*>(message);
 
 		GameObject* gameObject = static_cast<GameObject*>(
-			database->getTable("GameObjects")->getResource(toggleMessage->gameObjectID));
+			database->GetTable("GameObjects")->GetResource(toggleMessage->gameObjectID));
 
-		gameObject->getPhysicsNode()->setEnabled(toggleMessage->isEnabled);
-		gameObject->setEnabled(toggleMessage->isEnabled);
+		gameObject->GetPhysicsNode()->SetEnabled(toggleMessage->isEnabled);
+		gameObject->SetEnabled(toggleMessage->isEnabled);
 	});
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::TEXT, [database = database, this](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::TEXT, [database = database, this](Message* message)
 	{
 		TextMessage* textMessage = static_cast<TextMessage*>(message);
 
@@ -47,15 +47,15 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 		if (tokens[0] == "addphysicsnode")
 		{
 			GameObject* gameObject = static_cast<GameObject*>(
-				database->getTable("GameObjects")->getResource(tokens[1]));
+				database->GetTable("GameObjects")->GetResource(tokens[1]));
 
-			addPhysicsObject(gameObject->getPhysicsNode());
+			AddPhysicsObject(gameObject->GetPhysicsNode());
 		}
 		else if (tokens[0] == "removephysicsnode")
 		{
 			for (auto physicsNodeiterator = physicsNodes.begin(); physicsNodeiterator != physicsNodes.end(); ++physicsNodeiterator)
 			{
-				if ((*physicsNodeiterator)->GetParent()->getName() == tokens[1])
+				if ((*physicsNodeiterator)->GetParent()->GetName() == tokens[1])
 				{
 					physicsNodes.erase(physicsNodeiterator);
 					break;
@@ -64,59 +64,59 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 		}
 	});
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::ABSOLUTE_TRANSFORM, [database = database](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::ABSOLUTE_TRANSFORM, [database = database](Message* message)
 	{
 		AbsoluteTransformMessage* translationMessage = static_cast<AbsoluteTransformMessage*>(message);
 		GameObject* gameObject = static_cast<GameObject*>(
-			database->getTable("GameObjects")->getResource(translationMessage->resourceName));
+			database->GetTable("GameObjects")->GetResource(translationMessage->resourceName));
 
-		gameObject->getPhysicsNode()->SetPosition(translationMessage->transform.getPositionVector());
+		gameObject->GetPhysicsNode()->SetPosition(translationMessage->transform.getPositionVector());
 	});
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::MOVE_GAMEOBJECT, [database = database](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::MOVE_GAMEOBJECT, [database = database](Message* message)
 	{
 		MoveGameObjectMessage* moveMessage = static_cast<MoveGameObjectMessage*>(message);
 
 		GameObject* gameObject = static_cast<GameObject*>(
-			database->getTable("GameObjects")->getResource(moveMessage->gameObjectID));
+			database->GetTable("GameObjects")->GetResource(moveMessage->gameObjectID));
 
-		gameObject->getPhysicsNode()->SetPosition(moveMessage->position);
+		gameObject->GetPhysicsNode()->SetPosition(moveMessage->position);
 	});
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::SCALE_GAMEOBJECT, [database = database](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::SCALE_GAMEOBJECT, [database = database](Message* message)
 	{
 		ScaleGameObjectMessage* scaleMessage = static_cast<ScaleGameObjectMessage*>(message);
 
 		GameObject* gameObject = static_cast<GameObject*>(
-			database->getTable("GameObjects")->getResource(scaleMessage->gameObjectID));
+			database->GetTable("GameObjects")->GetResource(scaleMessage->gameObjectID));
 
-		gameObject->getPhysicsNode()->getCollisionShape()->setScale(scaleMessage->scale, gameObject->getPhysicsNode()->GetInverseMass());
+		gameObject->GetPhysicsNode()->GetCollisionShape()->SetScale(scaleMessage->scale, gameObject->GetPhysicsNode()->GetInverseMass());
 	});
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::ROTATE_GAMEOBJECT, [database = database](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::ROTATE_GAMEOBJECT, [database = database](Message* message)
 	{
 		RotateGameObjectMessage* rotateMessage = static_cast<RotateGameObjectMessage*>(message);
 
 		GameObject* gameObject = static_cast<GameObject*>(
-			database->getTable("GameObjects")->getResource(rotateMessage->gameObjectID));
+			database->GetTable("GameObjects")->GetResource(rotateMessage->gameObjectID));
 
 		if (rotateMessage->relative)
 		{
-			gameObject->getPhysicsNode()->SetOrientation(gameObject->getPhysicsNode()->GetOrientation() *
+			gameObject->GetPhysicsNode()->SetOrientation(gameObject->GetPhysicsNode()->GetOrientation() *
 				Quaternion::axisAngleToQuaterion(NCLVector3(rotateMessage->rotation.x, rotateMessage->rotation.y, rotateMessage->rotation.z), rotateMessage->rotation.w));
 		}
 		else
 		{
-			gameObject->getPhysicsNode()->SetOrientation(
+			gameObject->GetPhysicsNode()->SetOrientation(
 				Quaternion::axisAngleToQuaterion(NCLVector3(rotateMessage->rotation.x, rotateMessage->rotation.y, rotateMessage->rotation.z), rotateMessage->rotation.w));
 		}
 	});
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::APPLY_FORCE, [database/*, this*/](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::APPLY_FORCE, [database/*, this*/](Message* message)
 	{
 		ApplyForceMessage* applyForceMessage = static_cast<ApplyForceMessage*>(message);
 
-		GameObject* gObj = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(applyForceMessage->gameObjectID));
+		GameObject* gObj = static_cast<GameObject*>(database->GetTable("GameObjects")->GetResource(applyForceMessage->gameObjectID));
 
 		NCLVector3 force = applyForceMessage->force /* * this->getDeltaTime() * 1000*/;
 
@@ -139,14 +139,14 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 			}
 		}
 
-		gObj->getPhysicsNode()->setAppliedForce(force);
+		gObj->GetPhysicsNode()->SetAppliedForce(force);
 	});
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::APPLY_IMPULSE, [database](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::APPLY_IMPULSE, [database](Message* message)
 	{
 		ApplyImpulseMessage* applyImpulseMessage = static_cast<ApplyImpulseMessage*>(message);
 
-		GameObject* gObj = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(applyImpulseMessage->gameObjectID));
+		GameObject* gObj = static_cast<GameObject*>(database->GetTable("GameObjects")->GetResource(applyImpulseMessage->gameObjectID));
 
 		NCLVector3 impulse = applyImpulseMessage->impulse;
 
@@ -165,18 +165,18 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 				impulse.z = VectorBuilder::getRandomVectorComponent(applyImpulseMessage->zmin, applyImpulseMessage->zmax);
 			}
 		}
-		gObj->getPhysicsNode()->applyImpulse(impulse);
+		gObj->GetPhysicsNode()->ApplyImpulse(impulse);
 	});
 
 
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::UPDATE_POSITION, [database/*, &dt*/](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::UPDATE_POSITION, [database/*, &dt*/](Message* message)
 	{
 		UpdatePositionMessage* positionMessage = static_cast<UpdatePositionMessage*>(message);
 
-		GameObject* gObj = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(positionMessage->gameObjectID));
+		GameObject* gObj = static_cast<GameObject*>(database->GetTable("GameObjects")->GetResource(positionMessage->gameObjectID));
 
-		gObj->getPhysicsNode()->SetPosition((positionMessage->position)/**dt*/);
+		gObj->GetPhysicsNode()->SetPosition((positionMessage->position)/**dt*/);
 	});
 
 	updateTimestep = 1.0f / 60.f;
@@ -195,7 +195,7 @@ PhysicsEngine::~PhysicsEngine()
 	delete octree;
 }
 
-void PhysicsEngine::addPhysicsObject(PhysicsNode* obj)
+void PhysicsEngine::AddPhysicsObject(PhysicsNode* obj)
 {
 	if (octreeInitialised)
 	{
@@ -212,11 +212,11 @@ void PhysicsEngine::addPhysicsObject(PhysicsNode* obj)
 		{
 			if (!this_obj->hasTransmittedCollision)
 			{
-				if (this_obj->collisionMessageSender.readyToSendNextMessage())
+				if (this_obj->collisionMessageSender.ReadyToSendNextMessage())
 				{
-					this_obj->collisionMessageSender.setMessage(CollisionMessage("Gameplay", collisionData,
-						this_obj->GetParent()->getName(), colliding_obj->GetParent()->getName()));
-					this_obj->collisionMessageSender.sendMessage();
+					this_obj->collisionMessageSender.SetMessage(CollisionMessage("Gameplay", collisionData,
+						this_obj->GetParent()->GetName(), colliding_obj->GetParent()->GetName()));
+					this_obj->collisionMessageSender.SendTrackedMessage();
 
 					if (!this_obj->multipleTransmitions)
 					{
@@ -269,7 +269,7 @@ void PhysicsEngine::RemoveAllPhysicsObjects()
 	//   that the physics object no longer exists
 	for (PhysicsNode* obj : physicsNodes)
 	{
-		if (obj->GetParent()) obj->GetParent()->setPhysicsNode(nullptr);
+		if (obj->GetParent()) obj->GetParent()->SetPhysicsNode(nullptr);
 		delete obj;
 	}
 
@@ -277,7 +277,7 @@ void PhysicsEngine::RemoveAllPhysicsObjects()
 }
 
 
-void PhysicsEngine::updateNextFrame(const float& deltaTime)
+void PhysicsEngine::UpdateNextFrame(const float& deltaTime)
 {
 	timer->beginTimedSection();
 
@@ -301,7 +301,7 @@ void PhysicsEngine::updateNextFrame(const float& deltaTime)
 		physicsNode->hasTransmittedCollision = false;
 	}
 
-	if (keyboard->keyTriggered(KEYBOARD_F8))
+	if (keyboard->KeyTriggered(KEYBOARD_F8))
 	{
 		debugRenderMode++;
 
@@ -313,7 +313,7 @@ void PhysicsEngine::updateNextFrame(const float& deltaTime)
 
 	if (debugRenderMode > 0)
 	{
-		if (cubeDrawMessageSender.readyToSendNextMessageGroup() && sphereDrawMessageSender.readyToSendNextMessageGroup())
+		if (cubeDrawMessageSender.ReadyToSendNextMessageGroup() && sphereDrawMessageSender.ReadyToSendNextMessageGroup())
 		{
 			std::vector<DebugLineMessage> cubeDrawMessages;
 			std::vector<DebugSphereMessage> sphereDrawMessages;
@@ -326,7 +326,7 @@ void PhysicsEngine::updateNextFrame(const float& deltaTime)
 			{
 				for (PhysicsNode* node : physicsNodes)
 				{
-					node->getCollisionShape()->DebugDraw(cubeDrawMessages, sphereDrawMessages);
+					node->GetCollisionShape()->DebugDraw(cubeDrawMessages, sphereDrawMessages);
 				}
 			}
 			else if (debugRenderMode == 3)
@@ -337,11 +337,11 @@ void PhysicsEngine::updateNextFrame(const float& deltaTime)
 				}
 			}
 
-			cubeDrawMessageSender.setMessageGroup(cubeDrawMessages);
-			sphereDrawMessageSender.setMessageGroup(sphereDrawMessages);
+			cubeDrawMessageSender.SetMessageGroup(cubeDrawMessages);
+			sphereDrawMessageSender.SetMessageGroup(sphereDrawMessages);
 
-			cubeDrawMessageSender.sendMessageGroup();
-			sphereDrawMessageSender.sendMessageGroup();
+			cubeDrawMessageSender.SendMessageGroup();
+			sphereDrawMessageSender.SendMessageGroup();
 		}
 	}
 
@@ -374,7 +374,7 @@ void PhysicsEngine::UpdatePhysics()
 	timer->beginChildTimedSection("Integrate Velocity");
 	for (PhysicsNode* obj : physicsNodes)
 	{
-		if (obj->getEnabled())
+		if (obj->GetEnabled())
 		{
 			obj->IntegrateForVelocity(updateTimestep);
 		}
@@ -392,7 +392,7 @@ void PhysicsEngine::UpdatePhysics()
 	timer->beginChildTimedSection("Integrate Position");
 	for (PhysicsNode* obj : physicsNodes) 
 	{
-		if (obj->getEnabled())
+		if (obj->GetEnabled())
 		{
 			obj->IntegrateForPosition(updateTimestep);
 		}

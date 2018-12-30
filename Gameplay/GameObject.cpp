@@ -4,7 +4,7 @@
 
 GameObject::GameObject()
 {
-	setSize(sizeof(*this));
+	SetSize(sizeof(*this));
 }
 
 GameObject::~GameObject()
@@ -20,29 +20,29 @@ GameObject::~GameObject()
 	}
 }
 
-void GameObject::setSceneNode(SceneNode * sceneNode)
+void GameObject::SetSceneNode(SceneNode * sceneNode)
 {
 	this->sceneNode = sceneNode;
-	sceneNode->setParent(this);
-	sceneNode->takeLocalCopyOfMeshAnimations();
+	sceneNode->SetParent(this);
+	sceneNode->TakeLocalCopyOfMeshAnimations();
 }
 
-void GameObject::setPhysicsNode(PhysicsNode * physicsNode)
+void GameObject::SetPhysicsNode(PhysicsNode * physicsNode)
 {
 	this->physicsNode = physicsNode;
 }
 
-SceneNode * GameObject::getSceneNode()
+SceneNode * GameObject::GetSceneNode()
 {
 	return sceneNode;
 }
 
-PhysicsNode * GameObject::getPhysicsNode()
+PhysicsNode * GameObject::GetPhysicsNode()
 {
 	return physicsNode;
 }
 
-void GameObject::update(float dt)
+void GameObject::Update(float dt)
 {
 	if (stats.executeAfter)
 	{
@@ -60,7 +60,7 @@ void GameObject::update(float dt)
 	this->sceneNode->SetTransform(newTransform);
 }
 
-void GameObject::setPosition(NCLVector3 position)
+void GameObject::SetPosition(NCLVector3 position)
 {
 	this->position = position;
 	this->sceneNode->SetTransform(position);
@@ -71,7 +71,7 @@ void GameObject::setPosition(NCLVector3 position)
 	}
 }
 
-void GameObject::setRotation(NCLVector4 rotation)
+void GameObject::SetRotation(NCLVector4 rotation)
 {
 	NCLVector3 position = sceneNode->GetTransform().getPositionVector();
 	NCLVector3 scale = sceneNode->GetTransform().getScalingVector();
@@ -83,17 +83,17 @@ void GameObject::setRotation(NCLVector4 rotation)
 	
 	if (this->physicsNode != nullptr)
 	{
-		this->physicsNode->setRotation(rotation);
+		this->physicsNode->SetRotation(rotation);
 	}
 }
 
-void GameObject::setScale(NCLVector3 scale)
+void GameObject::SetScale(NCLVector3 scale)
 {
 	this->scale = scale;
 	this->sceneNode->SetModelScale(scale);
 	if (physicsNode != nullptr)
 	{
-		this->physicsNode->getCollisionShape()->setScale(scale, this->physicsNode->GetInverseMass());
+		this->physicsNode->GetCollisionShape()->SetScale(scale, this->physicsNode->GetInverseMass());
 	}
 	else
 	{
@@ -102,13 +102,13 @@ void GameObject::setScale(NCLVector3 scale)
 	
 }
 
-void GameObject::setEnabled(bool isEnabled)
+void GameObject::SetEnabled(bool isEnabled)
 {
 	this->isEnabled = isEnabled;
 	if (this->physicsNode != nullptr)
 	{
-		this->physicsNode->setEnabled(isEnabled);
+		this->physicsNode->SetEnabled(isEnabled);
 	}
 	
-	this->sceneNode->setEnabled(isEnabled);
+	this->sceneNode->SetEnabled(isEnabled);
 }

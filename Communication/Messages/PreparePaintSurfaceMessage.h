@@ -11,7 +11,7 @@ public:
 	PreparePaintSurfaceMessage(const std::string& desinationName, std::vector<std::string> surfaceObjectIdentifiers);
 	~PreparePaintSurfaceMessage();
 
-	static PreparePaintSurfaceMessage builder(Node* node);
+	static PreparePaintSurfaceMessage Builder(Node* node);
 
 	std::vector<std::string> surfaceObjectIdentifiers;
 };

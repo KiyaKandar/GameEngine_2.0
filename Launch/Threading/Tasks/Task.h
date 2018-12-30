@@ -8,8 +8,7 @@ public:
 
 	virtual ~Task() = default;
 
-	virtual void execute() = 0;
+	virtual void Execute() = 0;
 
 	Task& operator=(Task&& other) = default;
 };
-

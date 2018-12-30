@@ -4,12 +4,12 @@
 class UserInterfaceDisplay
 {
 public:
-	static UserInterfaceService* getInterface()
+	static UserInterfaceService* GetInterface()
 	{
 		return service;
 	}
 
-	static void provide(UserInterfaceService* newService)
+	static void Provide(UserInterfaceService* newService)
 	{
 		service = newService;
 	}

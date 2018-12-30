@@ -6,7 +6,7 @@ extern unsigned int TOTAL_NUM_THREADS = 0;
 ThreadPool::ThreadPool(const int numThreads)
 {
 	running = true;
-	initialiseWorkers(numThreads);
+	InitialiseWorkers(numThreads);
 }
 
 ThreadPool::ThreadPool()
@@ -16,48 +16,48 @@ ThreadPool::ThreadPool()
 	TOTAL_NUM_THREADS = std::thread::hardware_concurrency();
 	const int numThreads = TOTAL_NUM_THREADS - 1;
 
-	initialiseWorkers(numThreads);
+	InitialiseWorkers(numThreads);
 }
 
-int ThreadPool::getLocalThreadId()
+int ThreadPool::GetLocalThreadId()
 {
 	return LOCAL_THREAD_ID;
 }
 
-unsigned int ThreadPool::getTotalNumberOfThreads()
+unsigned int ThreadPool::GetTotalNumberOfThreads()
 {
 	return TOTAL_NUM_THREADS;
 }
 
-void ThreadPool::initialiseWorkers(int numWorkers)
+void ThreadPool::InitialiseWorkers(int numWorkers)
 {
 	for (int i = 0; i < numWorkers; ++i)
 	{
 		const int threadId = i + 1;
-		threads.emplace_back(&ThreadPool::spoolThreadToPollNewTasks, this, threadId);
+		threads.emplace_back(&ThreadPool::SpoolThreadToPollNewTasks, this, threadId);
 	}
 }
 
-void ThreadPool::spoolThreadToPollNewTasks(const int threadId)
+void ThreadPool::SpoolThreadToPollNewTasks(const int threadId)
 {
 	LOCAL_THREAD_ID = threadId;
 
-	while (running) 
+	while (running)
 	{
 		std::unique_ptr<Task> newTask = nullptr;
 
-		if (taskQueue.getAvailableTask(newTask)) 
+		if (taskQueue.GetAvailableTask(newTask))
 		{
-			newTask->execute();
+			newTask->Execute();
 		}
 	}
 }
 
-void ThreadPool::joinAllThreads()
+void ThreadPool::JoinAllThreads()
 {
-	for (auto& thread : threads) 
+	for (auto& thread : threads)
 	{
-		if (thread.joinable()) 
+		if (thread.joinable())
 		{
 			thread.join(); //Stop all threads.
 		}

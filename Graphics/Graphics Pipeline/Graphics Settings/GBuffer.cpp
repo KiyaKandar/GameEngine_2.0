@@ -33,32 +33,32 @@ GBuffer::~GBuffer()
 	glDeleteTextures(1, &gAlbedo);
 }
 
-void GBuffer::linkShaders()
+void GBuffer::LinkShaders()
 {
 	geometryPass->LinkProgram();
 }
 
-void GBuffer::regenerateShaders()
+void GBuffer::RegenerateShaders()
 {
 	geometryPass->Regenerate();
 }
 
-void GBuffer::initialise()
+void GBuffer::Initialise()
 {
-	initGBuffer();
-	initAttachments();
-	locateUniforms();
+	InitGBuffer();
+	InitAttachments();
+	LocateUniforms();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void GBuffer::apply()
+void GBuffer::Apply()
 {
 	//Render any geometry to GBuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	renderGeometry(nodesInFrame);
+	RenderGeometry(nodesInFrame);
 	
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -69,9 +69,9 @@ void GBuffer::apply()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void GBuffer::locateUniforms()
+void GBuffer::LocateUniforms()
 {
-	setCurrentShader(geometryPass);
+	SetCurrentShader(geometryPass);
 
 	loc_skybox = glGetUniformLocation(geometryPass->GetProgram(), "skybox");
 	loc_cameraPos = glGetUniformLocation(geometryPass->GetProgram(), "cameraPos");
@@ -83,7 +83,7 @@ void GBuffer::locateUniforms()
 	loc_perlin = glGetUniformLocation(geometryPass->GetProgram(), "perlin");
 }
 
-void GBuffer::initGBuffer()
+void GBuffer::InitGBuffer()
 {
 	GraphicsUtility::ClearGLErrorStack();
 
@@ -111,7 +111,7 @@ void GBuffer::initGBuffer()
 	GraphicsUtility::VerifyBuffer("GBuffer", false);
 }
 
-void GBuffer::initAttachments()
+void GBuffer::InitAttachments()
 {
 	//Tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
 	glDrawBuffers(3, attachments);
@@ -125,11 +125,11 @@ void GBuffer::initAttachments()
 	GraphicsUtility::VerifyBuffer("RBO Depth GBuffer", false);
 }
 
-void GBuffer::renderGeometry(std::vector<SceneNode*>* nodesInFrame)
+void GBuffer::RenderGeometry(std::vector<SceneNode*>* nodesInFrame)
 {
-	setCurrentShader(geometryPass);
-	viewMatrix = camera->buildViewMatrix();
-	updateShaderMatrices();
+	SetCurrentShader(geometryPass);
+	viewMatrix = camera->BuildViewMatrix();
+	UpdateShaderMatrices();
 	glUniformMatrix4fv(glGetUniformLocation(geometryPass->GetProgram(), "projMatrix"), 1, false, (float*)&CommonGraphicsData::SHARED_PROJECTION_MATRIX);
 	glUniform2fv(glGetUniformLocation(geometryPass->GetProgram(), "resolution"), 1, (float*)&resolution);
 
@@ -142,7 +142,7 @@ void GBuffer::renderGeometry(std::vector<SceneNode*>* nodesInFrame)
 	glUniform1i(glGetUniformLocation(geometryPass->GetProgram(), "perlinTex"), 7);
 	currentShader->ApplyTexture(7, noiseTexture);
 
-	glUniform3fv(loc_cameraPos, 1, (float*)&camera->getPosition());
+	glUniform3fv(loc_cameraPos, 1, (float*)&camera->GetPosition());
 	glActiveTexture(GL_TEXTURE8);
 	glUniform1i(loc_skybox, 8);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);

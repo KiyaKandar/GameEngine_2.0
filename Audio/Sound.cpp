@@ -17,9 +17,9 @@ Sound::Sound(std::string filePath)
 
 	if (extension == "wav") 
 	{
-		loadFromWAV(filePath);
+		LoadFromWav(filePath);
 		alGenBuffers(1, &buffer);
-		alBufferData(buffer, getOALFormat(), getData(), getSize(), (ALsizei)getFrequency());
+		alBufferData(buffer, GetOalFormat(), GetData(), GetSize(), (ALsizei)GetFrequency());
 	}
 	else
 	{
@@ -35,26 +35,26 @@ Sound::~Sound(void)
 	data = nullptr;
 }
 
-double	Sound::getLength() 
+double	Sound::GetLength() 
 {
 	return length;
 }
 
-ALenum Sound::getOALFormat()
+ALenum Sound::GetOalFormat()
 {
-	if (getBitRate() == 16) 
+	if (GetBitRate() == 16) 
 	{
-		return getChannels() == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
+		return GetChannels() == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
 	}
-	else if (getBitRate() == 8)
+	else if (GetBitRate() == 8)
 	{
-		return getChannels() == 2 ? AL_FORMAT_STEREO8 : AL_FORMAT_MONO8;
+		return GetChannels() == 2 ? AL_FORMAT_STEREO8 : AL_FORMAT_MONO8;
 	}
 
 	return AL_FORMAT_MONO8;
 }
 
-void	Sound::loadFromWAV(string filename) 
+void	Sound::LoadFromWav(string filename) 
 {
 	ifstream	file(filename.c_str(), ios::in | ios::binary);
 
@@ -69,7 +69,7 @@ void	Sound::loadFromWAV(string filename)
 
 	while (!file.eof()) 
 	{
-		loadWAVChunkInfo(file, chunkName, chunkSize);
+		LoadWavChunkInfo(file, chunkName, chunkSize);
 
 		if (chunkName == "RIFF") 
 		{
@@ -112,7 +112,7 @@ void	Sound::loadFromWAV(string filename)
 	file.close();
 }
 
-void	Sound::loadWAVChunkInfo(ifstream &file, string &name, unsigned int &size) 
+void	Sound::LoadWavChunkInfo(ifstream &file, string &name, unsigned int &size) 
 {
 	char chunk[4];
 	file.read((char*)&chunk, 4);

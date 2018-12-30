@@ -16,7 +16,7 @@ public:
 
 	TaskFuture(TaskFuture&& other) = default;
 
-	~TaskFuture() 
+	~TaskFuture()
 	{
 		//if (tFuture.valid())
 		//{

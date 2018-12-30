@@ -16,31 +16,31 @@ Wireframe::~Wireframe()
 	delete debugShader;
 }
 
-void Wireframe::linkShaders()
+void Wireframe::LinkShaders()
 {
 	debugShader->LinkProgram();
 }
 
-void Wireframe::initialise()
+void Wireframe::Initialise()
 {
 	
 }
 
-void Wireframe::apply()
+void Wireframe::Apply()
 {
 	GraphicsUtility::ClearGLErrorStack();
 	
-	setCurrentShader(debugShader);
+	SetCurrentShader(debugShader);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	GraphicsUtility::CheckGLError("");
-	NCLMatrix4 viewMatrix = camera->buildViewMatrix();
+	NCLMatrix4 viewMatrix = camera->BuildViewMatrix();
 	NCLMatrix4 viewProjMatrix = CommonGraphicsData::SHARED_PROJECTION_MATRIX * viewMatrix;
-	buildLinesFromSpheres();
+	BuildLinesFromSpheres();
 
 	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "viewProjMatrix"), 1, false, (float*)&viewProjMatrix);
 	
-	renderLines();
+	RenderLines();
 
 	GraphicsUtility::CheckGLError("");
 
@@ -48,12 +48,12 @@ void Wireframe::apply()
 	glEnable(GL_CULL_FACE);
 }
 
-void Wireframe::regenerateShaders()
+void Wireframe::RegenerateShaders()
 {
 	debugShader->Regenerate();
 }
 
-void Wireframe::addLine(NCLVector3 from, NCLVector3 to, NCLVector3 colour)
+void Wireframe::AddLine(NCLVector3 from, NCLVector3 to, NCLVector3 colour)
 {
 	linePoints.push_back(from);
 	linePoints.push_back(to);
@@ -61,22 +61,22 @@ void Wireframe::addLine(NCLVector3 from, NCLVector3 to, NCLVector3 colour)
 	lineColours.push_back(colour);
 }
 
-void Wireframe::addSphere(NCLVector3 position, float radius, NCLVector3 colour)
+void Wireframe::AddSphere(NCLVector3 position, float radius, NCLVector3 colour)
 {
 	spherePositions.push_back(position);
 	sphereColours.push_back(colour);
 	radii.push_back(radius);
 }
 
-void Wireframe::locateUniforms()
+void Wireframe::LocateUniforms()
 {
 }
 
-void Wireframe::buildLinesFromSpheres()
+void Wireframe::BuildLinesFromSpheres()
 {
 	for (int j = 0; j < (int)spherePositions.size(); ++j)
 	{
-		splitSphere(j);
+		SplitSphere(j);
 	}
 
 	sphereColours.clear();
@@ -84,7 +84,7 @@ void Wireframe::buildLinesFromSpheres()
 	radii.clear();
 }
 
-void Wireframe::splitSphere(int circleIndex)
+void Wireframe::SplitSphere(int circleIndex)
 {
 	for (int i = 0; i < STEP_COUNT; ++i)
 	{
@@ -97,15 +97,15 @@ void Wireframe::splitSphere(int circleIndex)
 		float starty = radii[circleIndex] * (float)sin(DegToRad(i * DIVISOR)) + spherePositions[circleIndex].y;
 		float endy = radii[circleIndex] * (float)sin(DegToRad((i + 1) * DIVISOR)) + spherePositions[circleIndex].y;
 
-		addLine(NCLVector3(startx, starty, spherePositions[circleIndex].z),
+		AddLine(NCLVector3(startx, starty, spherePositions[circleIndex].z),
 			NCLVector3(endx, endy, spherePositions[circleIndex].z), sphereColours[circleIndex]);
 
-		addLine(NCLVector3(spherePositions[circleIndex].x, starty, startz),
+		AddLine(NCLVector3(spherePositions[circleIndex].x, starty, startz),
 			NCLVector3(spherePositions[circleIndex].x, endy, endz), sphereColours[circleIndex]);
 	}
 }
 
-void Wireframe::renderLines()
+void Wireframe::RenderLines()
 {
 	if (!linePoints.empty())
 	{

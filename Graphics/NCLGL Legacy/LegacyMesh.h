@@ -10,9 +10,12 @@
 
 enum MeshBuffer
 {
-	VERTEX_BUFFER, COLOUR_BUFFER,
-	TEXTURE_BUFFER, TANGENT_BUFFER,
-	INDEX_BUFFER, NORMAL_BUFFER,
+	VERTEX_BUFFER,
+	COLOUR_BUFFER,
+	TEXTURE_BUFFER,
+	TANGENT_BUFFER,
+	INDEX_BUFFER,
+	NORMAL_BUFFER,
 	MAX_BUFFER
 };
 
@@ -22,40 +25,54 @@ public:
 	LegacyMesh(void);
 	virtual ~LegacyMesh(void);
 
-	virtual void	Draw(Shader& shader, NCLMatrix4& worldTransform);
-	static	LegacyMesh*	GenerateTriangle();
-	static	LegacyMesh*	GenerateQuad();
+	virtual void Draw(Shader& shader, NCLMatrix4& worldTransform);
+	static LegacyMesh* GenerateTriangle();
+	static LegacyMesh* GenerateQuad();
 
-	void	SetTexture(GLuint tex) { texture = tex; }
-	GLuint	GetTexture() { return texture; }
+	void SetTexture(GLuint tex)
+	{
+		texture = tex;
+	}
 
-	void	SetBumpMap(GLuint tex) { bumpTexture = tex; }
-	GLuint	GetBumpMap() { return bumpTexture; }
+	GLuint GetTexture() const
+	{
+		return texture;
+	}
 
-	void	SetColour(NCLVector4 newCol, LegacyMesh* m);
+	void SetBumpMap(GLuint tex)
+	{
+		bumpTexture = tex;
+	}
+
+	GLuint GetBumpMap() const
+	{
+		return bumpTexture;
+	}
+
+	void SetColour(NCLVector4 newCol, LegacyMesh* m) const;
 
 protected:
-	void		BufferData();
-	void		GenerateNormals();
+	void BufferData();
+	void GenerateNormals();
 
-	void		GenerateTangents();
-	NCLVector3		GenerateTangent(const NCLVector3 &a, const NCLVector3 &b,
-		const NCLVector3 &c, const NCLVector2 &ta,
-		const NCLVector2 &tb, const NCLVector2 &tc);
+	void GenerateTangents();
+	NCLVector3 GenerateTangent(const NCLVector3& a, const NCLVector3& b,
+		const NCLVector3& c, const NCLVector2& ta,
+		const NCLVector2& tb, const NCLVector2& tc) const;
 
-	GLuint		arrayObject;
-	GLuint		bufferObject[MAX_BUFFER];
-	GLuint		numVertices;
-	GLuint		type;
-	GLuint		texture;
-	GLuint		numIndices;
-	NCLVector2*	textureCoords;
+	GLuint arrayObject;
+	GLuint bufferObject[MAX_BUFFER];
+	GLuint numVertices;
+	GLuint type;
+	GLuint texture;
+	GLuint numIndices;
+	NCLVector2* textureCoords;
 
-	NCLVector3*	vertices;
-	NCLVector3*	normals;
-	NCLVector3*	tangents;
-	NCLVector4*	colours;
+	NCLVector3* vertices;
+	NCLVector3* normals;
+	NCLVector3* tangents;
+	NCLVector4* colours;
 
 	unsigned int* indices;
-	GLuint		bumpTexture;
+	GLuint bumpTexture;
 };

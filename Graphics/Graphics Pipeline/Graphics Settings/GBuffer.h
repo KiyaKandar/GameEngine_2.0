@@ -20,18 +20,18 @@ public:
 		Window* window, Camera* camera, std::vector<SceneNode*>* nodesInFrame);
 	virtual ~GBuffer();
 
-	void linkShaders() override;
-	void regenerateShaders() override;
+	void LinkShaders() override;
+	void RegenerateShaders() override;
 
-	void initialise() override;
-	void apply() override;
+	void Initialise() override;
+	void Apply() override;
 
-	GBufferData* getGBuffer() const
+	GBufferData* GetGBuffer() const
 	{
 		return SGBuffer;
 	}
 
-	void setReflectionTextureID(unsigned int newTextureID)
+	void SetReflectionTextureId(unsigned int newTextureID)
 	{
 		textureID = newTextureID;
 	}
@@ -44,11 +44,11 @@ public:
 	GLuint* paintTrailTexture;
 
 private:
-	void locateUniforms() override;
-	void initGBuffer();
-	void initAttachments();
+	void LocateUniforms() override;
+	void InitGBuffer();
+	void InitAttachments();
 
-	void renderGeometry(std::vector<SceneNode*>* nodesInFrame);
+	void RenderGeometry(std::vector<SceneNode*>* nodesInFrame);
 	void UploadSurfaceData(Mesh* mesh, SceneNode* node);
 
 	GLuint gPosition;

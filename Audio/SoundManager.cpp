@@ -14,7 +14,7 @@ const int UPWARDS_DIRECTION = 1;
 
 SoundManager::SoundManager(Database* database, Camera* camera)
 {
-	initialiseOpenAl();
+	InitialiseOpenAl();
 	createOALSources();
 
 	this->database = database;
@@ -36,7 +36,7 @@ SoundManager::~SoundManager()
 	alcCloseDevice(device);
 }
 
-void SoundManager::initialiseOpenAl()
+void SoundManager::InitialiseOpenAl()
 {
 	device = alcOpenDevice(NULL);
 
@@ -84,14 +84,14 @@ void SoundManager::AddNewSoundNode(PlaySoundMessage* message)
 		}
 		if (tempID != message->soundNodeIdentifier)
 		{
-			Sound* sound = static_cast<Sound*>(database->getTable("SoundObjects")->getResource(message->soundID));
-			soundNodes.push_back(SoundNode::builder(message, sound));
+			Sound* sound = static_cast<Sound*>(database->GetTable("SoundObjects")->GetResource(message->soundID));
+			soundNodes.push_back(SoundNode::Builder(message, sound));
 		}
 	}
 	else
 	{
-		Sound* sound = static_cast<Sound*>(database->getTable("SoundObjects")->getResource(message->soundID));
-		soundNodes.push_back(SoundNode::builder(message, sound));
+		Sound* sound = static_cast<Sound*>(database->GetTable("SoundObjects")->GetResource(message->soundID));
+		soundNodes.push_back(SoundNode::Builder(message, sound));
 	}
 }
 
@@ -111,89 +111,89 @@ void SoundManager::AddNewSoundNode(PlayMovingSoundMessage* message)
 		}
 		if (tempID != message->soundNodeIdentifier)
 		{
-			Sound* sound = static_cast<Sound*>(database->getTable("SoundObjects")->getResource(message->soundID));
-			soundNodes.push_back(SoundNode::builder(message, sound));
+			Sound* sound = static_cast<Sound*>(database->GetTable("SoundObjects")->GetResource(message->soundID));
+			soundNodes.push_back(SoundNode::Builder(message, sound));
 			if (message->isGlobal)
 			{
-				soundNodes.back().setMovingPosition(camera->getPersistentPosition());
+				soundNodes.back().SetMovingPosition(camera->GetPersistentPosition());
 			}
 			else
 			{
-				GameObject* gObj =  static_cast<GameObject*>(database->getTable("GameObjects")->getResource(message->gameObjectID));
-				soundNodes.back().setGameObject(gObj);
-				soundNodes.back().setPosition(gObj->getPosition());
+				GameObject* gObj =  static_cast<GameObject*>(database->GetTable("GameObjects")->GetResource(message->gameObjectID));
+				soundNodes.back().SetGameObject(gObj);
+				soundNodes.back().SetPosition(gObj->GetPosition());
 			}
 		}
 	}
 	else
 	{
-		Sound* sound = static_cast<Sound*>(database->getTable("SoundObjects")->getResource(message->soundID));
-		soundNodes.push_back(SoundNode::builder(message, sound));
+		Sound* sound = static_cast<Sound*>(database->GetTable("SoundObjects")->GetResource(message->soundID));
+		soundNodes.push_back(SoundNode::Builder(message, sound));
 		if (message->isGlobal)
 		{
-			soundNodes.back().setMovingPosition(camera->getPersistentPosition());
+			soundNodes.back().SetMovingPosition(camera->GetPersistentPosition());
 		}
 		else
 		{
-			GameObject* gObj = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(message->gameObjectID));
-			soundNodes.back().setGameObject(gObj);
-			soundNodes.back().setPosition(gObj->getPosition());
+			GameObject* gObj = static_cast<GameObject*>(database->GetTable("GameObjects")->GetResource(message->gameObjectID));
+			soundNodes.back().SetGameObject(gObj);
+			soundNodes.back().SetPosition(gObj->GetPosition());
 		}
 	}
 }
 
-void SoundManager::stopSoundNode(StopSoundMessage* message)
+void SoundManager::StopSoundNode(StopSoundMessage* message)
 {
 	for (unsigned int i = 0; i < soundNodes.size(); ++i)
 	{
 		if (soundNodes[i].identifier == message->soundNodeIdentifier)
 		{
 			soundNodes[i].enabled = false;
-			soundNodes[i].detachSource();
+			soundNodes[i].DetachSource();
 		}
 	}
 }
 
 
-void SoundManager::update(const float& deltaTime)
+void SoundManager::Update(const float& deltaTime)
 {
-	updateListenerToCameraPosition();
+	UpdateListenerToCameraPosition();
 
 	for (SoundNode& node : soundNodes)
 	{
 		if (deltaTime == 0.0f)
 		{
-			node.pauseSound();
+			node.PauseSound();
 		}
 		else
 		{
-			if(node.getState() == SoundState::PAUSED)
+			if(node.GetState() == SoundState::PAUSED)
 			{
-				node.unpauseSound();
+				node.UnpauseSound();
 			}
-			node.update(deltaTime);
+			node.Update(deltaTime);
 		}
 	}
 
-	cullNodes();
+	CullNodes();
 
 	if (soundNodes.size() <= OALSources.size())
 	{
-		attachSources(soundNodes.begin(), soundNodes.end());
+		AttachSources(soundNodes.begin(), soundNodes.end());
 	}
 	else
 	{
-		std::sort(soundNodes.begin(), soundNodes.end(), SoundNode::compareSourcesByPriority);
-		detachSources((soundNodes.begin() + (OALSources.size() + 1)), soundNodes.end());
-		attachSources((soundNodes.begin() + (OALSources.size() + 1)), soundNodes.end());
+		std::sort(soundNodes.begin(), soundNodes.end(), SoundNode::CompareSourcesByPriority);
+		DetachSources((soundNodes.begin() + (OALSources.size() + 1)), soundNodes.end());
+		AttachSources((soundNodes.begin() + (OALSources.size() + 1)), soundNodes.end());
 	}
 
-	removeSoundNodesFromSystem();
+	RemoveSoundNodesFromSystem();
 }
 
-void SoundManager::updateListenerToCameraPosition()
+void SoundManager::UpdateListenerToCameraPosition()
 {
-	listenerPosition = camera->getPosition();
+	listenerPosition = camera->GetPosition();
 
 	NCLVector3 orientation[2];
 
@@ -214,7 +214,7 @@ void SoundManager::updateListenerToCameraPosition()
 	alListenerfv(AL_ORIENTATION, listenerOri);
 }
 
-void SoundManager::cullNodes()
+void SoundManager::CullNodes()
 {
 	for (SoundNode& node : soundNodes)
 	{
@@ -222,48 +222,48 @@ void SoundManager::cullNodes()
 
 		if(!node.isMoving || (node.isMoving && !node.isGlobal))
 		{
-			distanceBetweenListenerAndSoundNode = (listenerPosition - node.getPosition()).length();
+			distanceBetweenListenerAndSoundNode = (listenerPosition - node.GetPosition()).length();
 		}
 		else if (node.isMoving && node.isGlobal)
 		{
-			distanceBetweenListenerAndSoundNode = (listenerPosition - *node.getMovingPosition()).length();
+			distanceBetweenListenerAndSoundNode = (listenerPosition - *node.GetMovingPosition()).length();
 		}
 
-		if (distanceBetweenListenerAndSoundNode > node.getRadius() || !node.hasSound() || node.getTimeLeft() < 0)
+		if (distanceBetweenListenerAndSoundNode > node.GetRadius() || !node.HasSound() || node.GetTimeLeft() < 0)
 		{
-			if (node.getIsLooping() || node.getTimeLeft() > 0)
+			if (node.GetIsLooping() || node.GetTimeLeft() > 0)
 			{
-				node.detachSource();
+				node.DetachSource();
 			}
 			else
 			{
 				node.enabled = false;
-				node.detachSource();
+				node.DetachSource();
 			}
 		}
 	}
 }
 
-void SoundManager::detachSources(std::vector<SoundNode>::iterator& from, std::vector<SoundNode>::iterator& to)
+void SoundManager::DetachSources(std::vector<SoundNode>::iterator& from, std::vector<SoundNode>::iterator& to)
 {
 	for (std::vector<SoundNode>::iterator i = from; i != to; ++i)
 	{
-		(*i).detachSource();
+		(*i).DetachSource();
 	}
 }
 
-void SoundManager::attachSources(std::vector<SoundNode>::iterator& from, std::vector<SoundNode>::iterator& to)
+void SoundManager::AttachSources(std::vector<SoundNode>::iterator& from, std::vector<SoundNode>::iterator& to)
 {
 	for (vector<SoundNode>::iterator i = from; i != to; ++i)
 	{
-		if (!(*i).getSource() && (*i).enabled)
+		if (!(*i).GetSource() && (*i).enabled)
 		{
-			(*i).attachSource(getOALSource());
+			(*i).AttachSource(GetOalSource());
 		}
 	}
 }
 
-OALSource* SoundManager::getOALSource()
+OALSource* SoundManager::GetOalSource()
 {
 	for (vector<OALSource*>::iterator i = OALSources.begin(); i != OALSources.end(); ++i)
 	{
@@ -276,11 +276,11 @@ OALSource* SoundManager::getOALSource()
 	return nullptr;
 }
 
-void SoundManager::removeSoundNodesFromSystem()
+void SoundManager::RemoveSoundNodesFromSystem()
 {
 	for (vector<SoundNode>::iterator i = soundNodes.begin(); i != soundNodes.end();)
 	{
-		if(!i->enabled && !i->getSource())
+		if(!i->enabled && !i->GetSource())
 		{
 			i = soundNodes.erase(i);
 		}
@@ -291,15 +291,15 @@ void SoundManager::removeSoundNodesFromSystem()
 	}
 }
 
-void SoundManager::clearSoundNodes()
+void SoundManager::ClearSoundNodes()
 {
 	for (SoundNode& s : soundNodes)
 	{
 		s.enabled = false;
-		s.detachSource();
+		s.DetachSource();
 	}
 
-	removeSoundNodesFromSystem();
+	RemoveSoundNodesFromSystem();
 }
 
 

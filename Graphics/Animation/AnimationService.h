@@ -10,7 +10,7 @@
 class AnimationService
 {
 public:
-	virtual void addAnimation(const std::string& animationName, const std::string& gameObjectId, Mesh* mesh, const aiAnimation* animation, const aiNode* rootNode,
+	virtual void AddAnimation(const std::string& animationName, const std::string& gameObjectId, Mesh* mesh, const aiAnimation* animation, const aiNode* rootNode,
 		const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo) = 0;
-	virtual void readAnimationStateForSceneNode(const std::string& meshName, std::vector<aiMatrix4x4>& animationStates) const = 0;
+	virtual void ReadAnimationStateForSceneNode(const std::string& meshName, std::vector<aiMatrix4x4>& animationStates) const = 0;
 };

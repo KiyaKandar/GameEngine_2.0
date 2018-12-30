@@ -18,29 +18,29 @@ public:
 	AnimationManager(Database* database, Keyboard* keyboard, Camera* camera);
 	~AnimationManager();
 
-	void updateNextFrame(const float& deltaTime) override;
+	void UpdateNextFrame(const float& deltaTime) override;
 
-	void queueAnimationPlay(Message* message);
-	void moveCameraWithAnimatedGameObject(Message* message);
+	void QueueAnimationPlay(Message* message);
+	void MoveCameraWithAnimatedGameObject(Message* message);
 
-	void addAnimation(const std::string& animationName, const std::string& gameObjectId, Mesh* mesh, const aiAnimation* animation,
+	void AddAnimation(const std::string& animationName, const std::string& gameObjectId, Mesh* mesh, const aiAnimation* animation,
 		const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo) override;
-	void clearAnimations();
+	void ClearAnimations();
 	
-	void readAnimationStateForSceneNode(const std::string& gameObjectId, std::vector<aiMatrix4x4>& animationStates) const override;
+	void ReadAnimationStateForSceneNode(const std::string& gameObjectId, std::vector<aiMatrix4x4>& animationStates) const override;
 
 private:
-	void updateActiveAnimationFrame(std::vector<ActiveAnimation>::iterator& animationIterator, const float deltaTime);
+	void UpdateActiveAnimationFrame(std::vector<ActiveAnimation>::iterator& animationIterator, const float deltaTime);
 	void TransformGameObject(std::vector<ActiveAnimation>::iterator& animationIterator);
-	void completeActiveAnimation(std::vector<ActiveAnimation>::iterator& animationIterator);
+	void CompleteActiveAnimation(std::vector<ActiveAnimation>::iterator& animationIterator);
 
-	void activateAnimationsInPlayQueue();
-	bool removeActiveAnimation(const size_t& gameObjectId, const size_t& animationId);
-	void beginPlayingAnimation(const size_t& gameObjectId, const size_t& animationId, 
+	void ActivateAnimationsInPlayQueue();
+	bool RemoveActiveAnimation(const size_t& gameObjectId, const size_t& animationId);
+	void BeginPlayingAnimation(const size_t& gameObjectId, const size_t& animationId, 
 		const AnimationParams& params, const QueuedAnimation& transition);
 
-	void toggleDrawingSkeletonIfKeyTriggered();
-	void drawActiveSkeleton(std::vector<ActiveAnimation>::iterator& animationIterator);
+	void ToggleDrawingSkeletonIfKeyTriggered();
+	void DrawActiveSkeleton(std::vector<ActiveAnimation>::iterator& animationIterator);
 
 	std::vector<QueuedAnimation> animationsToAddtoPlayQueue;
 	std::vector<ActiveAnimation> activeAnimations;

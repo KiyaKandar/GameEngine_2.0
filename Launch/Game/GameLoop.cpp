@@ -18,11 +18,11 @@ GameLoop::GameLoop(System* gameSystem, Database* database, Startup* startup)
 	engine = gameSystem;
 	this->database = database;
 
-	DeliverySystem::getPostman()->addDeliveryPoint("GameLoop");
+	DeliverySystem::GetPostman()->AddDeliveryPoint("GameLoop");
 	incomingMessages = MessageProcessor(std::vector<MessageType>{ MessageType::TEXT},
-		DeliverySystem::getPostman()->getDeliveryPoint("GameLoop"));
+		DeliverySystem::GetPostman()->GetDeliveryPoint("GameLoop"));
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::TEXT, [startup = startup, &quit = quit,
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::TEXT, [startup = startup, &quit = quit,
 		&deltaTimeMultiplier = deltaTimeMultiplier, &engine = engine](Message* message)
 	{
 		TextMessage* textMessage = static_cast<TextMessage*>(message);
@@ -39,27 +39,27 @@ GameLoop::GameLoop(System* gameSystem, Database* database, Startup* startup)
 		else if (tokens[0] == "Start")
 		{
 			engine->SynchroniseAndStopConcurrentSubsystems();
-			DeliverySystem::getPostman()->cancelOutgoingMessages();
-			DeliverySystem::getPostman()->cancelDeliveredMessages();
-			DeliverySystem::getPostman()->deleteAllTrackedSenders();
-			startup->switchLevel();
+			DeliverySystem::GetPostman()->CancelOutgoingMessages();
+			DeliverySystem::GetPostman()->CancelDeliveredMessages();
+			DeliverySystem::GetPostman()->DeleteAllTrackedSenders();
+			startup->SwitchLevel();
 			deltaTimeMultiplier = 1.0f;
 
 			if (tokens[1] == "True")
 			{
-				startup->beginOnlineLobby();
-				startup->loadLevel(tokens[2], true);
+				startup->BeginOnlineLobby();
+				startup->LoadLevel(tokens[2], true);
 			}
 			else
 			{
-				engine->removeSubsystem("NetworkClient");
-				startup->loadLevel(tokens[2], false);
+				engine->RemoveSubsystem("NetworkClient");
+				startup->LoadLevel(tokens[2], false);
 			}
 
-			startup->setupMeshes();
-			startup->startUserInterface();
+			startup->SetupMeshes();
+			startup->StartUserInterface();
 
-			XMLParser::deleteAllParsedXML();
+			XMLParser::DeleteAllParsedXml();
 			engine->StartConcurrentSubsystems();
 		}
 		else if (tokens[0] == "deltatime")
@@ -80,33 +80,33 @@ GameLoop::~GameLoop()
 {
 }
 
-void GameLoop::executeGameLoop()
+void GameLoop::ExecuteGameLoop()
 {
-	camera->setPitch(24.0f);
-	camera->setYaw(-133.0f);
+	camera->SetPitch(24.0f);
+	camera->SetYaw(-133.0f);
 
 	engine->StartConcurrentSubsystems();
 
-	while (window->updateWindow() && !quit)
+	while (window->UpdateWindow() && !quit)
 	{
-		engine->updateNextSystemFrame();
-		incomingMessages.processMessagesInBuffer();
+		engine->UpdateNextSystemFrame();
+		incomingMessages.ProcessMessagesInBuffer();
 		
-		updateGameObjects(loopTimer->getTimeSinceLastRetrieval() * deltaTimeMultiplier);
+		UpdateGameObjects(loopTimer->getTimeSinceLastRetrieval() * deltaTimeMultiplier);
 	}
 }
 
-void GameLoop::updateGameObjects(float deltaTime)
+void GameLoop::UpdateGameObjects(float deltaTime) const
 {
-	auto gameObjectResources = database->getTable("GameObjects")->getAllResources()->getResourceBuffer();
+	auto gameObjectResources = database->GetTable("GameObjects")->GetAllResources()->GetResourceBuffer();
 
 	for (auto gameObjectIterator = gameObjectResources.begin(); gameObjectIterator != gameObjectResources.end(); ++gameObjectIterator)
 	{
 		GameObject* gObj = static_cast<GameObject*>((*gameObjectIterator).second);
 
-		if (gObj->getPhysicsNode() != nullptr)
+		if (gObj->GetPhysicsNode() != nullptr)
 		{
-			gObj->update(deltaTime);
+			gObj->Update(deltaTime);
 		}
 	}
 }

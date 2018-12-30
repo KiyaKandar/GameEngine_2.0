@@ -8,7 +8,7 @@ public:
 	explicit GamePadRecorder(Gamepad* gamePad);
 	~GamePadRecorder();
 
-	void  fillInputs() override;
+	void FillInputs() override;
 
 private:
 	Gamepad* gamepad;

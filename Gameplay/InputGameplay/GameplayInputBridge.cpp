@@ -1,11 +1,11 @@
 #include "GameplayInputBridge.h"
 
-void GameplayInputBridge::addInputActionMapForPlayer(const InputActionMap& mapping)
+void GameplayInputBridge::AddInputActionMapForPlayer(const InputActionMap& mapping)
 {
-	actionsForEachPlayer.insert({mapping.getAssociatedPlayerID(), mapping});
+	actionsForEachPlayer.insert({mapping.GetAssociatedPlayerId(), mapping});
 }
 
-void GameplayInputBridge::processPlayerInputMessage(const PlayerInputMessage& message)
+void GameplayInputBridge::ProcessPlayerInputMessage(const PlayerInputMessage& message)
 {
-	actionsForEachPlayer.at(message.player->getPlayerID()).executeAction(message.data.key, message.player);
+	actionsForEachPlayer.at(message.player->getPlayerID()).ExecuteAction(message.data.key, message.player);
 }

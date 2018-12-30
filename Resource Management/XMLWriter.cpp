@@ -21,31 +21,31 @@ XMLWriter::~XMLWriter()
 {
 }
 
-void XMLWriter::saveLevelFile(std::string levelName)
+void XMLWriter::SaveLevelFile(std::string levelName)
 {
-	createFolder((LEVELDIR + levelName).c_str());
+	CreateFolder((LEVELDIR + levelName).c_str());
 
 	rapidxml::xml_document<> levelFile;
 	rapidxml::xml_node<>* root = levelFile.allocate_node(rapidxml::node_element, "Level");
 	levelFile.append_node(root);
 
 	std::string s = levelName + "/Meshes.xml";
-	saveMeshFile(s);
+	SaveMeshFile(s);
 	rapidxml::xml_node<>* fileNode = levelFile.allocate_node(rapidxml::node_element, "File", s.c_str());
 	root->append_node(fileNode);
 
 	std::string s1 = levelName + "/Details.xml";
-	saveLevelDetails(s1);
+	SaveLevelDetails(s1);
 	rapidxml::xml_node<>* fileNode1 = levelFile.allocate_node(rapidxml::node_element, "File", s1.c_str());
 	root->append_node(fileNode1);
 
 	std::string s2 = levelName + "/Sounds.xml";
-	saveSoundsFile(s2);
+	SaveSoundsFile(s2);
 	rapidxml::xml_node<>* fileNode2 = levelFile.allocate_node(rapidxml::node_element, "File", s2.c_str());
 	root->append_node(fileNode2);
 
 	std::string s3 = levelName + "/Lights.xml";
-	saveLightsFile(s3);
+	SaveLightsFile(s3);
 	rapidxml::xml_node<>* fileNode3 = levelFile.allocate_node(rapidxml::node_element, "File", s3.c_str());
 	root->append_node(fileNode3);
 
@@ -65,7 +65,7 @@ void XMLWriter::saveLevelFile(std::string levelName)
 		gameplayNode->append_node(gameplayFileNode);
 	}
 
-	std::vector<GameObjectLogic>* objectLogics = gameplay->getGameObjectLogics();
+	std::vector<GameObjectLogic>* objectLogics = gameplay->GetGameObjectLogics();
 
 	if (objectLogics->size() > 0)
 	{
@@ -75,7 +75,7 @@ void XMLWriter::saveLevelFile(std::string levelName)
 
 		for (size_t i = 0; i < objectLogics->size(); ++i)
 		{
-			objectLogicFiles.push_back((*objectLogics)[i].getScriptFile());
+			objectLogicFiles.push_back((*objectLogics)[i].GetScriptFile());
 			rapidxml::xml_node<>* gameLogicFileNode = levelFile.allocate_node(rapidxml::node_element, "File", objectLogicFiles[i].c_str());
 			gameLogicNode->append_node(gameLogicFileNode);
 		}
@@ -87,18 +87,18 @@ void XMLWriter::saveLevelFile(std::string levelName)
 	levelFile.clear();
 }
 
-void XMLWriter::createFolder(const char* path)
+void XMLWriter::CreateFolder(const char* path)
 {
 	CreateDirectory(path, NULL);
 }
 
-void XMLWriter::saveMeshFile(std::string meshFileName)
+void XMLWriter::SaveMeshFile(std::string meshFileName)
 {
 	rapidxml::xml_document<> meshFile;
 	rapidxml::xml_node<>* root = meshFile.allocate_node(rapidxml::node_element, "LevelMeshes");
 	meshFile.append_node(root);
 
-	auto meshes = database->getTable("Meshes")->getAllResources()->getResourceBuffer();
+	auto meshes = database->GetTable("Meshes")->GetAllResources()->GetResourceBuffer();
 
 	std::vector<std::string> meshNames;
 	std::vector<std::string> meshFileNames;
@@ -106,7 +106,7 @@ void XMLWriter::saveMeshFile(std::string meshFileName)
 
 	for (auto meshIterator = meshes.begin(); meshIterator != meshes.end(); ++meshIterator)
 	{
-		meshNames.push_back((*meshIterator).second->getName());
+		meshNames.push_back((*meshIterator).second->GetName());
 
 		Mesh* mesh = static_cast<Mesh*>((*meshIterator).second);
 		meshFileNames.push_back(mesh->file);
@@ -143,20 +143,20 @@ void XMLWriter::saveMeshFile(std::string meshFileName)
 	meshFile.clear();
 }
 
-void XMLWriter::saveSoundsFile(std::string soundFileName)
+void XMLWriter::SaveSoundsFile(std::string soundFileName)
 {
 	rapidxml::xml_document<> soundFile;
 	rapidxml::xml_node<>* root = soundFile.allocate_node(rapidxml::node_element, "LevelSounds");
 	soundFile.append_node(root);
 
-	auto sounds = database->getTable("SoundObjects")->getAllResources()->getResourceBuffer();
+	auto sounds = database->GetTable("SoundObjects")->GetAllResources()->GetResourceBuffer();
 
 	std::vector<std::string> soundObjectNames;
 	std::vector<std::string> soundFiles;
 
 	for (auto soundIterator = sounds.begin(); soundIterator != sounds.end(); ++soundIterator)
 	{
-		soundObjectNames.push_back((*soundIterator).second->getName());
+		soundObjectNames.push_back((*soundIterator).second->GetName());
 
 		Sound* sound = static_cast<Sound*>((*soundIterator).second);
 		soundFiles.push_back(sound->getSoundFile());
@@ -175,9 +175,9 @@ void XMLWriter::saveSoundsFile(std::string soundFileName)
 	soundFile.clear();
 }
 
-void XMLWriter::saveLightsFile(std::string lightsFileName)
+void XMLWriter::SaveLightsFile(std::string lightsFileName)
 {
-	const LevelLightsState state = getLightsState();
+	const LevelLightsState state = GetLightsState();
 
 	rapidxml::xml_document<> levelLights;
 	rapidxml::xml_node<>* root = levelLights.allocate_node(rapidxml::node_element, "LevelLights");
@@ -226,9 +226,9 @@ void XMLWriter::saveLightsFile(std::string lightsFileName)
 	levelLights.clear();
 }
 
-void XMLWriter::saveLevelDetails(std::string levelDetailsFile)
+void XMLWriter::SaveLevelDetails(std::string levelDetailsFile)
 {
-	const LevelGameObjectsState state = getGameObjectStates();
+	const LevelGameObjectsState state = GetGameObjectStates();
 
 	rapidxml::xml_document<> levelDetails;
 	rapidxml::xml_node<>* root = levelDetails.allocate_node(rapidxml::node_element, "LevelDetails");
@@ -342,9 +342,9 @@ void XMLWriter::saveLevelDetails(std::string levelDetailsFile)
 	levelDetails.clear();
 }
 
-LevelGameObjectsState XMLWriter::getGameObjectStates()
+LevelGameObjectsState XMLWriter::GetGameObjectStates()
 {
-	auto gameObjects = database->getTable("GameObjects")->getAllResources()->getResourceBuffer();
+	auto gameObjects = database->GetTable("GameObjects")->GetAllResources()->GetResourceBuffer();
 
 	LevelGameObjectsState state;
 
@@ -353,26 +353,26 @@ LevelGameObjectsState XMLWriter::getGameObjectStates()
 		GameObject* gameObject = static_cast<GameObject*>((*gameObjectIterator).second);
 
 		state.gameObjectNames.push_back((*gameObjectIterator).first);
-		state.gameObjectMeshNames.push_back(gameObject->getSceneNode()->GetMesh()->getName());
+		state.gameObjectMeshNames.push_back(gameObject->GetSceneNode()->GetMesh()->GetName());
 
 		state.gameObjectColours.push_back(std::array<std::string, 4>
 		{
-			std::to_string(gameObject->getSceneNode()->getColour().x),
-			std::to_string(gameObject->getSceneNode()->getColour().y),
-			std::to_string(gameObject->getSceneNode()->getColour().z),
-			std::to_string(gameObject->getSceneNode()->getColour().w)
+			std::to_string(gameObject->GetSceneNode()->getColour().x),
+			std::to_string(gameObject->GetSceneNode()->getColour().y),
+			std::to_string(gameObject->GetSceneNode()->getColour().z),
+			std::to_string(gameObject->GetSceneNode()->getColour().w)
 		});
 
 		state.gameObjectScales.push_back(std::array<std::string, 3>
 		{
-			std::to_string(gameObject->getScale().x),
-			std::to_string(gameObject->getScale().y),
-			std::to_string(gameObject->getScale().z)
+			std::to_string(gameObject->GetScale().x),
+			std::to_string(gameObject->GetScale().y),
+			std::to_string(gameObject->GetScale().z)
 		});
 
-		if (gameObject->getPhysicsNode() != nullptr)
+		if (gameObject->GetPhysicsNode() != nullptr)
 		{
-			PhysicsNode* physicsNode = gameObject->getPhysicsNode();
+			PhysicsNode* physicsNode = gameObject->GetPhysicsNode();
 
 			state.gameObjectPositions.push_back(std::array<std::string, 3>
 			{
@@ -393,7 +393,7 @@ LevelGameObjectsState XMLWriter::getGameObjectStates()
 
 			state.hasPhysicsNode.push_back(true);
 
-			if (physicsNode->getEnabled())
+			if (physicsNode->GetEnabled())
 			{
 				state.physicsNodeEnabled.push_back("True");
 			}
@@ -414,7 +414,7 @@ LevelGameObjectsState XMLWriter::getGameObjectStates()
 			state.collisionShapes.push_back(physicsNode->collisionShapeType);
 			state.mass.push_back(std::to_string(physicsNode->GetInverseMass()));
 
-			if (physicsNode->getIsCollision())
+			if (physicsNode->GetIsCollision())
 			{
 				state.isCollision.push_back("True");
 			}
@@ -426,9 +426,9 @@ LevelGameObjectsState XMLWriter::getGameObjectStates()
 			state.elasticity.push_back(std::to_string(physicsNode->GetElasticity()));
 
 			state.friction.push_back(std::to_string(physicsNode->GetFriction()));
-			state.damping.push_back(std::to_string(physicsNode->getDamping()));
+			state.damping.push_back(std::to_string(physicsNode->GetDamping()));
 
-			if (physicsNode->getIsStatic())
+			if (physicsNode->GetIsStatic())
 			{
 				state.isStatic.push_back("True");
 			}
@@ -441,17 +441,17 @@ LevelGameObjectsState XMLWriter::getGameObjectStates()
 		{
 			state.gameObjectPositions.push_back(std::array<std::string, 3>
 			{
-				std::to_string(gameObject->getSceneNode()->GetTransform().getPositionVector().x),
-				std::to_string(gameObject->getSceneNode()->GetTransform().getPositionVector().y),
-				std::to_string(gameObject->getSceneNode()->GetTransform().getPositionVector().z)
+				std::to_string(gameObject->GetSceneNode()->GetTransform().getPositionVector().x),
+				std::to_string(gameObject->GetSceneNode()->GetTransform().getPositionVector().y),
+				std::to_string(gameObject->GetSceneNode()->GetTransform().getPositionVector().z)
 			});
 
 			state.gameObjectRotations.push_back(std::array<std::string, 4>
 			{
-				std::to_string(gameObject->getSceneNode()->axisAngleRotation.x),
-				std::to_string(gameObject->getSceneNode()->axisAngleRotation.y),
-				std::to_string(gameObject->getSceneNode()->axisAngleRotation.z),
-				std::to_string(gameObject->getSceneNode()->axisAngleRotation.w)
+				std::to_string(gameObject->GetSceneNode()->axisAngleRotation.x),
+				std::to_string(gameObject->GetSceneNode()->axisAngleRotation.y),
+				std::to_string(gameObject->GetSceneNode()->axisAngleRotation.z),
+				std::to_string(gameObject->GetSceneNode()->axisAngleRotation.w)
 			});
 
 			state.hasPhysicsNode.push_back(false);
@@ -461,9 +461,9 @@ LevelGameObjectsState XMLWriter::getGameObjectStates()
 	return state;
 }
 
-LevelLightsState XMLWriter::getLightsState()
+LevelLightsState XMLWriter::GetLightsState()
 {
-	auto lights = database->getTable("Lights")->getAllResources()->getResourceBuffer();
+	auto lights = database->GetTable("Lights")->GetAllResources()->GetResourceBuffer();
 
 	LevelLightsState state;
 
@@ -471,7 +471,7 @@ LevelLightsState XMLWriter::getLightsState()
 	{
 		Light* light = static_cast<Light*>((*lightsIterator).second);
 
-		state.lightNames.push_back(light->getName());
+		state.lightNames.push_back(light->GetName());
 
 		state.lightPositions.push_back(std::array<std::string, 3>
 		{

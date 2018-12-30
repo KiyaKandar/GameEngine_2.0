@@ -14,22 +14,22 @@ public:
 
 	}
 
-	void setMessage(const MessageType& newMessage)
+	void SetMessage(const MessageType& newMessage)
 	{
 		message = newMessage;
 		message.senderAvailable = &lastSentMessageProcessed;
 	}
 
-	void sendMessage()
+	void SendTrackedMessage()
 	{
 		if (lastSentMessageProcessed)
 		{
 			lastSentMessageProcessed = false;
-			DeliverySystem::getPostman()->insertMessage(message);
+			DeliverySystem::GetPostman()->InsertMessage(message);
 		}
 	}
 
-	bool readyToSendNextMessage() const
+	bool ReadyToSendNextMessage() const
 	{
 		return lastSentMessageProcessed;
 	}

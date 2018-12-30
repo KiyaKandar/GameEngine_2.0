@@ -7,10 +7,10 @@
 class UserInterfaceService
 {
 public:
-	virtual std::vector<Button*>* getAllButtonsInMenu() = 0;
-	virtual void moveSelectedDown() = 0;
-	virtual void moveSelectedUp() = 0;
-	virtual void moveSelectedLeft() = 0;
+	virtual std::vector<Button*>* GetAllButtonsInMenu() = 0;
+	virtual void MoveSelectedDown() = 0;
+	virtual void MoveSelectedUp() = 0;
+	virtual void MoveSelectedLeft() = 0;
 	virtual void ExecuteSelectedButton() = 0;
 };
 

@@ -23,42 +23,42 @@ public:
 		int sizeX = 800, int sizeY = 600, bool fullScreen = false);
 	~Window(void);
 
-	bool	updateWindow();
+	bool UpdateWindow();
 
-	HWND	getHandle();
+	HWND GetHandle();
 
-	bool	hasInitialised();
+	bool HasInitialised();
 
-	void	lockMouseToWindow(bool lock);
-	void	showOSPointer(bool show);
+	void LockMouseToWindow(bool lock);
+	void ShowOsPointer(bool show);
 
-	NCLVector2	getScreenSize() { return size; };
+	NCLVector2 GetScreenSize() { return size; };
 
-	static Keyboard*	getKeyboard() { return keyboard; }
-	static Mouse*		getMouse() { return mouse; }
+	static Keyboard* GetKeyboard() { return keyboard; }
+	static Mouse* GetMouse() { return mouse; }
 
 
 protected:
-	void	checkMessages(MSG &msg);
+	void CheckMessages(MSG &msg);
 	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-	HWND			windowHandle;
+	HWND windowHandle;
 
-	static Window*		window;
-	static Keyboard*	keyboard;
-	static Mouse*		mouse;
+	static Window* window;
+	static Keyboard* keyboard;
+	static Mouse* mouse;
 
-	bool				forceQuit;
-	bool				init;
-	bool				fullScreen;
-	bool				lockMouse;
-	bool				showMouse;
+	bool forceQuit;
+	bool init;
+	bool fullScreen;
+	bool lockMouse;
+	bool showMouse;
 
-	NCLVector2				position;
-	NCLVector2				size;
+	NCLVector2 position;
+	NCLVector2 size;
 
-	float elapsedMS;
-	GameTimer*	timer;
+	float elapsedMs;
+	GameTimer* timer;
 
-	bool				mouseLeftWindow;
+	bool mouseLeftWindow;
 };

@@ -15,24 +15,24 @@ public:
 	SoundManager(Database *database, Camera *camera);
 	~SoundManager();
 
-	void update(const float& deltaTime);
+	void Update(const float& deltaTime);
 	void AddNewSoundNode(PlaySoundMessage* message);
 	void AddNewSoundNode(PlayMovingSoundMessage* message);
-	void stopSoundNode(StopSoundMessage* message);
+	void StopSoundNode(StopSoundMessage* message);
 
-	void clearSoundNodes();
+	void ClearSoundNodes();
 
 private:
-	void initialiseOpenAl();
+	void InitialiseOpenAl();
 	void createOALSources();
 
-	OALSource* getOALSource();
+	OALSource* GetOalSource();
 	
-	void updateListenerToCameraPosition();
-	void cullNodes();
-	void detachSources(std::vector<SoundNode>::iterator& from, std::vector<SoundNode>::iterator& to);
-	void attachSources(std::vector<SoundNode>::iterator& from, std::vector<SoundNode>::iterator& to);
-	void removeSoundNodesFromSystem();
+	void UpdateListenerToCameraPosition();
+	void CullNodes();
+	void DetachSources(std::vector<SoundNode>::iterator& from, std::vector<SoundNode>::iterator& to);
+	void AttachSources(std::vector<SoundNode>::iterator& from, std::vector<SoundNode>::iterator& to);
+	void RemoveSoundNodesFromSystem();
 
 	ALCcontext* context;
 	ALCdevice* device;

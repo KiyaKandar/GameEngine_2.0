@@ -19,7 +19,7 @@ ToggleGameObjectMessage::~ToggleGameObjectMessage()
 {
 }
 
-ToggleGameObjectMessage ToggleGameObjectMessage::builder(Node* node)
+ToggleGameObjectMessage ToggleGameObjectMessage::Builder(Node* node)
 {
 	std::string destination = "";
 	std::string object = "";

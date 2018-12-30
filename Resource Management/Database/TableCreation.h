@@ -10,14 +10,14 @@ public:
 	explicit TableCreation(Database* database);
 	~TableCreation();
 
-	void addTablesToDatabase() const;
+	void AddTablesToDatabase() const;
 
 private:
-	void addGameObjectsTable() const;
-	void addMeshesTable() const;
-	void addUIMeshTable() const;
-	void addSoundsTable() const;
-	void addLightsTable() const;
+	void AddGameObjectsTable() const;
+	void AddMeshesTable() const;
+	void AddUiMeshTable() const;
+	void AddSoundsTable() const;
+	void AddLightsTable() const;
 
 	std::vector<std::function<void()>> tableAdditions;
 	Database* database;

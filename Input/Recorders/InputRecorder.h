@@ -55,15 +55,15 @@ public:
 	InputRecorder() {}
 	~InputRecorder() {}
 
-	virtual void fillInputs() = 0;
-	virtual void clearInputs();
+	virtual void FillInputs() = 0;
+	virtual void ClearInputs();
 
-	std::vector<ButtonInputData> const getInputs();
-	std::vector<int> const getKeysToListen();
+	std::vector<ButtonInputData> const GetInputs();
+	std::vector<int> const GetKeysToListen();
 	
-	void addKeysToListen(std::vector<int> keysToListen);
-	void removeListenedKey(int key);//TODO
-	void addKeyToListen(int key);
+	void AddKeysToListen(std::vector<int> keysToListen);
+	void RemoveListenedKey(int key);//TODO
+	void AddKeyToListen(int key);
 
 protected:
 	std::vector<ButtonInputData> currentButtonInputs;

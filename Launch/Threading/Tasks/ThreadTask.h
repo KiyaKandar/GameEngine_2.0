@@ -13,11 +13,11 @@ public:
 		function = move(func); //Speed things up a bit...
 	}
 
-	ThreadTask(ThreadTask&& other)	= default;
+	ThreadTask(ThreadTask&& other) = default;
 
 	~ThreadTask() override = default;
 
-	void execute() override 
+	void Execute() override
 	{
 		function();
 	}
@@ -26,4 +26,3 @@ public:
 private:
 	Function function;
 };
-

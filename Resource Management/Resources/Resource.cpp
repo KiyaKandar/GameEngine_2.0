@@ -16,22 +16,22 @@ Resource::~Resource()
 {
 }
 
-std::string Resource::getName()
+std::string Resource::GetName()
 {
 	return name;
 }
 
-void Resource::setName(std::string newName)
+void Resource::SetName(std::string newName)
 {
 	name = newName;
 }
 
-size_t Resource::getSize()
+size_t Resource::GetSize()
 {
 	return size;
 }
 
-void Resource::setSize(size_t newSize)
+void Resource::SetSize(size_t newSize)
 {
 	size = newSize;
 }

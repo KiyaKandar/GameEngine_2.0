@@ -15,11 +15,11 @@ public:
 	GameObjectLogic(Database* database, std::string script);
 	~GameObjectLogic();
 
-	void compileParsedXMLIntoScript();
-	void notify(const std::string& messageType, Message* message, std::string gameObject = "");
-	void updatelogic(const float& deltaTime);
+	void CompileParsedXmlIntoScript();
+	void Notify(const std::string& messageType, Message* message, std::string gameObject = "");
+	void Updatelogic(const float& deltaTime);
 	
-	std::string getScriptFile()
+	std::string GetScriptFile()
 	{
 		return scriptFile;
 	}
@@ -27,12 +27,12 @@ public:
 	std::vector<GameLogic> logics;
 
 private:
-	void compileGameLogic(Node* gameLogicNode, const std::vector<Node*>& resources);
-	void compilePaintGameLogic(Node* paintGameNode, const std::vector<Node*>& resources);
-	void compileLogicFromNodes(Node* logicNode, const std::vector<Node*>& resources);
+	void CompileGameLogic(Node* gameLogicNode, const std::vector<Node*>& resources);
+	void CompilePaintGameLogic(Node* paintGameNode, const std::vector<Node*>& resources);
+	void CompileLogicFromNodes(Node* logicNode, const std::vector<Node*>& resources);
 
-	void changeResource(Node** node, std::string id);
-	void changeResourceBack(Node** node, std::string id);
+	void ChangeResource(Node** node, std::string id);
+	void ChangeResourceBack(Node** node, std::string id);
 
 	std::string scriptFile;
 	Node* parsedScript;

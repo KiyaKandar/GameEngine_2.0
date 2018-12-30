@@ -14,8 +14,8 @@ public:
 		bool isEnabled);
 	~ToggleGameObjectMessage();
 
-	static ToggleGameObjectMessage builder(Node* node);
-	static ToggleGameObjectMessage tokensToMessage(std::vector<std::string> lineTokens);
+	static ToggleGameObjectMessage Builder(Node* node);
+	static ToggleGameObjectMessage TokensToMessage(std::vector<std::string> lineTokens);
 	static bool ToggleGameObjectMessage::stob(std::string str);
 	std::string gameObjectID;
 	bool isEnabled;

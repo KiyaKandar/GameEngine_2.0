@@ -22,4 +22,3 @@ protected:
 	size_t maxUsage;
 	size_t currentUsage;
 };
-

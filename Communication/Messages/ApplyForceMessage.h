@@ -12,8 +12,8 @@ public:
 		float zmin = 0.0f, float zmax = 0.0f);
 	~ApplyForceMessage();
 
-	static ApplyForceMessage builder(Node* node);
-	static ApplyForceMessage tokensToMessage(std::vector<std::string> lineTokens);
+	static ApplyForceMessage Builder(Node* node);
+	static ApplyForceMessage TokensToMessage(std::vector<std::string> lineTokens);
 
 	std::string gameObjectID;
 	bool isRandom;

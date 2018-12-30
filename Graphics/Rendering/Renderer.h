@@ -19,26 +19,26 @@ public:
 	Renderer(GameTimer* parentTimer, Window* window, Camera* camera);
 	~Renderer();
 
-	void renderLoadingScreen(const float& deltatime);
+	void RenderLoadingScreen(const float& deltatime);
 
-	void initialise(SceneManager* sceneManager, Database* database);
-	void update(const float& deltatime);
+	void Initialise(SceneManager* sceneManager, Database* database);
+	void Update(const float& deltatime);
 
-	void addSceneNode(SceneNode* sceneNode);
-	void removeSceneNodeByResourceName(std::string resourcename);
+	void AddSceneNode(SceneNode* sceneNode);
+	void RemoveSceneNodeByResourceName(std::string resourcename);
 
-	void toggleModule(const std::string& moduleName, bool enabled);
-	GraphicsModule* getGraphicsModule(const std::string& moduleName);
+	void ToggleModule(const std::string& moduleName, bool enabled);
+	GraphicsModule* GetGraphicsModule(const std::string& moduleName);
 
-	GraphicsPipeline* getPipeLine() { return &pipeline; }
-	SceneManager* getSceneManager()
+	GraphicsPipeline* GetPipeLine() { return &pipeline; }
+	SceneManager* GetSceneManager()
 	{
 		return sceneManager;
 	}
 
 private:
-	void updateScene(const float& msec) override;
-	void renderScene() override;
+	void UpdateScene(const float& msec) override;
+	void RenderScene() override;
 
 	GraphicsPipeline pipeline;
 	PipelineConfiguration graphicsConfig;

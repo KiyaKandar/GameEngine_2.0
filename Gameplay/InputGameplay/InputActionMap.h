@@ -14,10 +14,10 @@ public:
 	explicit InputActionMap(const int& playerID);
 	~InputActionMap();
 
-	void attachKeyToAction(const int& key, PlayerAction action);
-	void executeAction(const int& key, Player* player);
+	void AttachKeyToAction(const int& key, PlayerAction action);
+	void ExecuteAction(const int& key, Player* player);
 
-	const int getAssociatedPlayerID() const
+	const int GetAssociatedPlayerId() const
 	{
 		return playerID;
 	}

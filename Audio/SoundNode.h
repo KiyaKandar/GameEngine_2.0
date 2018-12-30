@@ -44,65 +44,65 @@ public:
 		bool isLooping, float radius, float pitch, bool isGlobal, std::string identifier);
 	~SoundNode();
 
-	static SoundNode builder(PlaySoundMessage* message, Sound* sound);
-	static SoundNode builder(PlayMovingSoundMessage* message, Sound* sound);
+	static SoundNode Builder(PlaySoundMessage* message, Sound* sound);
+	static SoundNode Builder(PlayMovingSoundMessage* message, Sound* sound);
 
-	float getRadius() const
+	float GetRadius() const
 	{
 		return radius;
 	}
 
-	OALSource* getSource() const
+	OALSource* GetSource() const
 	{
 		return oalSource;
 	}
 
-	bool hasSound() const
+	bool HasSound() const
 	{
 		return sound != nullptr;
 	}
 
-	double getTimeLeft() const
+	double GetTimeLeft() const
 	{
 		return timeLeft;
 	}
 
-	bool getIsLooping() const
+	bool GetIsLooping() const
 	{
 		return isLooping;
 	}
 
-	NCLVector3 getPosition() const
+	NCLVector3 GetPosition() const
 	{
 		return position;
 	}
 
-	NCLVector3* getMovingPosition() const
+	NCLVector3* GetMovingPosition() const
 	{
 		return movingPosition;
 	}
 
-	void setMovingPosition(NCLVector3* position)
+	void SetMovingPosition(NCLVector3* position)
 	{
 		movingPosition = position;
 	}
 
-	void setGameObject(GameObject* gObj)
+	void SetGameObject(GameObject* gObj)
 	{
 		this->gObj = gObj;
 	}
 
-	void setPosition(NCLVector3 position)
+	void SetPosition(NCLVector3 position)
 	{
 		this->position = position;
 	}
 
-	static bool compareSourcesByPriority(SoundNode& a, SoundNode& b);
+	static bool CompareSourcesByPriority(SoundNode& a, SoundNode& b);
 
-	void attachSource(OALSource* s);
-	void detachSource();
+	void AttachSource(OALSource* s);
+	void DetachSource();
 
-	void update(float msec);
+	void Update(float msec);
 
 	bool enabled = false;
 	bool isMoving = false;
@@ -110,28 +110,28 @@ public:
 	std::string identifier;
 	
 
-	GameObject* getObject()
+	GameObject* GetObject()
 	{
 		return gObj;
 	}
 
-	SoundState getState()
+	SoundState GetState()
 	{
 		return state;
 	}
 
-	void pauseSound();
-	void unpauseSound();
+	void PauseSound();
+	void UnpauseSound();
 
 private:
-	void setSound(Sound *s);
+	void SetSound(Sound *s);
 
-	void setVolume(float volume)
+	void SetVolume(float volume)
 	{
 		this->volume = min(1.0f, max(0.0f, volume));
 	}
 
-	void setRadius(float value)
+	void SetRadius(float value)
 	{
 		radius = max(0.0f, value);
 	}

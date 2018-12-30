@@ -1,28 +1,28 @@
 #include "InputRecorder.h"
 
-void InputRecorder::clearInputs()
+void InputRecorder::ClearInputs()
 {
 	currentButtonInputs.clear();
 	currentLinearInputs.clear();
 	currentPositionalInputs.clear();
 }
 
-std::vector<ButtonInputData> const InputRecorder::getInputs()
+std::vector<ButtonInputData> const InputRecorder::GetInputs()
 {
 	return currentButtonInputs;
 }
 
-std::vector<int> const InputRecorder::getKeysToListen()
+std::vector<int> const InputRecorder::GetKeysToListen()
 {
 	return keysToListen;
 }
 
-void InputRecorder::addKeysToListen(std::vector<int> keysToListen)
+void InputRecorder::AddKeysToListen(std::vector<int> keysToListen)
 {
 	this->keysToListen = keysToListen;
 }
 
-void InputRecorder::removeListenedKey(int key)
+void InputRecorder::RemoveListenedKey(int key)
 {
 	for (auto i = keysToListen.begin(); i!=keysToListen.end(); ++i)
 	{
@@ -33,7 +33,7 @@ void InputRecorder::removeListenedKey(int key)
 	}
 }
 
-void InputRecorder::addKeyToListen(int key)
+void InputRecorder::AddKeyToListen(int key)
 {
 	this->keysToListen.push_back(key);
 }

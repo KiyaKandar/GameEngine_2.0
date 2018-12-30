@@ -3,10 +3,10 @@
 #include "../Resource Management/Database/Database.h"
 #include "../Graphics/GraphicsCommon.h"
 
-std::vector<Button> UserInterfaceBuilder::buildButtons(std::string UIFile, Database* database)
+std::vector<Button> UserInterfaceBuilder::BuildButtons(std::string UIFile, Database* database)
 {
 	XMLParser xmlParser;
-	xmlParser.loadXMLFile(UIFile);
+	xmlParser.LoadXmlFile(UIFile);
 
 	ButtonActionCreator actionCreator;
 
@@ -14,24 +14,24 @@ std::vector<Button> UserInterfaceBuilder::buildButtons(std::string UIFile, Datab
 
 	for (Node* buttonNode : xmlParser.parsedXml->children)
 	{
-		buttons.push_back(buildButton(buttonNode, database, actionCreator));
+		buttons.push_back(BuildButton(buttonNode, database, actionCreator));
 	}
 
 	return buttons;
 }
 
-Button UserInterfaceBuilder::buildButton(Node* node, Database* database, ButtonActionCreator& actionCreator)
+Button UserInterfaceBuilder::BuildButton(Node* node, Database* database, ButtonActionCreator& actionCreator)
 {
-	const NCLVector4 colour = getColour(node->children[0]);;
-	const NCLVector2 position = getTransformInformation(node->children[1]);
-	const NCLVector2 scale = getTransformInformation(node->children[2]);
+	const NCLVector4 colour = GetColour(node->children[0]);;
+	const NCLVector2 position = GetTransformInformation(node->children[1]);
+	const NCLVector2 scale = GetTransformInformation(node->children[2]);
 
-	const ButtonAction action = actionCreator.createButtonAction(node->children[3]);
+	const ButtonAction action = actionCreator.CreateButtonAction(node->children[3]);
 	const std::string text = node->children[4]->value;
 	const std::string meshName = node->children[5]->value;
 
 	Mesh* mesh = static_cast<Mesh*>(
-		database->getTable("UIMeshes")->getAllResources()->getResource(meshName));
+		database->GetTable("UIMeshes")->GetAllResources()->GetResource(meshName));
 
 	Font font(SOIL_load_OGL_texture(TEXTUREDIR"tahoma.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_COMPRESS_TO_DXT), 16, 16);
 
@@ -41,7 +41,7 @@ Button UserInterfaceBuilder::buildButton(Node* node, Database* database, ButtonA
 	{
 		for (int i = 6; i < (int)node->children.size(); ++i)
 		{
-			Button childButton = buildButton(node->children[i], database, actionCreator);
+			Button childButton = BuildButton(node->children[i], database, actionCreator);
 			button.childButtons.push_back(childButton);
 		}
 	}
@@ -49,7 +49,7 @@ Button UserInterfaceBuilder::buildButton(Node* node, Database* database, ButtonA
 	return button;
 }
 
-NCLVector4 UserInterfaceBuilder::getColour(Node* node)
+NCLVector4 UserInterfaceBuilder::GetColour(Node* node)
 {
 	const float r = std::stof(node->children[0]->value);
 	const float g = std::stof(node->children[1]->value);
@@ -59,7 +59,7 @@ NCLVector4 UserInterfaceBuilder::getColour(Node* node)
 	return NCLVector4(r, g, b, a);
 }
 
-NCLVector2 UserInterfaceBuilder::getTransformInformation(Node* node)
+NCLVector2 UserInterfaceBuilder::GetTransformInformation(Node* node)
 {
 	const float x = std::stof(node->children[0]->value);
 	const float y = std::stof(node->children[1]->value);

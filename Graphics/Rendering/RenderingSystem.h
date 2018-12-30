@@ -15,21 +15,21 @@ public:
 	RenderingSystem(Window* window, Camera* camera);
 	~RenderingSystem();
 
-	void initialise(Database* database);
-	void renderLoadingScreen(const float& deltaTime);
+	void Initialise(Database* database);
+	void RenderLoadingScreen(const float& deltaTime);
 
-	void setupMeshes();
+	void SetupMeshes();
 	void SetSceneToRender(SceneManager* scene, Database* database);
-	void updateNextFrame(const float& deltaTime) override;
+	void UpdateNextFrame(const float& deltaTime) override;
 
-	void clearScores()
+	void ClearScores()
 	{
-		static_cast<ScoreCounter*>(renderer->getPipeLine()->getGraphicsModule("ScoreCounter"))->clear();
+		static_cast<ScoreCounter*>(renderer->GetPipeLine()->GetGraphicsModule("ScoreCounter"))->Clear();
 	}
 
-	void clearPainters()
+	void ClearPainters()
 	{
-		static_cast<PaintTrail*>(renderer->getPipeLine()->getGraphicsModule("PaintTrail"))->clear();
+		static_cast<PaintTrail*>(renderer->GetPipeLine()->GetGraphicsModule("PaintTrail"))->Clear();
 	}
 
 private:

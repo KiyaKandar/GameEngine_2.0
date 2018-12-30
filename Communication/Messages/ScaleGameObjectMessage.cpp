@@ -12,7 +12,7 @@ ScaleGameObjectMessage::~ScaleGameObjectMessage()
 {
 }
 
-ScaleGameObjectMessage ScaleGameObjectMessage::builder(Node* node)
+ScaleGameObjectMessage ScaleGameObjectMessage::Builder(Node* node)
 {
 	std::string destination = "";
 	std::string object = "";
@@ -37,7 +37,7 @@ ScaleGameObjectMessage ScaleGameObjectMessage::builder(Node* node)
 	return ScaleGameObjectMessage(destination, object, scale);
 }
 
-ScaleGameObjectMessage ScaleGameObjectMessage::tokensToMessage(std::vector<std::string> lineTokens)
+ScaleGameObjectMessage ScaleGameObjectMessage::TokensToMessage(std::vector<std::string> lineTokens)
 {
 	std::string nodeDestination = lineTokens[1];
 	std::string nodeResourcename = lineTokens[2];

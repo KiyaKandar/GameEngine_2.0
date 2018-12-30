@@ -19,14 +19,19 @@ class MinionDeadReckoning
 {
 public:
 	explicit MinionDeadReckoning(MinionKinematicState prediction);
-	MinionDeadReckoning() {}
-	~MinionDeadReckoning() {}
 
-	void blendStates(PhysicsNode* node);
-	void predictPosition(float deltaTime);
+	MinionDeadReckoning()
+	{
+	}
+
+	~MinionDeadReckoning()
+	{
+	}
+
+	void BlendStates(PhysicsNode* node) const;
+	void PredictPosition(float deltaTime);
 
 private:
 	MinionKinematicState prediction;
-	float calculateInterpolationFactor(const NCLVector3& originalPosition);
+	float CalculateInterpolationFactor(const NCLVector3& originalPosition) const;
 };
-

@@ -14,7 +14,7 @@ RelativeTransformMessage::~RelativeTransformMessage()
 {
 }
 
-RelativeTransformMessage RelativeTransformMessage::builder(Node* node)
+RelativeTransformMessage RelativeTransformMessage::Builder(Node* node)
 {
 	std::string nodeDestination = "";
 	std::string nodeResourcename = "";
@@ -54,7 +54,7 @@ RelativeTransformMessage RelativeTransformMessage::builder(Node* node)
 }
 
 //RELATIVE_TRANSFORM RenderingSystem cube  translation=1,1,1 rotation=0,0,0,0 scale=1,1,1
-RelativeTransformMessage RelativeTransformMessage::tokensToMessage(std::vector<std::string> lineTokens)
+RelativeTransformMessage RelativeTransformMessage::TokensToMessage(std::vector<std::string> lineTokens)
 {
 	std::string nodeDestination = lineTokens[1];
 	std::string nodeResourcename = lineTokens[2];

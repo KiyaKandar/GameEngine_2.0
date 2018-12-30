@@ -17,39 +17,39 @@ typedef std::function<Executable(std::vector<std::string>)> DevConsoleNodeBuilde
 class SendMessageActionBuilder
 {
 public:
-	static void initialiseBuilders();
-	static Executable buildSendMessageAction(Node* node);
-	static Executable buildSendMessageAction(std::string devConsoleLine);
+	static void InitialiseBuilders();
+	static Executable BuildSendMessageAction(Node* node);
+	static Executable BuildSendMessageAction(std::string devConsoleLine);
 
 private:
-	static void initialiseNodeBuilders();
+	static void InitialiseNodeBuilders();
 
 	template <class T>
-	inline static Executable buildExecutable(Node* node, std::function<TrackedMessageSender<T>**()> addSender)
+	inline static Executable BuildExecutable(Node* node, std::function<TrackedMessageSender<T>**()> addSender)
 	{
-		T message = T::builder(node);
+		T message = T::Builder(node);
 
 		if (node->children[0] != nullptr && node->children[0]->nodeType == "Tracked")
 		{
 			TrackedMessageSender<T>** sender = addSender();
-			(*sender)->setMessage(message);
+			(*sender)->SetMessage(message);
 
 			return[sender = *sender]()
 			{
-				if (sender->readyToSendNextMessage())
+				if (sender->ReadyToSendNextMessage())
 				{
-					sender->sendMessage();
+					sender->SendTrackedMessage();
 				}
 			};
 		}
 
 		return [message = message]()
 		{
-			DeliverySystem::getPostman()->insertMessage(message);
+			DeliverySystem::GetPostman()->InsertMessage(message);
 		};
 	}
 
-	static void initialiseDevConsoleBuilders();
+	static void InitialiseDevConsoleBuilders();
 
 	static std::unordered_map<std::string, Builder> builders;
 	static std::unordered_map<std::string, DevConsoleNodeBuilder> devConsoleBuilder;

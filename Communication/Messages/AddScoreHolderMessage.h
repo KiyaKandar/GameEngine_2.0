@@ -12,8 +12,8 @@ public:
 	AddScoreHolderMessage(const std::string& desinationName, const std::string& name);
 	~AddScoreHolderMessage();
 
-	static AddScoreHolderMessage builder(Node* node);
-	static AddScoreHolderMessage tokensToMessage(std::vector<std::string> lineTokens);
+	static AddScoreHolderMessage Builder(Node* node);
+	static AddScoreHolderMessage TokensToMessage(std::vector<std::string> lineTokens);
 
 	std::string name;
 };

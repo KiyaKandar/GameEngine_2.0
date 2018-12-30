@@ -18,23 +18,23 @@ PlayerBase::PlayerBase(Database* database, std::vector<InputRecorder*> allRecord
 
 PlayerBase::~PlayerBase()
 {
-	wipeStoredPlayers();
+	WipeStoredPlayers();
 }
 
-void PlayerBase::initializePlayers(std::vector<InputRecorder*> allRecorders)
+void PlayerBase::InitializePlayers(std::vector<InputRecorder*> allRecorders)
 {
-	wipeStoredPlayers();
+	WipeStoredPlayers();
 
 	int i = 0;
 	for (InputRecorder* recorder : allRecorders)
 	{
-		addNewPlayer(recorder, i);
+		AddNewPlayer(recorder, i);
 
 		++i;
 	}
 }
 
-Player* PlayerBase::addNewPlayer(InputRecorder* recorder, int id)
+Player* PlayerBase::AddNewPlayer(InputRecorder* recorder, int id)
 {
 	int playerID = id;
 
@@ -42,7 +42,7 @@ Player* PlayerBase::addNewPlayer(InputRecorder* recorder, int id)
 	{
 		if (player->getPlayerID() == playerID)
 		{
-			return getExistingPlayer(player, id);
+			return GetExistingPlayer(player, id);
 		}
 	}
 
@@ -51,13 +51,13 @@ Player* PlayerBase::addNewPlayer(InputRecorder* recorder, int id)
 
 	InputActionMap newPlayersActions(playerID);
 
-	inputParser.loadXMLFile("../Data/Input/configXML.xml");
+	inputParser.LoadXmlFile("../Data/Input/configXML.xml");
 	Node* node = inputParser.parsedXml;
 
 	std::string playerName = "player" + std::to_string(id);
 	MoveCameraRelativeToGameObjectMessage::resourceName = playerName;
 
-	GameObject* playerGameObject = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(playerName));
+	GameObject* playerGameObject = static_cast<GameObject*>(database->GetTable("GameObjects")->GetResource(playerName));
 	player->setGameObject(playerGameObject);
 
 	std::string seperator = "|";
@@ -91,7 +91,7 @@ Player* PlayerBase::addNewPlayer(InputRecorder* recorder, int id)
 		NCLVector3 translation(xPosition, yPosition, zPosition);
 		std::string type = magnitude->nodeType;
 
-		newPlayersActions.attachKeyToAction(InputUtility::getKeyID(keyName), [&b = b[i], translation, type, playerName](Player* player)
+		newPlayersActions.AttachKeyToAction(InputUtility::GetKeyId(keyName), [&b = b[i], translation, type, playerName](Player* player)
 		{
 			if (b)
 			{
@@ -101,26 +101,26 @@ Player* PlayerBase::addNewPlayer(InputRecorder* recorder, int id)
 				{
 					ApplyForceMessage m("Physics", playerName, false, translation);
 					m.senderAvailable = &b;
-					DeliverySystem::getPostman()->insertMessage(m);
+					DeliverySystem::GetPostman()->InsertMessage(m);
 				}
 				else if (type == "Impulse")
 				{
 					ApplyImpulseMessage m("Physics", playerName, false, translation);
 					m.senderAvailable = &b;
-					DeliverySystem::getPostman()->insertMessage(m);
+					DeliverySystem::GetPostman()->InsertMessage(m);
 				}
 			}
 		});
 	}
 
 	std::vector<int> keyboardMouseConfiguration = player->getInputFilter()->getListenedKeys(keyboardButtonsToListenTo, seperator);
-	player->getInputRecorder()->addKeysToListen(keyboardMouseConfiguration);
+	player->getInputRecorder()->AddKeysToListen(keyboardMouseConfiguration);
 
 	playersActions.push_back(newPlayersActions);
 	return player;
 }
 
-void PlayerBase::removePlayer(int playerID)
+void PlayerBase::RemovePlayer(int playerID)
 {
 	for (unsigned int i = 0; i < players.size(); ++i)
 	{
@@ -132,16 +132,16 @@ void PlayerBase::removePlayer(int playerID)
 	}
 }
 
-Player* PlayerBase::getExistingPlayer(Player* player, int existingID)
+Player* PlayerBase::GetExistingPlayer(Player* player, int existingID)
 {
 	std::string playerName = "player" + std::to_string(existingID);
-	GameObject* playerGameObject = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(playerName));
+	GameObject* playerGameObject = static_cast<GameObject*>(database->GetTable("GameObjects")->GetResource(playerName));
 	player->setGameObject(playerGameObject);
 
 	return player;
 }
 
-void PlayerBase::wipeStoredPlayers()
+void PlayerBase::WipeStoredPlayers()
 {
 	for (auto player : players)
 	{

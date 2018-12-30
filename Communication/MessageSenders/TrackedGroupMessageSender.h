@@ -15,14 +15,14 @@ public:
 
 	}
 
-	void setMessageGroup(const std::vector<MessageType>& messages)
+	void SetMessageGroup(const std::vector<MessageType>& messages)
 	{
 		this->messages = messages;
 	}
 
-	void sendMessageGroup()
+	void SendMessageGroup()
 	{
-		if (readyToSendNextMessageGroup())
+		if (ReadyToSendNextMessageGroup())
 		{
 			trackers.clear();
 			trackers.resize(messages.size(), false);
@@ -30,12 +30,12 @@ public:
 			for (int i = 0; i < messages.size(); ++i)
 			{
 				messages[i].senderAvailable = &trackers[i];
-				DeliverySystem::getPostman()->insertMessage(messages[i]);
+				DeliverySystem::GetPostman()->InsertMessage(messages[i]);
 			}
 		}
 	}
 
-	bool readyToSendNextMessageGroup() const
+	bool ReadyToSendNextMessageGroup() const
 	{
 		bool canSend = true;
 		for (const bool tracker : trackers)

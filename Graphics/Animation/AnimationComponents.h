@@ -17,7 +17,7 @@ struct BlockedTransformComponents
 	bool blockTranslation = false;
 	bool blockScale = false;
 
-	bool hasAnyComponentBlocked() const
+	bool HasAnyComponentBlocked() const
 	{
 		return blockRotation || blockTranslation || blockScale;
 	}
@@ -99,11 +99,11 @@ struct ActiveAnimation
 		this->gameObjectTransformSpecifier = gameObjectTransformSpecifier;
 	}
 
-	bool hasTransition()
+	bool HasTransition()
 	{
 		return transition.params.animationName != "";
 	}
-
+	 
 	Animation* animation;
 	NodeTransformSpecifier gameObjectTransformSpecifier;
 

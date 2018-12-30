@@ -13,8 +13,8 @@ public:
 		float zmin = 0.0f, float zmax = 0.0f);
 	~ApplyImpulseMessage();
 
-	static ApplyImpulseMessage builder(Node* node);
-	static ApplyImpulseMessage tokensToMessage(std::vector<std::string> lineTokens);
+	static ApplyImpulseMessage Builder(Node* node);
+	static ApplyImpulseMessage TokensToMessage(std::vector<std::string> lineTokens);
 
 	std::string gameObjectID;
 	bool isRandom;

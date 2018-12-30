@@ -24,11 +24,11 @@ GameText::~GameText()
 	delete textWithBackgrounShader;
 }
 
-void GameText::initialise()
+void GameText::Initialise()
 {
 }
 
-void GameText::apply()
+void GameText::Apply()
 {
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
@@ -39,8 +39,8 @@ void GameText::apply()
 	textureMatrix.toIdentity();
 
 
-	setCurrentShader(UITextShader);
-	updateShaderMatrices();
+	SetCurrentShader(UITextShader);
+	UpdateShaderMatrices();
 
 	for (int i = 0; i < (int)bufferedText.size(); ++i)
 	{
@@ -52,7 +52,7 @@ void GameText::apply()
 		}
 		else
 		{
-			viewMatrix = camera->buildViewMatrix();
+			viewMatrix = camera->BuildViewMatrix();
 			bufferedScales[i].x = -bufferedScales[i].x;
 			glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "viewMatrix"), 1, false, (float*)&viewMatrix);
 			glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix"), 1, false, (float*)&CommonGraphicsData::SHARED_PROJECTION_MATRIX);
@@ -76,8 +76,8 @@ void GameText::apply()
 
 		textureMatrix.toIdentity();
 
-		setCurrentShader(textWithBackgrounShader);
-		updateShaderMatrices();
+		SetCurrentShader(textWithBackgrounShader);
+		UpdateShaderMatrices();
 
 		for (int i = 0; i < (int)bufferedBackgroundText.size(); ++i)
 		{
@@ -104,19 +104,19 @@ void GameText::apply()
 	glEnable(GL_CULL_FACE);
 }
 
-void GameText::linkShaders()
+void GameText::LinkShaders()
 {
 	UIShader->LinkProgram();
 	UITextShader->LinkProgram();
 	textWithBackgrounShader->LinkProgram();
 }
 
-void GameText::regenerateShaders()
+void GameText::RegenerateShaders()
 {
 	UIShader->Regenerate();
 }
 
-void GameText::bufferText(std::string text, NCLVector3 position, NCLVector3 scale, NCLVector3 colour, bool orthographic, bool hasBackground)
+void GameText::BufferText(std::string text, NCLVector3 position, NCLVector3 scale, NCLVector3 colour, bool orthographic, bool hasBackground)
 {
 	if (hasBackground)
 	{
@@ -136,6 +136,6 @@ void GameText::bufferText(std::string text, NCLVector3 position, NCLVector3 scal
 	}
 }
 
-void GameText::locateUniforms()
+void GameText::LocateUniforms()
 {
 }

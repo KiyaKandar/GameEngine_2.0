@@ -12,12 +12,12 @@ public:
 	Database();
 	~Database();
 
-	void addTable(const std::string tableName, Table<Resource>* table);
-	Table<Resource>* getTable(const std::string tableName);
-	std::vector<Table<Resource>*> getAllTables() const;
+	void AddTable(const std::string tableName, Table<Resource>* table);
+	Table<Resource>* GetTable(const std::string tableName);
+	std::vector<Table<Resource>*> GetAllTables() const;
 
-	void addResourceToTable(const std::string tableName, Resource* resource);
-	void addResourceToTable(const std::string tableName, Node* node);
+	void AddResourceToTable(const std::string tableName, Resource* resource);
+	void AddResourceToTable(const std::string tableName, Node* node);
 
 	const size_t CurrentSize() const;
 	const size_t MaxSize() const;

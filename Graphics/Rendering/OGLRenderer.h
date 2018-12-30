@@ -54,7 +54,7 @@ struct DebugDrawData
 	GLuint buffers[2];
 
 	DebugDrawData();
-	void Draw();
+	void Draw() const;
 
 	~DebugDrawData()
 	{
@@ -68,7 +68,8 @@ struct DebugDrawData
 		colours.clear();
 	}
 
-	inline void AddLine(const NCLVector3 &from, const NCLVector3 &to, const NCLVector3 &fromColour, const NCLVector3 &toColour)
+	inline void AddLine(const NCLVector3& from, const NCLVector3& to, const NCLVector3& fromColour,
+		const NCLVector3& toColour)
 	{
 		lines.push_back(from);
 		lines.push_back(to);
@@ -78,7 +79,6 @@ struct DebugDrawData
 	}
 };
 
-
 class Shader;
 
 class OGLRenderer
@@ -87,23 +87,31 @@ public:
 	OGLRenderer(HWND windowHandle, NCLVector2 size);
 	virtual ~OGLRenderer(void);
 
-	virtual void	renderScene() = 0;
-	virtual void	updateScene(const float& msec) {}
-	void			swapBuffers();
+	virtual void RenderScene() = 0;
 
-	bool			HasInitialised() const;
+	virtual void UpdateScene(const float& msec)
+	{
+	}
 
-	static void		DrawDebugLine(DebugDrawMode mode, const NCLVector3 &from, const NCLVector3 &to, const NCLVector3 &fromColour = NCLVector3(1, 1, 1), const NCLVector3 &toColour = NCLVector3(1, 1, 1));
-	static void		DrawDebugBox(DebugDrawMode mode, const NCLVector3 &at, const NCLVector3 &scale, const NCLVector3 &colour = NCLVector3(1, 1, 1));
-	static void		DrawDebugCross(DebugDrawMode mode, const NCLVector3 &at, const NCLVector3 &scale, const NCLVector3 &colour = NCLVector3(1, 1, 1));
-	static void		DrawDebugCircle(DebugDrawMode mode, const NCLVector3 &at, const float radius, const NCLVector3 &colour = NCLVector3(1, 1, 1));
+	void SwapBuffers() const;
 
-	void			SetAsDebugDrawingRenderer()
+	bool HasInitialised() const;
+
+	static void DrawDebugLine(DebugDrawMode mode, const NCLVector3& from, const NCLVector3& to,
+		const NCLVector3& fromColour = NCLVector3(1, 1, 1), const NCLVector3& toColour = NCLVector3(1, 1, 1));
+	static void DrawDebugBox(DebugDrawMode mode, const NCLVector3& at, const NCLVector3& scale,
+		const NCLVector3& colour = NCLVector3(1, 1, 1));
+	static void DrawDebugCross(DebugDrawMode mode, const NCLVector3& at, const NCLVector3& scale,
+		const NCLVector3& colour = NCLVector3(1, 1, 1));
+	static void DrawDebugCircle(DebugDrawMode mode, const NCLVector3& at, const float radius,
+		const NCLVector3& colour = NCLVector3(1, 1, 1));
+
+	void SetAsDebugDrawingRenderer()
 	{
 		debugDrawingRenderer = this;
 	}
 
-	Shader*			GetCurrentShader() const
+	Shader* GetCurrentShader() const
 	{
 		return currentShader;
 	}
@@ -128,45 +136,43 @@ public:
 		return textureMatrix;
 	}
 
-	virtual void	Resize(int x, int y);
+	virtual void Resize(int x, int y);
 
 protected:
-	void			UpdateShaderMatrices();
-	void			UpdateShaderMatrices(Shader* shader);
-	void			SetCurrentShader(Shader*s);
+	void UpdateShaderMatrices();
+	void UpdateShaderMatrices(Shader* shader);
+	void SetCurrentShader(Shader* s);
 
-	void			SetTextureRepeating(GLuint target, bool state);
+	void SetTextureRepeating(GLuint target, bool state) const;
 
-	void			DrawDebugPerspective(NCLMatrix4*matrix = 0);
-	void			DrawDebugOrtho(NCLMatrix4*matrix = 0);
+	void DrawDebugPerspective(NCLMatrix4* matrix = 0);
+	void DrawDebugOrtho(NCLMatrix4* matrix = 0);
 
 	Shader* currentShader;
 
+	NCLMatrix4 projMatrix; //Projection matrix
+	NCLMatrix4 modelMatrix; //Model matrix. NOT MODELVIEW
+	NCLMatrix4 viewMatrix; //View matrix
+	NCLMatrix4 textureMatrix; //Texture matrix
 
-	NCLMatrix4 projMatrix;		//Projection matrix
-	NCLMatrix4 modelMatrix;	//Model matrix. NOT MODELVIEW
-	NCLMatrix4 viewMatrix;		//View matrix
-	NCLMatrix4 textureMatrix;	//Texture matrix
+	int width; //Render area width (not quite the same as window width)
+	int height; //Render area height (not quite the same as window height)
+	bool init; //Did the renderer initialise properly?
 
-	int		width;			//Render area width (not quite the same as window width)
-	int		height;			//Render area height (not quite the same as window height)
-	bool	init;			//Did the renderer initialise properly?
-
-	HDC		deviceContext;	//...Device context?
-	HGLRC	renderContext;	//Permanent Rendering Context
+	HDC deviceContext; //...Device context?
+	HGLRC renderContext; //Permanent Rendering Context
 
 	static DebugDrawData* orthoDebugData;
 	static DebugDrawData* perspectiveDebugData;
 
-	static OGLRenderer*	  debugDrawingRenderer;
-	static Shader*		  debugDrawShader;
+	static OGLRenderer* debugDrawingRenderer;
+	static Shader* debugDrawShader;
 
 #ifdef _DEBUG
 	static void CALLBACK DebugCallback(GLuint source, GLuint type, GLuint id, GLuint severity,
 		int length, const char* message, void* userParam);
 #endif
 
-	static bool	drawnDebugOrtho;
-	static bool	drawnDebugPerspective;
-
+	static bool drawnDebugOrtho;
+	static bool drawnDebugPerspective;
 };

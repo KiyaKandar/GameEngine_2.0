@@ -12,23 +12,23 @@ GameLogic::GameLogic(MessageProcessor* messages)
 GameLogic::GameLogic(MessageProcessor* messages, Node* xmlNode)
 {
 	this->messages = messages;
-	compileParsedXMLIntoScript(xmlNode);
+	CompileParsedXmlIntoScript(xmlNode);
 }
 
 GameLogic::~GameLogic()
 {
 }
 
-void GameLogic::compileScript(std::string scriptFile)
+void GameLogic::CompileScript(std::string scriptFile)
 {
 	XMLParser xmlParser;
-	xmlParser.loadXMLFile(scriptFile);
+	xmlParser.LoadXmlFile(scriptFile);
 	this->scriptFile = scriptFile;
 
-	compileParsedXMLIntoScript(xmlParser.parsedXml);
+	CompileParsedXmlIntoScript(xmlParser.parsedXml);
 }
 
-void GameLogic::compileParsedXMLIntoScript(Node* xmlNode)
+void GameLogic::CompileParsedXmlIntoScript(Node* xmlNode)
 {
 	for (Node* gameplayAction : xmlNode->children)
 	{
@@ -36,25 +36,25 @@ void GameLogic::compileParsedXMLIntoScript(Node* xmlNode)
 		{
 			for (Node* action : gameplayAction->children)
 			{
-				messageBasedActions[gameplayAction->name].push_back(ActionBuilder::buildAction(action));
+				messageBasedActions[gameplayAction->name].push_back(ActionBuilder::BuildAction(action));
 			}
 		}
 		else if (gameplayAction->nodeType == "Timed")
 		{
 			timers.push_back(float(0.0f));
-			timedActions.push_back(ActionBuilder::buildTimedAction(gameplayAction));
+			timedActions.push_back(ActionBuilder::BuildTimedAction(gameplayAction));
 		}
 		else if (gameplayAction->nodeType == "OnStart")
 		{
 			for (Node* action : gameplayAction->children)
 			{
-				actionsOnStart.push_back(ActionBuilder::compileActionSectionWithoutCondition(action));
+				actionsOnStart.push_back(ActionBuilder::CompileActionSectionWithoutCondition(action));
 			}
 		}
 	}
 }
 
-void GameLogic::executeMessageBasedActions()
+void GameLogic::ExecuteMessageBasedActions()
 {
 	if (!messageBasedActions.empty())
 	{
@@ -71,7 +71,7 @@ void GameLogic::executeMessageBasedActions()
 	}
 }
 
-void GameLogic::executeTimeBasedActions(const float& deltaTime)
+void GameLogic::ExecuteTimeBasedActions(const float& deltaTime)
 {
 	for (size_t i = 0; i < timedActions.size(); ++i)
 	{
@@ -80,7 +80,7 @@ void GameLogic::executeTimeBasedActions(const float& deltaTime)
 	}
 }
 
-void GameLogic::executeActionsOnStart()
+void GameLogic::ExecuteActionsOnStart()
 {
 	for (Executable executable : actionsOnStart)
 	{
@@ -88,17 +88,17 @@ void GameLogic::executeActionsOnStart()
 	}
 }
 
-void GameLogic::notifyMessageActions(const std::string& messageType, Message* message)
+void GameLogic::NotifyMessageActions(const std::string& messageType, Message* message)
 {
 	publishers.push_back(std::make_pair(messageType, *message));
 }
 
-void GameLogic::clearNotifications()
+void GameLogic::ClearNotifications()
 {
 	publishers.clear();
 }
 
-std::string GameLogic::getScriptFile()
+std::string GameLogic::GetScriptFile()
 {
 	return scriptFile;
 }

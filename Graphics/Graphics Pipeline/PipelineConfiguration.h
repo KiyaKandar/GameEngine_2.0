@@ -31,8 +31,8 @@ public:
 		Camera* camera, NCLVector2 resolution);
 	~PipelineConfiguration();
 
-	void initialiseModules(Database* database);
-	void buildPipeline(GraphicsPipeline* pipeline);
+	void InitialiseModules(Database* database);
+	void BuildPipeline(GraphicsPipeline* pipeline);
 
 private:
 	bool initialised;

@@ -28,24 +28,24 @@ ScoreCounter::~ScoreCounter()
 void ScoreCounter::bufferScoreHolder(std::string scoreHoldername)
 {
 	const NCLVector4 scoreHolderColour = static_cast<GameObject*>(
-		database->getTable("GameObjects")->getResource(scoreHoldername))->stats.colourToPaint;
+		database->GetTable("GameObjects")->GetResource(scoreHoldername))->stats.colourToPaint;
 
 	scoreHolders.push_back(scoreHoldername);
 	coloursToCount.push_back(scoreHolderColour);
 	//scores.push_back(0);
 }
 
-void ScoreCounter::linkShaders()
+void ScoreCounter::LinkShaders()
 {
 	computeShader->LinkProgram();
 	textShader->LinkProgram();
 }
 
-void ScoreCounter::regenerateShaders()
+void ScoreCounter::RegenerateShaders()
 {
 }
 
-void ScoreCounter::initialise()
+void ScoreCounter::Initialise()
 {
 	glGenBuffers(1, &playerScoresSSBO);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, playerScoresSSBO);
@@ -57,20 +57,20 @@ void ScoreCounter::initialise()
 	coloursSSBO = GraphicsUtility::InitSSBO(1, 5, coloursSSBO, sizeof(NCLVector4), &coloursToCount, GL_STATIC_COPY);
 }
 
-void ScoreCounter::apply()
+void ScoreCounter::Apply()
 {
 	elapsedTime += timer.getTimeSinceLastRetrieval();
 
 	if (elapsedTime >= 30.0f)
 	{
-		calculateScores();
+		CalculateScores();
 		elapsedTime = 0;
 	}
 	
-	displayScores();
+	DisplayScores();
 }
 
-void ScoreCounter::calculateScores()
+void ScoreCounter::CalculateScores()
 {
 	GLuint zero = 0;
 
@@ -95,7 +95,7 @@ void ScoreCounter::calculateScores()
 	computeShader->Compute(NCLVector3(resolution.x * 0.1f, resolution.y * 0.1f, 1));
 }
 
-void ScoreCounter::displayScores()
+void ScoreCounter::DisplayScores()
 {
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
@@ -104,8 +104,8 @@ void ScoreCounter::displayScores()
 
 	textureMatrix.toIdentity();
 
-	setCurrentShader(textShader);
-	updateShaderMatrices();
+	SetCurrentShader(textShader);
+	UpdateShaderMatrices();
 
 	for (size_t i = 0; i < scoreHolders.size(); ++i)
 	{
@@ -140,17 +140,17 @@ void ScoreCounter::displayScores()
 
 		if (PaintGameActionBuilder::online)
 		{
-			if (onlineScoreMessage.readyToSendNextMessage())
+			if (onlineScoreMessage.ReadyToSendNextMessage())
 			{
-				onlineScoreMessage.setMessage(TextMessage("NetworkClient", "sendscore " + to_string(i) + " " + to_string(score)));
-				onlineScoreMessage.sendMessage();
+				onlineScoreMessage.SetMessage(TextMessage("NetworkClient", "sendscore " + to_string(i) + " " + to_string(score)));
+				onlineScoreMessage.SendTrackedMessage();
 			}
 		}
 
-		if (localScoreMessage.readyToSendNextMessage())
+		if (localScoreMessage.ReadyToSendNextMessage())
 		{
-			localScoreMessage.setMessage(TextMessage("Gameplay", "sendscore " + to_string(i) + " " + to_string(score)));
-			localScoreMessage.sendMessage();
+			localScoreMessage.SetMessage(TextMessage("Gameplay", "sendscore " + to_string(i) + " " + to_string(score)));
+			localScoreMessage.SendTrackedMessage();
 		}
 	}
 
@@ -159,6 +159,6 @@ void ScoreCounter::displayScores()
 	glEnable(GL_CULL_FACE);
 }
 
-void ScoreCounter::locateUniforms()
+void ScoreCounter::LocateUniforms()
 {
 }

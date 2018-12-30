@@ -18,45 +18,45 @@ MessageProcessor::~MessageProcessor()
 {
 }
 
-void MessageProcessor::addActionToExecuteOnMessage(const MessageType& typeOfMessageToPerformOn, 
+void MessageProcessor::AddActionToExecuteOnMessage(const MessageType& typeOfMessageToPerformOn, 
 	const Action& action)
 {
 	actionsToExecute.at(typeOfMessageToPerformOn)->push_back(action);
 }
 
-void MessageProcessor::processMessagesInBuffer()
+void MessageProcessor::ProcessMessagesInBuffer()
 {
 	std::vector<Message*> receivedMessages;
-	getReceivedMessagesFromDeliveryBuffer(receivedMessages);
+	GetReceivedMessagesFromDeliveryBuffer(receivedMessages);
 
 	for (Message* message : receivedMessages)
 	{
-		processMessageByPerformingAssignedActions(message);
+		ProcessMessageByPerformingAssignedActions(message);
 	}
 	
 	receivedMessages.clear();
 }
 
-void MessageProcessor::getReceivedMessagesFromDeliveryBuffer(std::vector<Message*>& receivedMessages)
+void MessageProcessor::GetReceivedMessagesFromDeliveryBuffer(std::vector<Message*>& receivedMessages)
 {
-	unsigned int numberOfThreadSenders = ThreadPool::getTotalNumberOfThreads();
+	unsigned int numberOfThreadSenders = ThreadPool::GetTotalNumberOfThreads();
 
 	for (int threadId = 0; threadId < numberOfThreadSenders; ++threadId)
 	{
-		const unsigned int numberOfMessagesReceivedFromThread = subsystemMessageBuffer->count(threadId);
+		const unsigned int numberOfMessagesReceivedFromThread = subsystemMessageBuffer->Count(threadId);
 
 		for (int messageNum = 0; messageNum < numberOfMessagesReceivedFromThread; ++messageNum)
 		{
-			receivedMessages.push_back(subsystemMessageBuffer->read(threadId, messageNum));
+			receivedMessages.push_back(subsystemMessageBuffer->Read(threadId, messageNum));
 		}
 
-		subsystemMessageBuffer->clear(numberOfMessagesReceivedFromThread, threadId);
+		subsystemMessageBuffer->Clear(numberOfMessagesReceivedFromThread, threadId);
 	}
 }
 
-void MessageProcessor::processMessageByPerformingAssignedActions(Message * message)
+void MessageProcessor::ProcessMessageByPerformingAssignedActions(Message * message)
 {
-	std::vector<Action>& actionsForMessageType = *actionsToExecute.at(message->getMessageType());
+	std::vector<Action>& actionsForMessageType = *actionsToExecute.at(message->GetMessageType());
 
 	for (Action& action : actionsForMessageType)
 	{

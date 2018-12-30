@@ -21,15 +21,15 @@ UIModule::~UIModule()
 {
 }
 
-void UIModule::initialise()
+void UIModule::Initialise()
 {
 }
 
-void UIModule::apply()
+void UIModule::Apply()
 {
-	UIObjects = UserInterfaceDisplay::getInterface()->getAllButtonsInMenu();
+	UIObjects = UserInterfaceDisplay::GetInterface()->GetAllButtonsInMenu();
 
-	setCurrentShader(UIShader);
+	SetCurrentShader(UIShader);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 	glDisable(GL_CULL_FACE);
@@ -37,7 +37,7 @@ void UIModule::apply()
 	viewMatrix.toIdentity();
 	textureMatrix.toIdentity();
 
-	updateShaderMatrices();
+	UpdateShaderMatrices();
 	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix"), 1, false, (float*)&CommonGraphicsData::SHARED_ORTHOGRAPHIC_MATRIX);
 
 	for (Button* button : *UIObjects)
@@ -48,15 +48,15 @@ void UIModule::apply()
 
 		if (button->childrenEnabled)
 		{
-			renderButtons(button->childButtons);
+			RenderButtons(button->childButtons);
 		}
 	}
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-	setCurrentShader(UITextShader);
-	updateShaderMatrices();
+	SetCurrentShader(UITextShader);
+	UpdateShaderMatrices();
 	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix"), 1, false, (float*)&CommonGraphicsData::SHARED_ORTHOGRAPHIC_MATRIX);
 
 	NCLVector3 colour(1.0f, 1.0f, 1.0f);
@@ -70,7 +70,7 @@ void UIModule::apply()
 
 		if (button->childrenEnabled)
 		{
-			renderButtonsText(button->childButtons);
+			RenderButtonsText(button->childButtons);
 		}
 	}
 
@@ -79,22 +79,22 @@ void UIModule::apply()
 	glEnable(GL_CULL_FACE);
 }
 
-void UIModule::linkShaders()
+void UIModule::LinkShaders()
 {
 	UIShader->LinkProgram();
 	UITextShader->LinkProgram();
 }
 
-void UIModule::regenerateShaders()
+void UIModule::RegenerateShaders()
 {
 	UIShader->Regenerate();
 }
 
-void UIModule::locateUniforms()
+void UIModule::LocateUniforms()
 {
 }
 
-void UIModule::renderButtons(std::vector<Button>& buttons)
+void UIModule::RenderButtons(std::vector<Button>& buttons)
 {
 	for (Button button : buttons)
 	{
@@ -104,12 +104,12 @@ void UIModule::renderButtons(std::vector<Button>& buttons)
 
 		if (button.childrenEnabled)
 		{
-			renderButtons(button.childButtons);
+			RenderButtons(button.childButtons);
 		}
 	}
 }
 
-void UIModule::renderButtonsText(std::vector<Button>& buttons)
+void UIModule::RenderButtonsText(std::vector<Button>& buttons)
 {
 	for (Button button : buttons)
 	{
@@ -119,7 +119,7 @@ void UIModule::renderButtonsText(std::vector<Button>& buttons)
 
 		if (button.childrenEnabled)
 		{
-			renderButtonsText(button.childButtons);
+			RenderButtonsText(button.childButtons);
 		}
 	}
 }

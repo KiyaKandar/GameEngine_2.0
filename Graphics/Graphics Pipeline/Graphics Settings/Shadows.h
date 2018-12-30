@@ -22,11 +22,11 @@ public:
 		glDeleteTextures(1, &shadowData->shadowTex);
 	}
 
-	void linkShaders() override;
-	void initialise() override;
-	void apply() override;
+	void LinkShaders() override;
+	void Initialise() override;
+	void Apply() override;
 
-	void regenerateShaders() override;
+	void RegenerateShaders() override;
 
 	ShadowData* getShadowData() const
 	{
@@ -36,15 +36,15 @@ public:
 	bool applied;
 
 private:
-	void locateUniforms() override
+	void LocateUniforms() override
 	{}
 
 	//Shadow prep
-	void initShadowTex();
-	void initShadowBuffer();
+	void InitShadowTex();
+	void InitShadowBuffer();
 
 	//Application
-	void drawShadowScene();
+	void DrawShadowScene();
 
 	GLuint shadowFBO;
 	ShadowData* shadowData;

@@ -17,9 +17,9 @@ GameplaySystem::GameplaySystem(Database* database)
 	this->database = database;
  
 	incomingMessages = MessageProcessor(std::vector<MessageType> { MessageType::PLAYER_INPUT, MessageType::COLLISION, MessageType::TEXT },
-		DeliverySystem::getPostman()->getDeliveryPoint("Gameplay"));
+		DeliverySystem::GetPostman()->GetDeliveryPoint("Gameplay"));
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::TEXT, [this, database = database](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::TEXT, [this, database = database](Message* message)
 	{
 		TextMessage* textMessage = static_cast<TextMessage*>(message);
 
@@ -30,7 +30,7 @@ GameplaySystem::GameplaySystem(Database* database)
 		if (tokens[0] == "addgameobjectlogic")
 		{
 			objects.push_back(GameObjectLogic(database, tokens[1]));
-			objects[objects.size() - 1].compileParsedXMLIntoScript();
+			objects[objects.size() - 1].CompileParsedXmlIntoScript();
 		}
 		else if (tokens[0] == "removegameobjectlogic")
 		{
@@ -38,7 +38,7 @@ GameplaySystem::GameplaySystem(Database* database)
 		}
 		else if (tokens[0] == "setgameplaylogic")
 		{
-			compileGameplayScript(tokens[1]);
+			CompileGameplayScript(tokens[1]);
 		}
 		else if (tokens[0] == "setmaxtime")
 		{
@@ -62,30 +62,30 @@ GameplaySystem::GameplaySystem(Database* database)
 		
 	});
 	
-	incomingMessages.addActionToExecuteOnMessage(MessageType::PLAYER_INPUT, [&gameLogic = gameLogic, &inputBridge = inputBridge, &objects = objects](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::PLAYER_INPUT, [&gameLogic = gameLogic, &inputBridge = inputBridge, &objects = objects](Message* message)
 	{
 		PlayerInputMessage* playerInputMessage = static_cast<PlayerInputMessage*>(message);
 		
-		inputBridge.processPlayerInputMessage(*playerInputMessage);
+		inputBridge.ProcessPlayerInputMessage(*playerInputMessage);
 
 
 		for (GameObjectLogic& object : objects)
 		{
-   			object.notify("InputMessage", message, playerInputMessage->player->getGameObject()->getName());
+   			object.Notify("InputMessage", message, playerInputMessage->player->getGameObject()->GetName());
 		}
 	});
 
-	incomingMessages.addActionToExecuteOnMessage(MessageType::COLLISION, [&gameLogic = gameLogic, &objects = objects](Message* message)
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::COLLISION, [&gameLogic = gameLogic, &objects = objects](Message* message)
 	{
 		CollisionMessage* collisionmessage = static_cast<CollisionMessage*>(message);
 
-		gameLogic.notifyMessageActions("CollisionMessage", message);
+		gameLogic.NotifyMessageActions("CollisionMessage", message);
 
 		
 		
 		for (GameObjectLogic& object : objects)
 		{
-			object.notify("CollisionMessage", message, collisionmessage->objectIdentifier);
+			object.Notify("CollisionMessage", message, collisionmessage->objectIdentifier);
 		}
 
 	});
@@ -98,110 +98,110 @@ GameplaySystem::~GameplaySystem()
 {
 }
 
-void GameplaySystem::updateNextFrame(const float& deltaTime)
+void GameplaySystem::UpdateNextFrame(const float& deltaTime)
 {
 	if (gameLogic.isTimed) 
 	{
-		updateGameplayWhenTimed(deltaTime);
+		UpdateGameplayWhenTimed(deltaTime);
 	}
 	else
 	{
 		timer->beginTimedSection();
 
-		updateGameLogic(deltaTime);
-		updateGameObjectLogics(deltaTime);
+		UpdateGameLogic(deltaTime);
+		UpdateGameObjectLogics(deltaTime);
 
 		timer->endTimedSection();
 	}
 
-	removeScriptsInbuffer();
+	RemoveScriptsInbuffer();
 }
 
-void GameplaySystem::connectPlayerbase(PlayerBase* playerBase)
+void GameplaySystem::ConnectPlayerbase(PlayerBase* playerBase)
 {
 	inputBridge = GameplayInputBridge();
 
-	for (size_t i = 0; i < playerBase->getPlayers().size(); i++)//every ionput action map in playersInGame
+	for (size_t i = 0; i < playerBase->GetPlayers().size(); i++)//every ionput action map in playersInGame
 	{
-		inputBridge.addInputActionMapForPlayer(playerBase->getPlayersAction()[i]);
+		inputBridge.AddInputActionMapForPlayer(playerBase->GetPlayersAction()[i]);
 	}
 }
 
-void GameplaySystem::compileGameplayScript(std::string levelScript)
+void GameplaySystem::CompileGameplayScript(std::string levelScript)
 {
-	ActionBuilder::setExecutableBuilder([](Node* node)
+	ActionBuilder::SetExecutableBuilder([](Node* node)
 	{
-		return SendMessageActionBuilder::buildSendMessageAction(node);
+		return SendMessageActionBuilder::BuildSendMessageAction(node);
 	});
 
 	gameplayScript = levelScript;
 	gameLogic = GameLogic(&incomingMessages);
-	gameLogic.compileScript(levelScript);
-	gameLogic.executeActionsOnStart();
+	gameLogic.CompileScript(levelScript);
+	gameLogic.ExecuteActionsOnStart();
 }
 
-void GameplaySystem::setDefaultGameplayScript()
+void GameplaySystem::SetDefaultGameplayScript()
 {
 	gameplayScript = "";
 	gameLogic = GameLogic(&incomingMessages);
 }
 
-void GameplaySystem::addGameObjectScript(std::string scriptFile)
+void GameplaySystem::AddGameObjectScript(std::string scriptFile)
 {
 	objects.push_back(GameObjectLogic(database, scriptFile));
 }
 
-void GameplaySystem::deleteGameObjectScripts()
+void GameplaySystem::DeleteGameObjectScripts()
 {
 	objects.clear();
 }
 
-void GameplaySystem::compileGameObjectScripts()
+void GameplaySystem::CompileGameObjectScripts()
 {
 	for (GameObjectLogic& object : objects)
 	{
-		object.compileParsedXMLIntoScript();
+		object.CompileParsedXmlIntoScript();
 	}
 }
 
-void GameplaySystem::updateGameplayWhenTimed(const float& deltaTime)
+void GameplaySystem::UpdateGameplayWhenTimed(const float& deltaTime)
 {
 	if (gameLogic.elapsedTime < gameLogic.maxTime)
 	{
-		updateGameplayWithTimeRemaining(deltaTime);
+		UpdateGameplayWithTimeRemaining(deltaTime);
 	}
 	else if (!levelFinished)
 	{
 		levelFinished = true;
-		DeliverySystem::getPostman()->insertMessage(TextMessage("GameLoop", "deltatime disable"));
-		DeliverySystem::getPostman()->insertMessage(TextMessage("UserInterface", "Toggle"));
+		DeliverySystem::GetPostman()->InsertMessage(TextMessage("GameLoop", "deltatime disable"));
+		DeliverySystem::GetPostman()->InsertMessage(TextMessage("UserInterface", "Toggle"));
 	}
 	else
 	{
-		updateGameOverScreen();
+		UpdateGameOverScreen();
 	}
 }
 
-void GameplaySystem::updateGameplayWithTimeRemaining(const float& deltaTime)
+void GameplaySystem::UpdateGameplayWithTimeRemaining(const float& deltaTime)
 {
 	timer->beginTimedSection();
 
-	updateGameLogic(deltaTime);
-	updateGameObjectLogics(deltaTime);
+	UpdateGameLogic(deltaTime);
+	UpdateGameObjectLogics(deltaTime);
 
 	timer->endTimedSection();
 
-	updateGameTimer(deltaTime);
-	PaintGameActionBuilder::updateBufferedVariables();
+	UpdateGameTimer(deltaTime);
+	PaintGameActionBuilder::UpdateBufferedVariables();
 }
 
-void GameplaySystem::updateGameOverScreen()
+void GameplaySystem::UpdateGameOverScreen()
 {
-	if (gameOverMessageSender.readyToSendNextMessage())
+	if (gameOverMessageSender.ReadyToSendNextMessage())
 	{
-		gameOverMessageSender.setMessage(TextMeshMessage("RenderingSystem", "GAME OVER!",
+		gameOverMessageSender.SetMessage(TextMeshMessage("RenderingSystem", "GAME OVER!",
 			NCLVector3(-50, -50, 0), NCLVector3(50, 50, 50), NCLVector3(1, 0, 0), true, true));
-		gameOverMessageSender.sendMessage();
+		gameOverMessageSender.SendTrackedMessage();
 	}
 
 	int winningPlayerID = -1;
@@ -216,40 +216,40 @@ void GameplaySystem::updateGameOverScreen()
 		}
 	}
 
-	if (winningPlayerMessageSender.readyToSendNextMessage())
+	if (winningPlayerMessageSender.ReadyToSendNextMessage())
 	{
-		winningPlayerMessageSender.setMessage(TextMeshMessage("RenderingSystem", "Player" + std::to_string(winningPlayerID) + " wins!!! :)",
+		winningPlayerMessageSender.SetMessage(TextMeshMessage("RenderingSystem", "Player" + std::to_string(winningPlayerID) + " wins!!! :)",
 			NCLVector3(-50, -100, 0), NCLVector3(20, 20, 20), NCLVector3(1, 1, 1), true, true));
-		winningPlayerMessageSender.sendMessage();
+		winningPlayerMessageSender.SendTrackedMessage();
 	}
 }
 
-void GameplaySystem::updateGameLogic(const float& deltaTime)
+void GameplaySystem::UpdateGameLogic(const float& deltaTime)
 {
 	timer->beginChildTimedSection("Level Logic");
-	gameLogic.executeMessageBasedActions();
-	gameLogic.executeTimeBasedActions(deltaTime * 0.001f);
-	gameLogic.clearNotifications();
+	gameLogic.ExecuteMessageBasedActions();
+	gameLogic.ExecuteTimeBasedActions(deltaTime * 0.001f);
+	gameLogic.ClearNotifications();
 	timer->endChildTimedSection("Level Logic");
 }
 
-void GameplaySystem::updateGameObjectLogics(const float& deltaTime)
+void GameplaySystem::UpdateGameObjectLogics(const float& deltaTime)
 {
 	timer->beginChildTimedSection("Object Logic");
 	for (GameObjectLogic& object : objects)
 	{
-		object.updatelogic(deltaTime * 0.001f);
+		object.Updatelogic(deltaTime * 0.001f);
 	}
 	timer->endChildTimedSection("Object Logic");
 }
 
-void GameplaySystem::removeScriptsInbuffer()
+void GameplaySystem::RemoveScriptsInbuffer()
 {
 	for (std::string gameObjectLogicToRemove : gameObjectLogicRemoveBuffer)
 	{
 		for (size_t i = 0; i < objects.size(); ++i)
 		{
-			if (objects[i].getScriptFile() == gameObjectLogicToRemove)
+			if (objects[i].GetScriptFile() == gameObjectLogicToRemove)
 			{
 				objects.erase(objects.begin() + i);
 				break;
@@ -260,16 +260,16 @@ void GameplaySystem::removeScriptsInbuffer()
 	gameObjectLogicRemoveBuffer.clear();
 }
 
-void GameplaySystem::updateGameTimer(const float& deltaTime)
+void GameplaySystem::UpdateGameTimer(const float& deltaTime)
 {
 	gameLogic.elapsedTime += (deltaTime * 0.001f);
 
-	if (timerMessageSender.readyToSendNextMessage())
+	if (timerMessageSender.ReadyToSendNextMessage())
 	{
-		timerMessageSender.setMessage(TextMeshMessage("RenderingSystem", std::to_string((int)round(gameLogic.maxTime - gameLogic.elapsedTime)),
+		timerMessageSender.SetMessage(TextMeshMessage("RenderingSystem", std::to_string((int)round(gameLogic.maxTime - gameLogic.elapsedTime)),
 			NCLVector3(-75, 310, 0), NCLVector3(30, 30, 30), NCLVector3(1, 0, 0), true, true));
 
-		timerMessageSender.sendMessage();
+		timerMessageSender.SendTrackedMessage();
 	}
 }
 

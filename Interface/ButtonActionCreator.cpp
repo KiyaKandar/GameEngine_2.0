@@ -12,37 +12,37 @@ ButtonActionCreator::ButtonActionCreator()
 
 	actions.insert({ "Quit", []()
 	{
-		DeliverySystem::getPostman()->insertMessage(TextMessage("GameLoop", "Quit"));
+		DeliverySystem::GetPostman()->InsertMessage(TextMessage("GameLoop", "Quit"));
 	} });
 
 	actions.insert({ "DisableSSAO", []()
 	{
-		DeliverySystem::getPostman()->insertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "SSAO", false));
+		DeliverySystem::GetPostman()->InsertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "SSAO", false));
 	} });
 
 	actions.insert({ "EnableSSAO", []()
 	{
-		DeliverySystem::getPostman()->insertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "SSAO", true));
+		DeliverySystem::GetPostman()->InsertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "SSAO", true));
 	} });
 
 	actions.insert({ "EnableSkybox", []()
 	{
-		DeliverySystem::getPostman()->insertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "Skybox", true));
+		DeliverySystem::GetPostman()->InsertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "Skybox", true));
 	} });
 
 	actions.insert({ "DisableSkybox", []()
 	{
-		DeliverySystem::getPostman()->insertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "Skybox", false));
+		DeliverySystem::GetPostman()->InsertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "Skybox", false));
 	} });
 
 	actions.insert({ "EnableShadows", []()
 	{
-		DeliverySystem::getPostman()->insertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "Shadows", true));
+		DeliverySystem::GetPostman()->InsertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "Shadows", true));
 	} });
 
 	actions.insert({ "DisableShadows", []()
 	{
-		DeliverySystem::getPostman()->insertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "Shadows", false));
+		DeliverySystem::GetPostman()->InsertMessage(ToggleGraphicsModuleMessage("RenderingSystem", "Shadows", false));
 	} });
 }
 
@@ -50,7 +50,7 @@ ButtonActionCreator::~ButtonActionCreator()
 {
 }
 
-ButtonAction ButtonActionCreator::createButtonAction(Node* actionNode)
+ButtonAction ButtonActionCreator::CreateButtonAction(Node* actionNode)
 {
 	if (actionNode->name == "Start")
 	{
@@ -59,7 +59,7 @@ ButtonAction ButtonActionCreator::createButtonAction(Node* actionNode)
 
 		return [s1, s2]()
 		{
-			DeliverySystem::getPostman()->insertMessage(TextMessage("GameLoop", "Start " + s1 + " " + s2));
+			DeliverySystem::GetPostman()->InsertMessage(TextMessage("GameLoop", "Start " + s1 + " " + s2));
 		};
 	}
 	else if (actionNode->name == "Resolution")
@@ -69,7 +69,7 @@ ButtonAction ButtonActionCreator::createButtonAction(Node* actionNode)
 
 		return [xResolution, yResolution]()
 		{
-			DeliverySystem::getPostman()->insertMessage(TextMessage("RenderingSystem", "Resolution " + std::to_string(xResolution) + " " + std::to_string(yResolution)));
+			DeliverySystem::GetPostman()->InsertMessage(TextMessage("RenderingSystem", "Resolution " + std::to_string(xResolution) + " " + std::to_string(yResolution)));
 		};
 	}
 	else 

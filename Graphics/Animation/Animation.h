@@ -20,33 +20,33 @@ public:
 		const aiNode* rootNode, const aiMatrix4x4& globalInverseTransform, std::vector<BoneInfo>* initialBoneInfo);
 	~Animation();
 
-	const std::string getOwningGameObjectName() const;
-	bool hasGameObjectIdMatchOnly(const size_t& gameObjectId) const;
-	bool hasAnimationIdMatchOnly(const size_t& animationId) const;
-	bool hasIdMatch(const size_t& gameObjectId, const size_t& animationId) const;
-	bool isLooping() const;
+	const std::string GetOwningGameObjectName() const;
+	bool HasGameObjectIdMatchOnly(const size_t& gameObjectId) const;
+	bool HasAnimationIdMatchOnly(const size_t& animationId) const;
+	bool HasIdMatch(const size_t& gameObjectId, const size_t& animationId) const;
+	bool IsLooping() const;
 
-	void updateSceneNodeTransformFromNode(const NodeTransformSpecifier& nodeSpecifier);
-	aiMatrix4x4 getCurrentTransformOfSceneNodeTransformerNode(const std::string nodeName);
-	void debugDrawSkeleton(const aiMatrix4x4& parentTransform);
+	void UpdateSceneNodeTransformFromNode(const NodeTransformSpecifier& nodeSpecifier);
+	aiMatrix4x4 GetCurrentTransformOfSceneNodeTransformerNode(const std::string nodeName);
+	void DebugDrawSkeleton(const aiMatrix4x4& parentTransform);
 
-	void setBlockedSkeletonNodeTransforms(const std::string& nodeName, const BlockedTransformComponents& blockedComponents);
+	void SetBlockedSkeletonNodeTransforms(const std::string& nodeName, const BlockedTransformComponents& blockedComponents);
 
-	void incrementTimer(const double& deltaTime);
-	void reset();
+	void IncrementTimer(const double& deltaTime);
+	void Reset();
 
-	void setDurationToLerpFromPreviousAniamtion(const double& lerpDuration);
-	void setLooping(const bool looping);
+	void SetDurationToLerpFromPreviousAniamtion(const double& lerpDuration);
+	void SetLooping(const bool looping);
 
-	bool finishedPlaying() const;
-	bool meshIsOnScreen() const;
+	bool FinishedPlaying() const;
+	bool MeshIsOnScreen() const;
 
-	void updateAnimationTransformState();
-	void readAnimationState(std::vector<aiMatrix4x4>& animationState) const;
+	void UpdateAnimationTransformState();
+	void ReadAnimationState(std::vector<aiMatrix4x4>& animationState) const;
 
 private:
-	void validateLastKeyFrames(const double timeInTicks);
-	void transformBones(std::vector<aiMatrix4x4>& transforms);
+	void ValidateLastKeyFrames(const double timeInTicks);
+	void TransformBones(std::vector<aiMatrix4x4>& transforms);
 	void RemoveSceneNodeTransformFromBones(const MeshNode& node, const aiMatrix4x4& sceneNodeTransform, 
 		const BlockedTransformComponents& blockedComponents);
 

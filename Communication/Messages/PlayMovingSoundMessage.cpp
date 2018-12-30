@@ -21,7 +21,7 @@ PlayMovingSoundMessage::~PlayMovingSoundMessage()
 {
 }
 
-PlayMovingSoundMessage PlayMovingSoundMessage::builder(Node* node)
+PlayMovingSoundMessage PlayMovingSoundMessage::Builder(Node* node)
 {
 	std::string destination = "";
 	NCLVector3 position;

@@ -8,11 +8,11 @@ KeyboardMouseRecorder::KeyboardMouseRecorder(Keyboard * keyboard, Mouse * mouse)
 	this->mouse = mouse;
 }
 
-void KeyboardMouseRecorder::fillInputs()
+void KeyboardMouseRecorder::FillInputs()
 {
 	for (int key : keysToListen)
 	{
-		if (keyboard->keyHeld(static_cast<KeyboardKeys>(key))) 
+		if (keyboard->KeyHeld(static_cast<KeyboardKeys>(key))) 
 		{
 			currentButtonInputs.push_back(ButtonInputData(InputType::HELD, key));
 		}

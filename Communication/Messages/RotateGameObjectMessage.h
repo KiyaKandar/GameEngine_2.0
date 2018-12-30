@@ -14,8 +14,8 @@ public:
 		NCLVector4 rotation, bool relative = false);
 	~RotateGameObjectMessage();
 
-	static RotateGameObjectMessage builder(Node* node);
-	static RotateGameObjectMessage tokensToMessage(std::vector<std::string> lineTokens);
+	static RotateGameObjectMessage Builder(Node* node);
+	static RotateGameObjectMessage TokensToMessage(std::vector<std::string> lineTokens);
 
 	bool relative;
 	std::string gameObjectID;

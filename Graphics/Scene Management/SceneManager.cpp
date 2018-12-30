@@ -27,45 +27,45 @@ SceneManager::~SceneManager()
 	delete transparentSceneNodesInFrustum;
 }
 
-void SceneManager::clearMeshLists()
+void SceneManager::ClearMeshLists()
 {
 	sceneNodesInFrustum->clear();
 	transparentSceneNodesInFrustum->clear();
 }
 
-void SceneManager::buildMeshLists()
+void SceneManager::BuildMeshLists()
 {
 	for (SceneNode* node : *sceneNodes)
 	{
 		node->Update(0.0f);
-		allocateSubNodesToNodeLists(node);
+		AllocateSubNodesToNodeLists(node);
 	}
 }
 
-std::vector<SceneNode*>* SceneManager::getSceneNodesInFrustum()
+std::vector<SceneNode*>* SceneManager::GetSceneNodesInFrustum()
 {
 	return sceneNodesInFrustum;
 }
 
-std::vector<SceneNode*>* SceneManager::getTransparentSceneNodesInFrustum()
+std::vector<SceneNode*>* SceneManager::GetTransparentSceneNodesInFrustum()
 {
 	return transparentSceneNodesInFrustum;
 }
 
-std::vector<Light*>** SceneManager::getAllLights()
+std::vector<Light*>** SceneManager::GetAllLights()
 {
 	return &lights;
 }
 
-std::vector<SceneNode*>** SceneManager::getAllNodes()
+std::vector<SceneNode*>** SceneManager::GetAllNodes()
 {
 	return &sceneNodes;
 }
 
 //TODO ORDER MESHES
-void SceneManager::allocateSubNodesToNodeLists(SceneNode* node)
+void SceneManager::AllocateSubNodesToNodeLists(SceneNode* node)
 {
-	if (camera->sceneNodeIsInCameraView(node) && node->isEnabled)
+	if (camera->SceneNodeIsInCameraView(node) && node->isEnabled)
 	{
 		node->GetMesh()->onScreen = true;
 

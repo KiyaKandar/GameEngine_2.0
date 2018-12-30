@@ -19,7 +19,7 @@ ApplyImpulseMessage::~ApplyImpulseMessage()
 {
 }
 
-ApplyImpulseMessage ApplyImpulseMessage::builder(Node* node)
+ApplyImpulseMessage ApplyImpulseMessage::Builder(Node* node)
 {
 	std::string destination = "";
 	std::string object = "";
@@ -67,7 +67,7 @@ ApplyImpulseMessage ApplyImpulseMessage::builder(Node* node)
 }
 
 //APPLY_FORCE Physics player0 impulse=5,5,5
-ApplyImpulseMessage ApplyImpulseMessage::tokensToMessage(std::vector<std::string> lineTokens)
+ApplyImpulseMessage ApplyImpulseMessage::TokensToMessage(std::vector<std::string> lineTokens)
 {
 	std::string nodeDestination = lineTokens[1];
 	std::string nodeResourcename = lineTokens[2];

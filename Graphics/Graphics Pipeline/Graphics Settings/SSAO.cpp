@@ -29,24 +29,24 @@ SSAO::SSAO(const std::string identifier, const NCLVector2 resolution, Camera* ca
 	ySize = 2;//GLConfig::RESOLUTION.y / RESOLUTION_SCALE_Y;
 }
 
-void SSAO::linkShaders()
+void SSAO::LinkShaders()
 {
 	SSAOCol->LinkProgram();
 	SSAOBlur->LinkProgram();
 }
 
-void SSAO::initialise()
+void SSAO::Initialise()
 {
-	initSSAOBuffers();
+	InitSsaoBuffers();
 
 	//For the SSAO texture
-	generateSampleKernel();
-	generateNoiseTexture();
+	GenerateSampleKernel();
+	GenerateNoiseTexture();
 
-	locateUniforms();
+	LocateUniforms();
 }
 
-void SSAO::locateUniforms()
+void SSAO::LocateUniforms()
 {
 	loc_ssaoRadius = glGetUniformLocation(SSAOCol->GetProgram(), "radius");
 	loc_ssaoBias = glGetUniformLocation(SSAOCol->GetProgram(), "bias");
@@ -61,26 +61,26 @@ void SSAO::locateUniforms()
 	loc_ySize = glGetUniformLocation(SSAOBlur->GetProgram(), "ySize");
 }
 
-void SSAO::apply()
+void SSAO::Apply()
 {
 	glDepthMask(GL_FALSE);
 	//Generate the SSAO texture
-	generateSSAOTex();
+	GenerateSsaoTex();
 
 	//Blur the texture
-	SSAOBlurTex();
+	SsaoBlurTex();
 	glDepthMask(GL_TRUE);
 
 	applied = true;
 }
 
-void SSAO::regenerateShaders()
+void SSAO::RegenerateShaders()
 {
 	SSAOCol->Regenerate();
 	SSAOBlur->Regenerate();
 }
 
-void SSAO::initSSAOBuffers()
+void SSAO::InitSsaoBuffers()
 {
 	//Create framebuffer to hold SSAO processing stage 
 	glGenFramebuffers(1, &ssaoFBO);
@@ -104,7 +104,7 @@ void SSAO::initSSAOBuffers()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void SSAO::generateSampleKernel()
+void SSAO::GenerateSampleKernel()
 {
 	const std::uniform_real_distribution<GLfloat> randomFloats(0.0f, 1.0f);
 	std::default_random_engine generator;
@@ -119,13 +119,13 @@ void SSAO::generateSampleKernel()
 		float scale = float(i) / KERNEL_SIZE;
 
 		//Scale samples so they're more aligned to center of kernel
-		scale = lerp(0.1f, 1.0f, scale * scale);//0.1f + (scale * scale) * (1.0f - 0.1f); //Lerp
+		scale = Lerp(0.1f, 1.0f, scale * scale);//0.1f + (scale * scale) * (1.0f - 0.1f); //Lerp
 		sample = sample * scale;
 		ssaoKernel.push_back(sample);
 	}
 }
 
-void SSAO::generateNoiseTexture()
+void SSAO::GenerateNoiseTexture()
 {
 	const std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0);
 	std::default_random_engine generator;
@@ -155,19 +155,19 @@ void SSAO::generateNoiseTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-void SSAO::generateSSAOTex()
+void SSAO::GenerateSsaoTex()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	setCurrentShader(SSAOCol);
+	SetCurrentShader(SSAOCol);
 
 	glUniform3fv(loc_kernel, KERNEL_SIZE, (float*)&ssaoKernel[0]);
 
-	viewMatrix = camera->buildViewMatrix();
+	viewMatrix = camera->BuildViewMatrix();
 
 	//Basic uniforms
-	updateShaderMatrices();
+	UpdateShaderMatrices();
 	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix"), 1, false, (float*)&CommonGraphicsData::SHARED_PROJECTION_MATRIX);
 
 	glUniform1i(loc_ssaoRadius, (GLint)ssaoRadius);
@@ -185,17 +185,17 @@ void SSAO::generateSSAOTex()
 	currentShader->ApplyTexture(CommonGraphicsData::GNORMAL, *SGBuffer->gNormal);
 	currentShader->ApplyTexture(NOISE_TEX, noiseTexture);
 
-	renderScreenQuad();
+	RenderScreenQuad();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void SSAO::SSAOBlurTex()
+void SSAO::SsaoBlurTex()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurFBO);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	setCurrentShader(SSAOBlur);
+	SetCurrentShader(SSAOBlur);
 
 	glUniform1i(loc_xSize, xSize);
 	glUniform1i(loc_ySize, ySize);
@@ -203,7 +203,7 @@ void SSAO::SSAOBlurTex()
 	glUniform1i(loc_ssaoInput, SSAO_TEX);
 	currentShader->ApplyTexture(SSAO_TEX, ssaoColorBuffer);
 
-	renderScreenQuad();
+	RenderScreenQuad();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

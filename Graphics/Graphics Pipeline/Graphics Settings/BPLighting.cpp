@@ -25,20 +25,20 @@ BPLighting::BPLighting(const std::string identifier, const NCLVector2 resolution
 }
 
 
-void BPLighting::linkShaders()
+void BPLighting::LinkShaders()
 {
 	lightingPassShader->LinkProgram();
 }
 
-void BPLighting::regenerateShaders()
+void BPLighting::RegenerateShaders()
 {
 	lightingPassShader->Regenerate();
 }
 
-void BPLighting::initialise()
+void BPLighting::Initialise()
 {
 	glGenFramebuffers(1, &FBO);
-	locateUniforms();
+	LocateUniforms();
 
 	if(lightDatas.size() > 0)
 	{
@@ -53,7 +53,7 @@ void BPLighting::initialise()
 
 }
 
-void BPLighting::locateUniforms()
+void BPLighting::LocateUniforms()
 {
 	loc_gPosition = glGetUniformLocation(lightingPassShader->GetProgram(), "gPosition");
 	loc_gNormal = glGetUniformLocation(lightingPassShader->GetProgram(), "gNormal");
@@ -67,7 +67,7 @@ void BPLighting::locateUniforms()
 	loc_numberOfLights = glGetUniformLocation(lightingPassShader->GetProgram(), "numberOfLights");
 }
 
-void BPLighting::apply()
+void BPLighting::Apply()
 {
 	lightDatas.clear();
 	for (Light* light : **lights)
@@ -86,14 +86,14 @@ void BPLighting::apply()
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 
-	lightingPass();
+	LightingPass();
 }
 
-void BPLighting::lightingPass()
+void BPLighting::LightingPass()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	setCurrentShader(lightingPassShader);
+	SetCurrentShader(lightingPassShader);
 
 	glUniform1i(loc_gPosition, CommonGraphicsData::GPOSITION);
 	glUniform1i(loc_gNormal, CommonGraphicsData::GNORMAL);
@@ -107,10 +107,10 @@ void BPLighting::lightingPass()
 
 	glUniformMatrix4fv(loc_texMatrices, 1, false, (float*)&shadowData->textureMatrices);
 
-	viewMatrix = camera->buildViewMatrix();
+	viewMatrix = camera->BuildViewMatrix();
 	glUniformMatrix4fv(loc_camMatrix, 1, false, (float*)&viewMatrix);
 
-	updateShaderMatrices();
+	UpdateShaderMatrices();
 	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix"), 1, false, (float*)&CommonGraphicsData::SHARED_PROJECTION_MATRIX);
 
 	currentShader->ApplyTexture(CommonGraphicsData::GPOSITION, *gBuffer->gPosition);
@@ -130,7 +130,7 @@ void BPLighting::lightingPass()
 	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, shadowData->shadowTex);
 
-	renderScreenQuad();
+	RenderScreenQuad();
 	*SSAOApplied = false;
 	*ShadowsApplied = false;
 }

@@ -28,33 +28,33 @@ public:
 	LetterBox();
 	virtual ~LetterBox();
 
-	void addDeliveryPoint(const std::string& bufferName) override;
-	MessageDeliveryBuffer* getDeliveryPoint(const std::string& bufferName) override;
+	void AddDeliveryPoint(const std::string& bufferName) override;
+	MessageDeliveryBuffer* GetDeliveryPoint(const std::string& bufferName) override;
 
 	REGISTER_ALL_MESSAGES()
 	REGISTER_ALL_TRACKED_SENDERS()
 
-	void deliverAllMessages() override
+	void DeliverAllMessages() override
 	{
 		REGISTER_ALL_SENDER()
 	}
 
-	void clearAllMessages()
+	void ClearAllMessages()
 	{
 		REGISTER_ALL_CLEAR()
 	}
 
-	void cancelOutgoingMessages()
+	void CancelOutgoingMessages()
 	{
 		REGISTER_ALL_CANCEL()
 	}
 
-	void cancelDeliveredMessages()
+	void CancelDeliveredMessages()
 	{
-		messageStorage->clearMessageStorage();
+		messageStorage->ClearMessageStorage();
 	}
 
-	void deleteAllTrackedSenders()
+	void DeleteAllTrackedSenders()
 	{
 		REGISTER_ALL_TRACKED_SENDERS_DELETION()
 	}

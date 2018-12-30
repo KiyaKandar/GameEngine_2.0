@@ -18,16 +18,16 @@ public:
 
 		if (!node->constantAcceleration)
 		{
-			node->SetForce(node->getAppliedForce());
+			node->SetForce(node->GetAppliedForce());
 			node->SetAcceleration(node->GetForce() * node->GetInverseMass());
-			node->setAppliedForce(NCLVector3());
+			node->SetAppliedForce(NCLVector3());
 		}
 
 		//Semi-Implicit Euler Integration
 		velocity += node->GetAcceleration() * dt;
 
 		//Damping
-		velocity = velocity * node->getDamping();
+		velocity = velocity * node->GetDamping();
 
 		return velocity;
 	}
@@ -45,7 +45,7 @@ public:
 		angularVelocity += node->GetInverseInertia() * node->GetTorque() * dt;
 
 		//Damping
-		angularVelocity = angularVelocity * node->getDamping();
+		angularVelocity = angularVelocity * node->GetDamping();
 
 		return angularVelocity;
 	}
