@@ -9,7 +9,7 @@ OctreePartitioning::OctreePartitioning(vector<PhysicsNode*> nodes,
 	//Remove nodes that will not be colliding
 	for (auto it = this->nodes.begin(); it != this->nodes.end();)
 	{
-		if (!(*it)->getIsCollision())
+		if (!(*it)->collidable)
 		{
 			it = this->nodes.erase(it);
 		}
@@ -54,7 +54,7 @@ void OctreePartitioning::UpdateTree()
 	}
 	
 	//Update the flags so this does not happen next frame.
-	for (PhysicsNode* node : nodesToUpdate)
+	for each (PhysicsNode* node in nodesToUpdate)
 	{
 		node->toDeleteInOctree = false;
 	}
@@ -64,7 +64,7 @@ void OctreePartitioning::UpdateTree()
 	//have branches with leaf nodes.
 	for (Partition& partition : baseOctreePartitions)
 	{
-		for (PhysicsNode* node : nodesToUpdate)
+		for each (PhysicsNode* node in nodesToUpdate)
 		{	
 			PartitionNodeIntoExistingTree(partition, node);
 		}
@@ -86,14 +86,17 @@ void OctreePartitioning::PartitionNodes(Partition& parent, vector<PhysicsNode*>&
 {
 	for (PhysicsNode* node : parentNodes)
 	{
-		if (PartitionUtility::CollidesWithPartition(parent, node->getCollisionShape()))
+		for each (CollisionShape* shape in node->collisionShapes)
 		{
-			parent.containedNodes.push_back(node);
-			break;
+			if (PartitionUtility::CollidesWithPartition(parent, shape))
+			{
+				parent.containedNodes.push_back(node);
+				break;
+			}
 		}
 	}
 
-	if (parent.containedNodes.size() > (size_t)ENTITY_PER_PARTITION_THRESHOLD)
+	if (parent.containedNodes.size() > ENTITY_PER_PARTITION_THRESHOLD)
 	{
 		PartitionUtility::SplitPartition(parent);
 
@@ -112,13 +115,16 @@ void OctreePartitioning::PartitionNodeIntoExistingTree(Partition& parent, Physic
 {
 	if (parent.childPartitions.size() == 0)
 	{
-		//PartitionUtility::AllocateNodeToPartition(parent, shape, node);
-		if (PartitionUtility::CollidesWithPartition(parent, node->getCollisionShape()))
+		for each (CollisionShape* shape in node->collisionShapes)
 		{
-			parent.containedNodes.push_back(node);
+			if (PartitionUtility::CollidesWithPartition(parent, shape))
+			{
+				parent.containedNodes.push_back(node);
+				break;
+			}
 		}
 
-		if (parent.containedNodes.size() > (size_t)ENTITY_PER_PARTITION_THRESHOLD)
+		if (parent.containedNodes.size() > ENTITY_PER_PARTITION_THRESHOLD)
 		{
 			PartitionUtility::SplitPartition(parent);
 
@@ -135,10 +141,13 @@ void OctreePartitioning::PartitionNodeIntoExistingTree(Partition& parent, Physic
 		//Check child partitions for collisions with node.
 		for (Partition& child : parent.childPartitions)
 		{
-			if (PartitionUtility::CollidesWithPartition(child, node->getCollisionShape()))
+			for each (CollisionShape* shape in node->collisionShapes)
 			{
-				PartitionNodeIntoChild(child, node);
-				break;
+				if (PartitionUtility::CollidesWithPartition(child, shape))
+				{
+					PartitionNodeIntoChild(child, node);
+					break;
+				}
 			}
 		}
 	}
@@ -149,7 +158,7 @@ void OctreePartitioning::PartitionNodeIntoChild(Partition& child, PhysicsNode* n
 	//Check if this node contains child partitions.
 	PartitionNodeIntoExistingTree(child, node);
 
-	if (child.containedNodes.size() > (size_t)ENTITY_PER_PARTITION_THRESHOLD)
+	if (child.containedNodes.size() > ENTITY_PER_PARTITION_THRESHOLD)
 	{
 		PartitionUtility::SplitPartition(child);
 
@@ -276,5 +285,13 @@ void OctreePartitioning::ClearEmptyOctants(Partition& partition)
 	if (emptyPartitions == 8)
 	{
 		partition.childPartitions.clear();
+	}
+}
+
+void OctreePartitioning::DrawWireFrameOctrees(std::vector<DebugLineMessage>& lineMessages)
+{
+	for (const Partition& partition : baseOctreePartitions)
+	{
+		PartitionUtility::DrawPartitionAndChildren(partition, lineMessages);
 	}
 }

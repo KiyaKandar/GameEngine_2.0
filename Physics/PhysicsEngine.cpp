@@ -1,7 +1,11 @@
 #include "PhysicsEngine.h"
-#include "CollisionDetectionSAT.h"
 
+#include "CollisionDetectionSAT.h"
 #include "OctreePartitioning.h"
+#include <omp.h>
+#include <algorithm>
+
+#include "GPUCloth.h"
 
 #include "../Communication/Messages/ApplyForceMessage.h"
 #include "../Communication/Messages/CollisionMessage.h"
@@ -9,16 +13,15 @@
 #include "../Communication/Messages/AbsoluteTransformMessage.h"
 #include "../Input/Devices/Keyboard.h"
 
-#pragma optimize("", off)
-
 PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem("Physics")
 {
 	this->database = database;
 	this->keyboard = keyboard;
+	octree = nullptr;
 
-	std::vector<MessageType> types = { MessageType::TEXT, MessageType::PLAYER_INPUT, MessageType::RELATIVE_TRANSFORM, 
+	std::vector<MessageType> types = { MessageType::TEXT, MessageType::PLAYER_INPUT, MessageType::RELATIVE_TRANSFORM,
 		MessageType::APPLY_FORCE, MessageType::APPLY_IMPULSE, MessageType::UPDATE_POSITION, MessageType::ABSOLUTE_TRANSFORM,
-		MessageType::MOVE_GAMEOBJECT, MessageType::SCALE_GAMEOBJECT, MessageType::ROTATE_GAMEOBJECT, MessageType::TOGGLE_GAMEOBJECT};
+		MessageType::MOVE_GAMEOBJECT, MessageType::SCALE_GAMEOBJECT, MessageType::ROTATE_GAMEOBJECT, MessageType::TOGGLE_GAMEOBJECT };
 
 	incomingMessages = MessageProcessor(types, DeliverySystem::getPostman()->getDeliveryPoint("Physics"));
 
@@ -30,7 +33,7 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 			database->getTable("GameObjects")->getResource(toggleMessage->gameObjectID));
 
 		gameObject->getPhysicsNode()->setEnabled(toggleMessage->isEnabled);
-		//gameObject->setEnabled(toggleMessage->isEnabled);
+		gameObject->setEnabled(toggleMessage->isEnabled);
 	});
 
 	incomingMessages.addActionToExecuteOnMessage(MessageType::TEXT, [database = database, this](Message* message)
@@ -52,7 +55,7 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 		{
 			for (auto physicsNodeiterator = physicsNodes.begin(); physicsNodeiterator != physicsNodes.end(); ++physicsNodeiterator)
 			{
-				if ((*physicsNodeiterator)->getParent()->getName() == tokens[1])
+				if ((*physicsNodeiterator)->GetParent()->getName() == tokens[1])
 				{
 					physicsNodes.erase(physicsNodeiterator);
 					break;
@@ -67,7 +70,7 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 		GameObject* gameObject = static_cast<GameObject*>(
 			database->getTable("GameObjects")->getResource(translationMessage->resourceName));
 
-		gameObject->getPhysicsNode()->setPosition(translationMessage->transform.getPositionVector());
+		gameObject->getPhysicsNode()->SetPosition(translationMessage->transform.getPositionVector());
 	});
 
 	incomingMessages.addActionToExecuteOnMessage(MessageType::MOVE_GAMEOBJECT, [database = database](Message* message)
@@ -77,7 +80,7 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 		GameObject* gameObject = static_cast<GameObject*>(
 			database->getTable("GameObjects")->getResource(moveMessage->gameObjectID));
 
-		gameObject->getPhysicsNode()->setPosition(moveMessage->position);
+		gameObject->getPhysicsNode()->SetPosition(moveMessage->position);
 	});
 
 	incomingMessages.addActionToExecuteOnMessage(MessageType::SCALE_GAMEOBJECT, [database = database](Message* message)
@@ -87,7 +90,7 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 		GameObject* gameObject = static_cast<GameObject*>(
 			database->getTable("GameObjects")->getResource(scaleMessage->gameObjectID));
 
-		gameObject->getPhysicsNode()->getCollisionShape()->setScale(scaleMessage->scale, gameObject->getPhysicsNode()->getInverseMass());
+		gameObject->getPhysicsNode()->getCollisionShape()->setScale(scaleMessage->scale, gameObject->getPhysicsNode()->GetInverseMass());
 	});
 
 	incomingMessages.addActionToExecuteOnMessage(MessageType::ROTATE_GAMEOBJECT, [database = database](Message* message)
@@ -99,18 +102,15 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 
 		if (rotateMessage->relative)
 		{
-			gameObject->getPhysicsNode()->setOrientation(gameObject->getPhysicsNode()->getOrientation() *
+			gameObject->getPhysicsNode()->SetOrientation(gameObject->getPhysicsNode()->GetOrientation() *
 				Quaternion::axisAngleToQuaterion(NCLVector3(rotateMessage->rotation.x, rotateMessage->rotation.y, rotateMessage->rotation.z), rotateMessage->rotation.w));
 		}
 		else
 		{
-			gameObject->getPhysicsNode()->setOrientation(
+			gameObject->getPhysicsNode()->SetOrientation(
 				Quaternion::axisAngleToQuaterion(NCLVector3(rotateMessage->rotation.x, rotateMessage->rotation.y, rotateMessage->rotation.z), rotateMessage->rotation.w));
 		}
 	});
-
-
-	float dt = getDeltaTime();
 
 	incomingMessages.addActionToExecuteOnMessage(MessageType::APPLY_FORCE, [database/*, this*/](Message* message)
 	{
@@ -124,7 +124,7 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 		{
 			if (applyForceMessage->xmin != applyForceMessage->xmax)
 			{
-				force.x = VectorBuilder::getRandomVectorComponent(applyForceMessage->xmin, applyForceMessage->xmax) * 50.0f; 
+				force.x = VectorBuilder::getRandomVectorComponent(applyForceMessage->xmin, applyForceMessage->xmax) * 50.0f;
 				//These * 50.0f are needed because currently rand() doesn't give good results for large ranges. 
 				//So a smaller range is needed when choosing random min and max values for vectors, which should then be scaled to the appropriate value
 				//Get rid of them though as any random force component will now be scaled and this isn't good!
@@ -168,7 +168,7 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 		gObj->getPhysicsNode()->applyImpulse(impulse);
 	});
 
-	
+
 
 	incomingMessages.addActionToExecuteOnMessage(MessageType::UPDATE_POSITION, [database/*, &dt*/](Message* message)
 	{
@@ -176,7 +176,7 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 
 		GameObject* gObj = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(positionMessage->gameObjectID));
 
-		gObj->getPhysicsNode()->setPosition((positionMessage->position)/**dt*/);
+		gObj->getPhysicsNode()->SetPosition((positionMessage->position)/**dt*/);
 	});
 
 	updateTimestep = 1.0f / 60.f;
@@ -189,24 +189,24 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 	timer->addChildTimer("Integrate Velocity");
 }
 
-
 PhysicsEngine::~PhysicsEngine()
 {
-	removeAllPhysicsObjects();
+	RemoveAllPhysicsObjects();
+	delete octree;
 }
 
-void PhysicsEngine::addPhysicsObject(PhysicsNode * obj)
+void PhysicsEngine::addPhysicsObject(PhysicsNode* obj)
 {
-
+	if (octreeInitialised)
+	{
+		octreeChanged = true;
+		obj->movedSinceLastBroadPhase = true;
+		octree->AddNode(obj);
+	}
 
 	physicsNodes.push_back(obj);
-	if (obj->getEnabled())
-	{
-		BpOct.sortNode(obj);
-	}
-	
 
-	obj->setOnCollisionCallback([](PhysicsNode* this_obj, PhysicsNode* colliding_obj, CollisionData collisionData)
+	obj->SetOnCollisionCallback([](PhysicsNode* this_obj, PhysicsNode* colliding_obj, CollisionData collisionData)
 	{
 		if (this_obj->transmitCollision)
 		{
@@ -215,7 +215,7 @@ void PhysicsEngine::addPhysicsObject(PhysicsNode * obj)
 				if (this_obj->collisionMessageSender.readyToSendNextMessage())
 				{
 					this_obj->collisionMessageSender.setMessage(CollisionMessage("Gameplay", collisionData,
-						this_obj->getParent()->getName(), colliding_obj->getParent()->getName()));
+						this_obj->GetParent()->getName(), colliding_obj->GetParent()->getName()));
 					this_obj->collisionMessageSender.sendMessage();
 
 					if (!this_obj->multipleTransmitions)
@@ -224,19 +224,19 @@ void PhysicsEngine::addPhysicsObject(PhysicsNode * obj)
 					}
 				}
 			}
-			
+
 			return true;
 		}
 		return true;
 	});
 
-	obj->setOnUpdateCallback(std::bind(
+	obj->SetOnUpdateCallback(std::bind(
 		&PhysicsEngine::OctreeChanged,
 		this,
 		std::placeholders::_1));
 }
 
-void PhysicsEngine::removePhysicsObject(PhysicsNode * obj)
+void PhysicsEngine::RemovePhysicsObject(PhysicsNode* obj)
 {
 	//Lookup the object in question
 	auto found_loc = std::find(physicsNodes.begin(), physicsNodes.end(), obj);
@@ -248,8 +248,9 @@ void PhysicsEngine::removePhysicsObject(PhysicsNode * obj)
 	}
 }
 
-void PhysicsEngine::removeAllPhysicsObjects()
+void PhysicsEngine::RemoveAllPhysicsObjects()
 {
+	//Delete and remove all constraints/collision manifolds
 	for (Constraint* c : constraints)
 	{
 		delete c;
@@ -263,28 +264,31 @@ void PhysicsEngine::removeAllPhysicsObjects()
 	manifolds.clear();
 
 
+	//Delete and remove all physics objects
+	// - we also need to inform the (possibly) associated game-object
+	//   that the physics object no longer exists
 	for (PhysicsNode* obj : physicsNodes)
 	{
-		if (obj->getParent())
-			obj->getParent()->setPhysicsNode(nullptr);
+		if (obj->GetParent()) obj->GetParent()->setPhysicsNode(nullptr);
 		delete obj;
 	}
+
 	physicsNodes.clear();
-	BpOct.clear();
 }
+
 
 void PhysicsEngine::updateNextFrame(const float& deltaTime)
 {
 	timer->beginTimedSection();
 
-	const int maxUpdatesPerFrame = 5;
-	
+	static int maxUpdatesPerFrame = 5;
+
 	updateRealTimeAccum += deltaTime * 0.001f;
 	for (int i = 0; (updateRealTimeAccum >= updateTimestep) && i < maxUpdatesPerFrame; ++i)
 	{
 		updateRealTimeAccum -= updateTimestep;
 
-		updatePhysics();
+		UpdatePhysics();
 	}
 
 	if (updateRealTimeAccum >= updateTimestep)
@@ -299,21 +303,38 @@ void PhysicsEngine::updateNextFrame(const float& deltaTime)
 
 	if (keyboard->keyTriggered(KEYBOARD_F8))
 	{
-		wireframeRendering = !wireframeRendering;
+		debugRenderMode++;
+
+		if (debugRenderMode > 3)
+		{
+			debugRenderMode = 0;
+		}
 	}
 
-	if (wireframeRendering)
+	if (debugRenderMode > 0)
 	{
 		if (cubeDrawMessageSender.readyToSendNextMessageGroup() && sphereDrawMessageSender.readyToSendNextMessageGroup())
 		{
 			std::vector<DebugLineMessage> cubeDrawMessages;
 			std::vector<DebugSphereMessage> sphereDrawMessages;
 
-			BpOct.DebugDraw(cubeDrawMessages);
-
-			for (PhysicsNode* node : physicsNodes)
+			if (debugRenderMode == 1)
 			{
-				node->getCollisionShape()->debugDraw(cubeDrawMessages, sphereDrawMessages);
+				octree->DrawWireFrameOctrees(cubeDrawMessages);
+			}
+			else if (debugRenderMode == 2)
+			{
+				for (PhysicsNode* node : physicsNodes)
+				{
+					node->getCollisionShape()->DebugDraw(cubeDrawMessages, sphereDrawMessages);
+				}
+			}
+			else if (debugRenderMode == 3)
+			{
+				for (Manifold* m : manifolds)
+				{
+					m->DebugDraw(cubeDrawMessages, sphereDrawMessages);
+				}
 			}
 
 			cubeDrawMessageSender.setMessageGroup(cubeDrawMessages);
@@ -327,7 +348,8 @@ void PhysicsEngine::updateNextFrame(const float& deltaTime)
 	timer->endTimedSection();
 }
 
-void PhysicsEngine::updatePhysics()
+
+void PhysicsEngine::UpdatePhysics()
 {
 	for (Manifold* m : manifolds)
 	{
@@ -335,162 +357,131 @@ void PhysicsEngine::updatePhysics()
 	}
 	manifolds.clear();
 
-	
-	//A whole physics engine in 6 simple steps =D
-
-	//-- Using positions from last frame --
-	//1. Broadphase Collision Detection (Fast and dirty)
 	timer->beginChildTimedSection("Broadphase");
-	broadPhaseCollisions();
+	BroadPhaseCollisions();
 	timer->endChildTimedSection("Broadphase");
-	
-	//2. Narrowphase Collision Detection (Accurate but slow)
+
 	timer->beginChildTimedSection("Narrowphase");
-	narrowPhaseCollisions();
+	NarrowPhaseCollisions();
+
+	std::random_shuffle(manifolds.begin(), manifolds.end());
+	std::random_shuffle(constraints.begin(), constraints.end());
+
+	for (Manifold* m : manifolds) m->PreSolverStep(updateTimestep);
+	for (Constraint* c : constraints) c->PreSolverStep(updateTimestep);
 	timer->endChildTimedSection("Narrowphase");
-	
-	//3. Initialize Constraint Params (precompute elasticity/baumgarte factor etc)	
-	for (Manifold* m : manifolds)
-	{
-		m->preSolverStep(updateTimestep);
-	}
 
-	for (Constraint* c : constraints)
-	{
-		c->preSolverStep(updateTimestep);
-	}
-
-
-	//4. Update Velocities
 	timer->beginChildTimedSection("Integrate Velocity");
-	for (PhysicsNode* obj : physicsNodes) 
-	{
-		if(obj->getEnabled())
-			obj->integrateForVelocity(updateTimestep);
-	}
-	timer->endChildTimedSection("Integrate Velocity");
-	
-	//5. Constraint Solver
-	timer->beginChildTimedSection("Solver");
-	for (size_t i = 0; i < SOLVER_ITERATIONS; ++i) 
-	{
-		for (Manifold* m : manifolds) m->applyImpulse();
-		for (Constraint* c : constraints) c->applyImpulse(updateTimestep);
-	}
-	timer->endChildTimedSection("Solver");
-	
-	//6. Update Positions (with final 'real' velocities)
-	timer->beginChildTimedSection("Integrate Position");
 	for (PhysicsNode* obj : physicsNodes)
 	{
 		if (obj->getEnabled())
-			obj->integrateForPosition(updateTimestep);
-	}
-	timer->endChildTimedSection("Integrate Position");
-	
-}
-
-void PhysicsEngine::broadPhaseCollisions()
-{
-	broadphaseColPairs.clear();
-
-	PhysicsNode* nodeA;
-	PhysicsNode* nodeB;
-
-	for (PhysicsNode * p : physicsNodes) {
-		if (p->getLinearVelocity().lengthSquared() > 0 && p->getEnabled()) {
-			BpOct.sortNode(p);
+		{
+			obj->IntegrateForVelocity(updateTimestep);
 		}
 	}
+	timer->endChildTimedSection("Integrate Velocity");
+
+	timer->beginChildTimedSection("Solver");
+	for (size_t i = 0; i < SOLVER_ITERATIONS; ++i)
+	{
+		for (Manifold* m : manifolds) m->ApplyImpulse();
+		for (Constraint* c : constraints) c->ApplyImpulse();
+	}
+	timer->endChildTimedSection("Solver");
+
+	timer->beginChildTimedSection("Integrate Position");
+	for (PhysicsNode* obj : physicsNodes) 
+	{
+		if (obj->getEnabled())
+		{
+			obj->IntegrateForPosition(updateTimestep);
+		}
+	}
+	timer->endChildTimedSection("Integrate Position");
+}
+
+void PhysicsEngine::BroadPhaseCollisions()
+{
+	PhysicsNode *pnodeA, *pnodeB;
+	//	The broadphase needs to build a list of all potentially colliding objects in the world,
+	//	which then get accurately assesed in narrowphase. If this is too coarse then the system slows down with
+	//	the complexity of narrowphase collision checking, if this is too fine then collisions may be missed.
 
 	if (physicsNodes.size() > 0)
 	{
-		for (BParea &p : BpOct.getBpAreas()) 
+		if (octreeChanged)
 		{
-
-			for (size_t i = 0; i < p.nodesInArea.size() - 1 && p.nodesInArea.size() > 0; ++i)
-			{
-				for (size_t j = i + 1; j < p.nodesInArea.size(); ++j)
-				{
-					if (p.nodesInArea[i]->getEnabled())
-					{
-						nodeA = p.nodesInArea[i];
-					}
-					else 
-					{
-						continue;
-					}
-					
-					if (p.nodesInArea[j]->getEnabled())
-					{
-						nodeB = p.nodesInArea[j];
-					}
-					else
-					{
-						continue;
-					}
-
-					//lets check collisions with broadphase shapes
-				
-
-					//Check they both atleast have collision shapes
-
-					if (!(nodeA->getIsStatic() && nodeB->getIsStatic()))
-					{
-							if (BroadPhaseCulling::SphereSphereCollision(nodeA, nodeB))
-							{
-								CollisionPair cp;
-								cp.pObjectA = nodeA;
-								cp.pObjectB = nodeB;
-
-								broadphaseColPairs.insert(cp);
-							}
-					}
-				}
-			}
+			octree->UpdateTree();
+			octreeChanged = false;
+			broadphaseColPairs = octree->GetAllCollisionPairs();
 		}
 	}
 }
 
-void PhysicsEngine::narrowPhaseCollisions()
+
+void PhysicsEngine::NarrowPhaseCollisions()
 {
 	if (broadphaseColPairs.size() > 0)
 	{
-		CollisionData colData;
+		//Collision data to pass between detection and manifold generation stages.
+		CollisionData colData;				
 
-		CollisionDetectionSAT colDetect;
+		//Collision Detection Algorithm to use
+		CollisionDetectionSAT colDetect;	
 
-		for (CollisionPair cp : broadphaseColPairs)
+		// Iterate over all possible collision pairs and perform accurate collision detection
+		for (size_t i = 0; i < broadphaseColPairs.size(); ++i)
 		{
+			CollisionPair& cp = broadphaseColPairs[i];
 
-			CollisionShape *shapeA = cp.pObjectA->getCollisionShape();
-			CollisionShape *shapeB = cp.pObjectB->getCollisionShape();
-
-			colDetect.beginNewPair(
-				cp.pObjectA,
-				cp.pObjectB,
-				cp.pObjectA->getCollisionShape(),
-				cp.pObjectB->getCollisionShape());
-
-			
-			if (colDetect.areColliding(&colData))
+			for each (CollisionShape* shapeA in cp.pObjectA->collisionShapes)
 			{
-				bool okA = cp.pObjectA->fireOnCollisionEvent(cp.pObjectA, cp.pObjectB, colData);
-				bool okB = cp.pObjectB->fireOnCollisionEvent(cp.pObjectB, cp.pObjectA, colData);
-
-				if (okA && okB)
+				for each (CollisionShape* shapeB in cp.pObjectB->collisionShapes)
 				{
-					Manifold* manifold = new Manifold();
-					manifold->initiate(cp.pObjectA, cp.pObjectB);
+					colDetect.BeginNewPair(
+						cp.pObjectA,
+						cp.pObjectB,
+						shapeA,
+						shapeB);
 
-					colDetect.genContactPoints(manifold);
-
-					if (manifold->contactPoints.size() > 0) 
+					// Detects if the objects are colliding
+					if (colDetect.AreColliding(&colData))
 					{
-						manifolds.push_back(manifold);
-					}
-					else {
-						delete manifold;
+						//Note: As at the end of tutorial 4 we have very little to do, this is a bit messier
+						//      than it should be. We now fire oncollision events for the two objects so they
+						//      can handle AI and also optionally draw the collision normals to see roughly
+						//      where and how the objects are colliding.
+
+						//Draw collision data to the window if requested
+						// - Have to do this here as colData is only temporary. 
+						//if (debugDrawFlags & DEBUGDRAW_FLAGS_COLLISIONNORMALS)
+						//{
+						//	NCLDebug::DrawPointNDT(colData._pointOnPlane, 0.1f, Vector4(0.5f, 0.5f, 1.0f, 1.0f));
+						//	NCLDebug::DrawThickLineNDT(colData._pointOnPlane, colData._pointOnPlane - colData._normal * colData._penetration, 0.05f, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+						//	//NCLDebug::DrawThickLineNDT(cp.pObjectA->GetPosition(), cp.pObjectB->GetPosition(), 0.1f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+						//}
+
+						//Check to see if any of the objects have a OnCollision callback that dont want the objects to physically collide
+						bool okA = cp.pObjectA->FireOnCollisionEvent(cp.pObjectA, cp.pObjectB, colData);
+						bool okB = cp.pObjectB->FireOnCollisionEvent(cp.pObjectB, cp.pObjectA, colData);
+
+						if (okA && okB)
+						{
+							/* TUTORIAL 5 CODE */
+							Manifold* manifold = new Manifold;
+
+							manifold->Initiate(cp.pObjectA, cp.pObjectB);
+							colDetect.GenContactPoints(manifold);
+
+							if (manifold->contactPoints.size() > 0)
+							{
+								manifolds.push_back(manifold);
+							}
+							else
+							{
+								delete manifold;
+							}
+						}
 					}
 				}
 			}
@@ -501,5 +492,26 @@ void PhysicsEngine::narrowPhaseCollisions()
 
 void PhysicsEngine::InitialiseOctrees(int entityLimit)
 {
-	BpOct.initBroadphase(NCLVector3(-300,-300,-300),NCLVector3(300,300,300));
+	if (octree)
+	{
+		delete octree;
+	}
+
+	octree = new OctreePartitioning(physicsNodes, NCLVector3(300, 300, 300), NCLVector3(0, 0 , 0));
+	octree->ENTITY_PER_PARTITION_THRESHOLD = entityLimit;
+
+	if(physicsNodes.size() > 0)
+	{
+		octree->BuildInitialTree();
+	}
+
+	octreeChanged = false;
+	octreeInitialised = true;
+
+	for each (PhysicsNode* node in physicsNodes)
+	{
+		node->movedSinceLastBroadPhase = false;
+	}
+
+	broadphaseColPairs = octree->GetAllCollisionPairs();
 }

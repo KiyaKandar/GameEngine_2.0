@@ -59,7 +59,7 @@ void Level::unloadLevelWhileKeepingUserInterface()
 	MoveCameraRelativeToGameObjectMessage::resourceName = "";
 	(*sceneManager->getAllNodes())->clear();
 	(*sceneManager->getAllLights())->clear();
-	physics->removeAllPhysicsObjects();
+	physics->RemoveAllPhysicsObjects();
 
 	std::vector<Table<Resource>*> tables = database->getAllTables();
 
@@ -77,7 +77,7 @@ void Level::unloadLevel() const
 	MoveCameraRelativeToGameObjectMessage::resourceName = "";
 	(*sceneManager->getAllNodes())->clear();
 	(*sceneManager->getAllLights())->clear();
-	physics->removeAllPhysicsObjects();
+	physics->RemoveAllPhysicsObjects();
 
 	std::vector<Table<Resource>*> tables = database->getAllTables();
 

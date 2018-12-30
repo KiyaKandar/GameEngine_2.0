@@ -35,8 +35,8 @@ GameObject* NetworkMessageProcessor::getUpdatedDeadReckoningGameObject(std::stri
 	GameObject* client = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(objectName));
 
 	client->getPhysicsNode()->constantAcceleration = true;
-	client->getPhysicsNode()->setLinearVelocity(kinematicState.linearVelocity);
-	client->getPhysicsNode()->setAcceleration(kinematicState.linearAcceleration);
+	client->getPhysicsNode()->SetLinearVelocity(kinematicState.linearVelocity);
+	client->getPhysicsNode()->SetAcceleration(kinematicState.linearAcceleration);
 
 	return client;
 }
@@ -47,8 +47,8 @@ GameObject* NetworkMessageProcessor::getUpdatedDeadReckoningGameObject(std::stri
 	GameObject* client = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(objectName));
 
 	client->getPhysicsNode()->constantAcceleration = true;
-	client->getPhysicsNode()->setLinearVelocity(kinematicState.linearVelocity);
-	client->getPhysicsNode()->setAcceleration(kinematicState.linearAcceleration);
+	client->getPhysicsNode()->SetLinearVelocity(kinematicState.linearVelocity);
+	client->getPhysicsNode()->SetAcceleration(kinematicState.linearAcceleration);
 
 	return client;
 }

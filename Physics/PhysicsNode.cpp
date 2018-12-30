@@ -1,75 +1,41 @@
 #include "PhysicsNode.h"
-#include "../Communication/Messages/MoveCameraRelativeToGameObjectMessage.h"
-#include "../Communication/DeliverySystem.h"
 
-static const NCLVector3 gravity = NCLVector3(0.0f, -9.8f, 0.0f);
-static const float MAX_SPEED = 50.0f;
+#include "PhysicsEngine.h"
+#include "SemiImplicitEuler.h"
 
-NCLVector3 interpolate(NCLVector3 a, NCLVector3 b, float factor)
+void PhysicsNode::IntegrateForVelocity(float dt)
 {
-	return a + ((b - a) * factor);
-}
-
-void PhysicsNode::integrateForVelocity(float dt)
-{
-	if (invMass > 0.f) 
-	{
-		linVelocity += gravity * dt;
-	}
-
-	if(!constantAcceleration)
-	{
-		force = appliedForce;
-		acceleration = force * invMass;
-	}
-
-	linVelocity += acceleration * dt;
-
-	linVelocity = linVelocity * damping;
-
-	if(linVelocity.length() > MAX_SPEED)
-	{
-		linVelocity = linVelocity.normalise() * MAX_SPEED;
-	}
-
-	angVelocity += invInertia * torque * dt;
-
-	angVelocity = angVelocity * damping;
-
+	linVelocity = SemiImplicitEuler::UpdateLinearVelocity(this, dt);
 	appliedForce.toZero();
+
+	angVelocity = SemiImplicitEuler::UpdateAngularVelocity(this, dt);
+
+	for each (CollisionShape* shape in collisionShapes)
+	{
+		shape->Parent()->SetLinearVelocity(linVelocity);
+		shape->Parent()->SetAngularVelocity(angVelocity);
+	}
 }
 
-void PhysicsNode::integrateForPosition(float dt)
+/* Between these two functions the physics engine will solve for velocity
+   based on collisions/constraints etc. So we need to integrate velocity, solve 
+   constraints, then use final velocity to update position. 
+*/
+
+void PhysicsNode::IntegrateForPosition(float dt)
 {
-	position += linVelocity * dt;
-
-	//if (constantForce)
-	//{
-	//	msCounter += dt;
-	//	float factor = (msCounter - deadReckoningState.timeStamp) / 15.0f;
-
-	//	if (factor <= 1.0f && factor >= 0.0f)
-	//	{
-	//		position = interpolate(position, deadReckoningState.position, factor);
-
-	//		linVelocity = interpolate(linVelocity, deadReckoningState.linearVelocity, factor);
-
-	//		acceleration = interpolate(acceleration, deadReckoningState.linearAcceleration, factor);
-	//	}
-	//}
-
-	orientation = orientation + Quaternion(angVelocity * dt * .5f, 0.f) * orientation;
-
+	position = SemiImplicitEuler::UpdateDisplacement(this, dt);
+	orientation = SemiImplicitEuler::UpdateOrentation(this, dt);
 	orientation.normalise();
 
-	worldTransform = orientation.toMatrix();
+	for each (CollisionShape* shape in collisionShapes)
+	{
+		shape->Parent()->SetPosition(SemiImplicitEuler::UpdateDisplacement(shape->Parent(), dt));
+		shape->Parent()->SetOrientation(SemiImplicitEuler::UpdateOrentation(shape->Parent(), dt));
+	}
 
-	worldTransform.setPositionVector(position);
-	fireOnUpdateCallback();
-
-	//if (parent->getName() == MoveCameraRelativeToGameObjectMessage::resourceName)
-	//{
-	//	DeliverySystem::getPostman()->insertMessage(UpdatePositionMessage("NetworkClient", parent->getName(), position));
-	//}
+	//Finally: Notify any listener's that this PhysicsNode has a new world transform.
+	// - This is used by GameObject to set the worldTransform of any RenderNode's. 
+	//   Please don't delete this!!!!!
+	FireOnUpdateCallback();
 }
-

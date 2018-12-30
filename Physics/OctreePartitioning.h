@@ -21,14 +21,14 @@ public:
 		vector<PhysicsNode*> newNodes = { newNode };
 		for (Partition& partition : baseOctreePartitions)
 		{
-			for (PhysicsNode* node : newNodes)
+			for each (PhysicsNode* node in newNodes)
 			{
 				PartitionNodeIntoExistingTree(partition, node);
 			}
 		}
 	}
 
-	void DrawWireFrameOctrees();
+	void DrawWireFrameOctrees(std::vector<DebugLineMessage>& lineMessages);
 
 	int ENTITY_PER_PARTITION_THRESHOLD = 10;
 private:

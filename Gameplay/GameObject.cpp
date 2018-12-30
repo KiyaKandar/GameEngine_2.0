@@ -53,8 +53,8 @@ void GameObject::update(float dt)
 			stats.timer = 0.f;
 		}
 	}
-	position = physicsNode->getPosition();
-	NCLMatrix4 newTransform = this->physicsNode->getWorldSpaceTransform();
+	position = physicsNode->GetPosition();
+	NCLMatrix4 newTransform = this->physicsNode->GetWorldSpaceTransform();
 	newTransform = newTransform * NCLMatrix4::scale(scale);
 
 	this->sceneNode->SetTransform(newTransform);
@@ -67,7 +67,7 @@ void GameObject::setPosition(NCLVector3 position)
 
 	if(this->physicsNode != nullptr)
 	{
-		this->physicsNode->setPosition(position);
+		this->physicsNode->SetPosition(position);
 	}
 }
 
@@ -93,8 +93,7 @@ void GameObject::setScale(NCLVector3 scale)
 	this->sceneNode->SetModelScale(scale);
 	if (physicsNode != nullptr)
 	{
-		this->physicsNode->getCollisionShape()->setScale(scale, this->physicsNode->getInverseMass());
-		this->physicsNode->getBroadPhaseShape()->setScale(scale, 1);
+		this->physicsNode->getCollisionShape()->setScale(scale, this->physicsNode->GetInverseMass());
 	}
 	else
 	{

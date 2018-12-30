@@ -57,14 +57,14 @@ void LevelEditor::initialiseLevelEditor(Database* providedDatabase, GameplaySyst
 			database->getTable("GameObjects")->getResource(devConsoleTokens[1]));
 
 		PhysicsNode* physicsnode = new PhysicsNode();
-		physicsnode->setParent(gameObject);
+		physicsnode->SetParent(gameObject);
 		physicsnode->setEnabled(true);
 		physicsnode->transmitCollision = true;
 		physicsnode->setCollisionShape(devConsoleTokens[2].substr(6));
-		physicsnode->setInverseMass(stof(devConsoleTokens[3].substr(8)));
-		physicsnode->setInverseInertia(physicsnode->getCollisionShape()->buildInverseInertia(physicsnode->getInverseMass()));
-		physicsnode->setElasticity(0.5f);
-		physicsnode->setFriction(0.9f);
+		physicsnode->SetInverseMass(stof(devConsoleTokens[3].substr(8)));
+		physicsnode->SetInverseInertia(physicsnode->getCollisionShape()->BuildInverseInertia(physicsnode->GetInverseMass()));
+		physicsnode->SetElasticity(0.5f);
+		physicsnode->SetFriction(0.9f);
 		physicsnode->setStatic(devConsoleTokens[4].substr(7) == "true");
 		gameObject->setPhysicsNode(physicsnode);
 

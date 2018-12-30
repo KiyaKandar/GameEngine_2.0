@@ -1,31 +1,34 @@
 #pragma once
 
-#include <functional>
-
-#include "../Utilities/Maths/Vector3.h"
-#include "../Utilities/Maths/Matrix4.h"
-#include "../Utilities/Maths/Matrix3.h"
 #include "../Utilities/Maths/Quaternion.h"
-#include "../Gameplay/GameObject.h"
-
+#include "../Utilities/Maths/Matrix3.h"
 #include "CollisionShape.h"
-#include "SphereCollisionShape.h"
-#include "CuboidCollisionShape.h"
+#include <functional>
+#include "../Gameplay/GameObject.h"
 
 #include "CollisionDetectionSAT.h"
 #include "../Launch/Networking/DeadReckoning.h"
 
+#include "SphereCollisionShape.h"
+#include "CuboidCollisionShape.h"
+
 #include "../Communication/MessageSenders/TrackedMessageSender.h"
 #include "../Communication/Messages/CollisionMessage.h"
 
-#include <cmath>
-
 class PhysicsNode;
 
+//Callback function called whenever a collision is detected between two objects
+//Params:
+//	PhysicsNode* this_obj		- The current object class that contains the callback
+//	PhysicsNode* colliding_obj	- The object that is colliding with the given object
+//Return:
+//  True	- The physics engine should process the collision as normal
+//	False	- The physics engine should drop the collision pair and not do any further collision resolution/manifold generation
+//			  > This can be useful for AI to see if a player/agent is inside an area/collision volume
 typedef std::function<bool(PhysicsNode* this_obj, PhysicsNode* colliding_obj, CollisionData)> PhysicsCollisionCallback;
-typedef std::function<void(const NCLMatrix4& transform)> PhysicsUpdateCallback;
 
-//class GameObject;
+//Callback function called whenever this physicsnode's world transform is updated
+typedef std::function<void(const NCLMatrix4& transform)> PhysicsUpdateCallback;
 
 class PhysicsNode
 {
@@ -39,92 +42,158 @@ public:
 		, angVelocity(0.0f, 0.0f, 0.0f)
 		, torque(0.0f, 0.0f, 0.0f)
 		, invInertia(NCLMatrix3::ZeroMatrix)
-		, collisionShape(NULL)
-		, friction(0.5f)
-		, damping(0.99999999f)
-		, elasticity(0.9f)
+		, friction(0.9f)
+		, elasticity(0.1f)
+		, damping(0.99f)
 		, enabled(true)
 		, isCollision(true)
 		, isStatic(true)
 		, appliedForce(0.0f, 0.0f, 0.0f)
-		, acceleration(0.0f, 0.0f, 0.0f)
 	{
-		
 	}
-	~PhysicsNode()
+
+	virtual ~PhysicsNode()
 	{
-		delete collisionShape;
-		collisionShape = nullptr;
-	};
+		for each (CollisionShape* shape in collisionShapes)
+		{
+			delete shape;
+			shape = nullptr;
+		}
+	}
 
-	void integrateForVelocity(float dt);
-	void integrateForPosition(float dt);
+	inline void setCollisionShape(std::string colshape)
+	{
+		CollisionShape* colShape;
 
-	inline GameObject* getParent() const 
-	{ 
-		return parent; 
+		if (colshape == "Sphere")
+		{
+			colShape = new SphereCollisionShape(parent->getScale().x);
+			colShape->SetParent(this);
+			collisionShapeType = "Sphere";
+		}
+		else if (colshape == "Box")
+		{
+			colShape = new CuboidCollisionShape(parent->getScale());
+			colShape->SetParent(this);
+			collisionShapeType = "Box";
+		}
+		else
+		{
+			colShape = nullptr;
+		}
+
+		collisionShapes.clear();
+		AddCollisionShape(colShape);
 	}
-	inline float getElasticity() const 
-	{ 
-		return elasticity; 
+
+	//<-------- Integration --------->
+	// Called automatically by PhysicsEngine on all physics nodes each frame
+	void IntegrateForVelocity(float dt);
+	//<-- Between calling these two functions the physics engine will solve velocity to get 'true' final velocity -->
+	void IntegrateForPosition(float dt);
+
+
+	//<--------- GETTERS ------------->
+	inline GameObject*			GetParent()					const { return parent; }
+
+	inline float				GetElasticity()				const { return elasticity; }
+	inline float				GetFriction()				const { return friction; }
+
+	inline const NCLVector3&		GetPosition()				const { return position; }
+	inline const NCLVector3&		GetLinearVelocity()			const { return linVelocity; }
+	inline const NCLVector3&		GetForce()					const { return force; }
+	inline const NCLVector3&		GetAcceleration()					const { return acceleration; }
+	inline float				GetInverseMass()			const { return invMass; }
+
+	inline const Quaternion&	GetOrientation()			const { return orientation; }
+	inline const NCLVector3&		GetAngularVelocity()		const { return angVelocity; }
+	inline const NCLVector3&		GetTorque()					const { return torque; }
+	inline const NCLMatrix3&		GetInverseInertia()			const { return invInertia; }
+
+	inline const bool getIsCollision() const
+	{
+		return isCollision;
 	}
-	inline float getFriction() const 
-	{ 
-		return friction; 
+
+	float getDamping() const
+	{
+		return damping;
 	}
-	inline const NCLVector3& getPosition() const 
-	{ 
-		return position; 
+
+	inline CollisionShape* getCollisionShape() const
+	{
+		return collisionShapes[0];
 	}
-	inline const NCLVector3& getLinearVelocity() const 
-	{ 
-		return linVelocity; 
+
+	inline void setEnabled(bool isPhy)
+	{
+		enabled = isPhy;
 	}
-	inline const NCLVector3& getForce() const 
-	{ 
-		return force; 
-	}
-	inline float getInverseMass() const 
-	{ 
-		return invMass; 
-	}
-	inline const Quaternion& getOrientation() const 
-	{ 
-		return orientation; 
-	}
-	inline const NCLVector3& getAngularVelocity() const 
-	{ 
-		return angVelocity; 
-	}
-	inline const NCLVector3& getTorque() const 
-	{ 
-		return torque; 
-	}
-	inline const NCLMatrix3& getInverseInertia() const 
-	{ 
-		return invInertia; 
-	}
-	inline CollisionShape* getCollisionShape() const 
-	{ 
-		return collisionShape; 
-	}
-	const NCLMatrix4& getWorldSpaceTransform() const 
-	{ 
-		return worldTransform; 
-	}
+
 	inline const bool getEnabled() const
 	{
 		return enabled;
 	}
-	inline const bool getIsCollision() const
+
+	inline void setIsCollision(bool isCol)
 	{
-		return isCollision;
+		isCollision = isCol;
+	}
+
+	inline void setDamping(float dampingCoeff)
+	{
+		damping = dampingCoeff;
 	}
 
 	inline const bool getIsStatic() const
 	{
 		return isStatic;
 	}
+
+	inline void setStatic(bool isStat)
+	{
+		isStatic = isStat;
+	}
+
+	inline NCLVector3 getAppliedForce() const
+	{
+		return appliedForce;
+	}
+
+	inline void setAppliedForce(NCLVector3 appliedForce)
+	{
+		this->appliedForce = appliedForce;
+	}
+
+	inline void applyImpulse(NCLVector3 impulse)
+	{
+		linVelocity += impulse;
+	}
+
+	const NCLMatrix4&				GetWorldSpaceTransform()    const { return worldTransform; }
+
+
+
+
+	//<--------- SETTERS ------------->
+	inline void SetParent(GameObject* obj)							{ parent = obj; }
+
+	inline void SetElasticity(float elasticityCoeff)				{ elasticity = elasticityCoeff; }
+	inline void SetFriction(float frictionCoeff)					{ friction = frictionCoeff; }
+
+	inline void SetPosition(const NCLVector3& v)						{ position = v; FireOnUpdateCallback(); }
+	inline void SetLinearVelocity(const NCLVector3& v)					{ linVelocity = v; }
+	inline void SetForce(const NCLVector3& v)							{ force = v; }
+	inline void SetAcceleration(const NCLVector3& v) { acceleration = v; }
+	inline void SetInverseMass(const float& v)						
+	{ 
+		invMass = v, 0.5f;
+	}
+
+	inline void SetOrientation(const Quaternion& v)					{ orientation = v; FireOnUpdateCallback(); }
+	inline void SetAngularVelocity(const NCLVector3& v)				{ angVelocity = v; }
+	inline void SetTorque(const NCLVector3& v)							{ torque = v; }
+	inline void SetInverseInertia(const NCLMatrix3& v)					{ invInertia = v; }
 
 	void setRotation(NCLVector4 rotation)
 	{
@@ -135,169 +204,57 @@ public:
 		orientation = Quaternion::axisAngleToQuaterion(NCLVector3(rotation.x, rotation.y, rotation.z), rotation.w);
 	}
 
-	NCLVector3 getAcceleration()
-	{
-		return acceleration;
-	}
-
-	void setAcceleration(NCLVector3 newAcceleration)
-	{
-		acceleration = newAcceleration;
-	}
-
-	inline void setParent(GameObject* obj) 
+	inline void AddCollisionShape(CollisionShape* colShape)
 	{ 
-		parent = obj; 
-	}
-	inline void setElasticity(float elasticityCoeff) 
-	{ 
-		elasticity = elasticityCoeff; 
-	}
-	inline void setFriction(float frictionCoeff) 
-	{ 
-		friction = frictionCoeff; 
+		//if (collisionShapes[index]) collisionShapes[index]->SetParent(NULL);
+		//collisionShapes[index] = colShape;
+		//if (collisionShapes[index]) collisionShapes[index]->SetParent(this);
+		collisionShapes.push_back(colShape);
+		//colShape->SetParent(this);
 	}
 
-	inline void setDamping(float dampingCoeff)
+	inline void AddCollisionShapes(std::vector<CollisionShape*>* colShapes)
 	{
-		damping = dampingCoeff;
-	}
-
-	float getDamping()
-	{
-		return damping;
-	}
-
-	inline void setPosition(const NCLVector3& v) 
-	{ 
-		position = v; 
-		
-		worldTransform = orientation.toMatrix();
-
-		worldTransform.setPositionVector(position);
-	}
-	inline void setLinearVelocity(const NCLVector3& v) 
-	{ 
-		linVelocity = v; 
-	}
-
-	inline void setForce(const NCLVector3& v)
-	{
-		force = v;
+		//if (collisionShapes[index]) collisionShapes[index]->SetParent(NULL);
+		//collisionShapes[index] = colShape;
+		//if (collisionShapes[index]) collisionShapes[index]->SetParent(this);
+		for each (CollisionShape* colShape in *colShapes)
+		{
+			collisionShapes.push_back(colShape);
+			//colShape->SetParent(this);
+		}
 	}
 	
-	inline void setInverseMass(const float& v) 
-	{ 
-		invMass = v; 
-	}
-
-	inline void setOrientation(const Quaternion& v) 
-	{ 
-		orientation = v; 
-		
-		worldTransform = orientation.toMatrix();
-
-		worldTransform.setPositionVector(position);
-	}
-	inline void setAngularVelocity(const NCLVector3& v) 
-	{ 
-		angVelocity = v; 
-	}
-	inline void setTorque(const NCLVector3& v) 
-	{ 
-		torque = v; 
-	}
-	inline void setInverseInertia(const NCLMatrix3& v) 
-	{ 
-		invInertia = v; 
-	}
-
-	inline void setCollisionShape(std::string colshape)
+	inline void SetCollisionShapes(std::vector<CollisionShape*> shapes)
 	{
-		CollisionShape* colShape;
-		
-		if (colshape == "Sphere")
-		{
-			colShape = new SphereCollisionShape(parent->getScale().x);
-			collisionShapeType = "Sphere";
-		} 
-		else if (colshape == "Box")
-		{
-			colShape = new CuboidCollisionShape(parent->getScale());
-			collisionShapeType = "Box";
-		}
-		else
-		{
-			colShape = nullptr;
-		}
-		
-		if (collisionShape) collisionShape->setParent(NULL);
-		collisionShape = colShape;
-		if (collisionShape) collisionShape->setParent(this);
-
-		setBroadPhaseShape("Sphere");
+		collisionShapes = shapes;
 	}
 
 
-	inline void setBroadPhaseShape(std::string broadphaseShapeString)
-	{
-		CollisionShape* colShape;
-		
-		if (broadphaseShapeString == "Sphere")
-		{
-			colShape = new SphereCollisionShape(sqrt(((pow(parent->getScale().x,2)))  + ((pow(parent->getScale().y, 2))) + ((pow(parent->getScale().z, 2)))));		
-		}
-		else
-		{
-			colShape = nullptr;
-		}
-
-		if (collisionShape) collisionShape->setParent(NULL);
-		this->broadPhaseShape = colShape;
-		if (collisionShape) collisionShape->setParent(this);
-	}
-
-
-	inline CollisionShape* getBroadPhaseShape() const
-	{
-		return broadPhaseShape;
-	}
-
-
-	inline void setEnabled(bool isPhy)
-	{
-		enabled = isPhy;
-	}
-	inline void setIsCollision(bool isCol)
-	{
-		isCollision = isCol;
-	}
-
-	inline void setStatic(bool isStat)
-	{
-		isStatic = isStat;
-	}
-
-	inline void setOnCollisionCallback(PhysicsCollisionCallback callback) 
-	{ 
-		onCollisionCallback = callback; 
-	}
-	inline bool fireOnCollisionEvent(PhysicsNode* obj_a, PhysicsNode* obj_b, CollisionData collisionData)
+	//<---------- CALLBACKS ------------>
+	inline void SetOnCollisionCallback(PhysicsCollisionCallback callback) { onCollisionCallback = callback; }
+	inline bool FireOnCollisionEvent(PhysicsNode* obj_a, PhysicsNode* obj_b, CollisionData collisionData)
 	{
 		return (onCollisionCallback) ? onCollisionCallback(obj_a, obj_b, collisionData) : true;
 	}
 
-	inline void setOnUpdateCallback(PhysicsUpdateCallback callback)
+	inline void SetOnUpdateCallback(PhysicsUpdateCallback callback)
 	{
 		onUpdateCallbacks.push_back(callback);
 	}
 
-	inline void fireOnUpdateCallback()
+	inline void FireOnUpdateCallback()
 	{
+		//Build world transform
+		worldTransform = orientation.toMatrix4();
+		worldTransform.setPositionVector(position);
+
 		if (worldTransform.getPositionVector() != previousTransform.getPositionVector())
 		{
-			for (PhysicsUpdateCallback callback : onUpdateCallbacks)
+			for each (PhysicsUpdateCallback callback in onUpdateCallbacks)
 			{
+				//Fire the OnUpdateCallback, notifying GameObject's and other potential
+				// listeners that this PhysicsNode has a new world transform.
 				if (callback) callback(worldTransform);
 			}
 
@@ -306,65 +263,54 @@ public:
 
 		previousTransform = worldTransform;
 	}
-
-	bool toDeleteInOctree = false;
+	
 	bool movedSinceLastBroadPhase = false;
+	bool toDeleteInOctree = false;
+	bool collidable = false;
 	bool transmitCollision = false;
 	bool multipleTransmitions = false;
 	bool hasTransmittedCollision = false;
-
-
-	inline void setAppliedForce(NCLVector3 appliedForce)
-	{
-		this->appliedForce += appliedForce;
-	}
-
-	inline void applyImpulse(NCLVector3 impulse)
-	{
-		linVelocity += impulse;
-	}
-	
 	bool constantAcceleration = false;
-
-	NCLVector3 startPosition;
-	NCLVector3 startVelocity;
-	NCLVector3 startAcceleration;
 
 	std::string collisionShapeType;
 
 	TrackedMessageSender<CollisionMessage> collisionMessageSender;
 
-private:
+	std::vector<CollisionShape*> collisionShapes;
+protected:
 	GameObject*				parent;
 	NCLMatrix4					worldTransform;
-	NCLMatrix4 previousTransform;
-	PhysicsUpdateCallback	onUpdateCallback;
 	std::vector<PhysicsUpdateCallback>	onUpdateCallbacks;
 
 
+	//<---------LINEAR-------------->
 	NCLVector3		position;
 	NCLVector3		linVelocity;
 	NCLVector3		force;
 	NCLVector3		acceleration;
 	float		invMass;
+	NCLVector3 appliedForce;
 
+	//<----------ANGULAR-------------->
 	Quaternion  orientation;
 	NCLVector3		angVelocity;
 	NCLVector3		torque;
 	NCLMatrix3     invInertia;
 
-	CollisionShape*		collisionShape;
-	CollisionShape*		broadPhaseShape;
-	PhysicsCollisionCallback	onCollisionCallback;
 
-	float	elasticity;
-	float	friction;
+	//<----------COLLISION------------>
+	PhysicsCollisionCallback	 onCollisionCallback;
+
+
+	//<--------MATERIAL-------------->
+	float				elasticity;		///Value from 0-1 definiing how much the object bounces off other objects
+	float				friction;		///Value from 0-1 defining how much the object can slide off other objects
 	float	damping;
+
+
+	NCLMatrix4 previousTransform;
 
 	bool enabled;
 	bool isCollision;
 	bool isStatic;
-
-	NCLVector3 appliedForce;
 };
-

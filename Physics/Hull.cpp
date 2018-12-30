@@ -1,4 +1,5 @@
 #include "Hull.h"
+
 #include <algorithm>
 
 Hull::Hull()
@@ -127,8 +128,8 @@ int Hull::AddFace(const NCLVector3& _normal, int nVerts, const int* verts)
 	//Update Contained Vertices
 	for (int i = 0; i < nVerts; ++i)
 	{
-		HullVertex* cVertStart = &m_vVertices[m_vEdges[new_face_ptr->_edge_ids[i]]._vStart];
-		HullVertex* cVertEnd = &m_vVertices[m_vEdges[new_face_ptr->_edge_ids[i]]._vEnd];
+		HullVertex* cVertStart	= &m_vVertices[m_vEdges[new_face_ptr->_edge_ids[i]]._vStart];
+		HullVertex* cVertEnd	= &m_vVertices[m_vEdges[new_face_ptr->_edge_ids[i]]._vEnd];
 
 		auto foundLocStart = std::find(cVertStart->_enclosing_faces.begin(), cVertStart->_enclosing_faces.end(), new_face._idx);
 		if (foundLocStart == cVertStart->_enclosing_faces.end())
@@ -162,7 +163,7 @@ void Hull::RemoveFace(int faceidx)
 			}
 			edge->_enclosing_faces.clear();
 			edge->_adjoining_edge_ids.clear();
-		}
+		}		
 		else
 			edge->_enclosing_faces.erase(std::remove(edge->_enclosing_faces.begin(), edge->_enclosing_faces.end(), faceidx));
 	}
@@ -215,28 +216,13 @@ void Hull::GetMinMaxVerticesInAxis(const NCLVector3& local_axis, int* out_min_ve
 	if (out_max_vert) *out_max_vert = maxVertex;
 }
 
+
 void Hull::DebugDraw(std::vector<DebugLineMessage>& messages, const NCLMatrix4& transform)
 {
-	//Draw all Hull Polygons
-	for (HullFace& face : m_vFaces)
-	{
-		//Render Polygon as triangle fan
-		if (face._vert_ids.size() > 2)
-		{
-			NCLVector3 polygon_start = transform * m_vVertices[face._vert_ids[0]]._pos;
-			NCLVector3 polygon_last = transform * m_vVertices[face._vert_ids[1]]._pos;
-
-			for (size_t idx = 2; idx < face._vert_ids.size(); ++idx)
-			{
-				NCLVector3 polygon_next = transform * m_vVertices[face._vert_ids[idx]]._pos;
-
-				polygon_last = polygon_next;
-			}
-		}
-	}
-
+	//Draw all Hull Edges
 	for (HullEdge& edge : m_vEdges)
 	{
-		messages.push_back(DebugLineMessage("RenderingSystem", transform * m_vVertices[edge._vStart]._pos, transform * m_vVertices[edge._vEnd]._pos, NCLVector3(0.5, 0.5, 1)));
+		messages.push_back(DebugLineMessage("RenderingSystem", transform * m_vVertices[edge._vStart]._pos, 
+			transform * m_vVertices[edge._vEnd]._pos, NCLVector3(0.5, 0.5, 1)));
 	}
 }

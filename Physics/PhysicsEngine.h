@@ -1,3 +1,33 @@
+/*
+	The glue that brings all our physics dreams together. This class is provided
+	pretty much as is, as most of the sub-systems are tied in to this already
+	with a bit of debugging code to visualise various parts of the physics engine.
+
+	The general runtime consists of:
+		- Update(float dt)
+		  - UpdatePhysics()
+			 - Broadphase Collision Detection
+			   Quickly identifies possible collisions in between objects, hopefully
+			   with world space partitioning systems like Octrees.. but currently just
+			   builds a list colliding all objects with all other objects. (Hopefully you
+			   can find some free time to fix this =] )
+
+			 - Narrowphase Collision Detection
+			   Takes the list provided by the broadphase collision detection and 
+			   accurately collides all objects, building a collision manifold as
+			   required. (Tutorial 4/5)
+
+			 - Solve Constraints & Collisions
+			   Solves all velocity constraints in the physics system, these include
+			   both Collision Constraints (Tutorial 5,6) and misc world constraints
+			   like distance constraints (Tutorial 3)
+
+			 - Update Physics Objects
+			   Moves all physics objects through time, updating positions/rotations
+			   etc. each iteration (Tutorial 2)
+
+*/
+
 #pragma once
 
 #include "../Launch/Systems/Subsystem.h"
@@ -7,126 +37,76 @@
 #include "PhysicsNode.h"
 #include "Constraint.h"
 #include "Manifold.h"
-#include "BroadPhaseCulling.h"
 #include <vector>
 #include <unordered_set>
 
+//#include "GPUCloth.h"
+
+class GPUCloth;
 class OctreePartitioning;
 class Keyboard;
 
-
 //Number of jacobi iterations to apply in order to
 // assure the constraints are solved. (Last tutorial)
-#define SOLVER_ITERATIONS 50
+#define SOLVER_ITERATIONS 60
 
-struct CollisionPair
+//Just saves including windows.h for the sake of defining true/false
+#ifndef FALSE
+	#define FALSE	0
+	#define TRUE	1
+#endif
+
+struct CollisionPair	//Forms the output of the broadphase collision detection
 {
 	PhysicsNode* pObjectA;
 	PhysicsNode* pObjectB;
-	bool operator==(const CollisionPair& rhs) const { return(pObjectA == rhs.pObjectA && pObjectB == rhs.pObjectB) ? true : false; };
 };
-
-namespace std {
-	template <> struct hash<CollisionPair>
-	{
-		size_t operator()(const CollisionPair &x) const {
-			return hash<float>()(x.pObjectA->getPosition().x) + hash<float>()(x.pObjectB->getPosition().y) + hash<float>()(x.pObjectA->getPosition().y) + hash<float>()(x.pObjectB->getPosition().y);
-		}
-	};
-}
-
 
 class PhysicsEngine : public Subsystem
 {
 public:
-	
 	PhysicsEngine(Database* database, Keyboard* keyboard);
 	~PhysicsEngine();
 
 	void addPhysicsObject(PhysicsNode* obj);
-	void removePhysicsObject(PhysicsNode* obj);
-	void removeAllPhysicsObjects();
+	void RemovePhysicsObject(PhysicsNode* obj);
+	void RemoveAllPhysicsObjects();
 
-	void addConstraint(Constraint* c) { constraints.push_back(c); }
-
-
+	void AddConstraint(Constraint* c) { constraints.push_back(c); }
+	
 	void updateNextFrame(const float& deltaTime) override;
 
-
-	inline float getUpdateTimestep() const 
-	{ 
-		return updateTimestep; 
-	}
-	inline void setUpdateTimestep(float updateTimestep) 
-	{ 
-		updateTimestep = updateTimestep; 
-	}
-
-	inline const NCLVector3& getGravity() const 
-	{ 
-		return gravity; 
-	}
-	inline void setGravity(const NCLVector3& g) 
-	{ 
-		gravity = g; 
-	}
-
-	inline float getDampingFactor() const 
-	{ 
-		return dampingFactor; 
-	}
-	inline void  setDampingFactor(float d) 
-	{ 
-		dampingFactor = d; 
-	}
-
-	inline float getDeltaTime() const { 
-		return updateTimestep; 
-	}
-
-	inline BroadPhaseCulling& getBPcull() { return BpOct; };
-
-	inline int getNumCols() const { return broadphaseColPairs.size(); };
-
+	void InitialiseOctrees(int entityLimit);
 	void OctreeChanged(const NCLMatrix4 &matrix)
 	{
 		octreeChanged = true;
 	}
 
-	void InitialiseOctrees(int entityLimit);
+protected:
+	//The actual time-independant update function
+	void UpdatePhysics();
 
-private:
-	void updatePhysics();
+	void BroadPhaseCollisions();
+	void NarrowPhaseCollisions();
 
-	void broadPhaseCollisions();
-
-	void narrowPhaseCollisions();
-
+protected:
+	bool		octreeChanged = false;
+	bool		octreeInitialised = false;
 	float		updateTimestep, updateRealTimeAccum;
-	
-	NCLVector3		gravity;
-	float		dampingFactor;
 
+	Database* database;
+	Keyboard* keyboard;
 
-	std::unordered_set<CollisionPair>  broadphaseColPairs;
+	std::vector<CollisionPair>  broadphaseColPairs;
 
 	std::vector<PhysicsNode*>	physicsNodes;
 
-	std::vector<Constraint*>	constraints;
-	std::vector<Manifold*>		manifolds;
+	std::vector<Constraint*>	constraints;		// Misc constraints applying to one or more physics objects e.g our DistanceConstraint
+	std::vector<Manifold*>		manifolds;			// Contact constraints between pairs of objects
 
-	BroadPhaseCulling BpOct;
+	OctreePartitioning* octree;
 
-
-	bool		octreeChanged = false;
-	bool		octreeInitialised = false;
-	//OctreePartitioning* octree;
-
-
-	Database* database;
-
-	Keyboard* keyboard;
-	bool wireframeRendering = false;
+	int debugRenderMode = 0;
 	TrackedGroupMessageSender<DebugLineMessage> cubeDrawMessageSender;
 	TrackedGroupMessageSender<DebugSphereMessage> sphereDrawMessageSender;
 };

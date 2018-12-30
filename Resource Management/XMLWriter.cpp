@@ -376,12 +376,12 @@ LevelGameObjectsState XMLWriter::getGameObjectStates()
 
 			state.gameObjectPositions.push_back(std::array<std::string, 3>
 			{
-				std::to_string(physicsNode->getPosition().x),
-				std::to_string(physicsNode->getPosition().y),
-				std::to_string(physicsNode->getPosition().z)
+				std::to_string(physicsNode->GetPosition().x),
+				std::to_string(physicsNode->GetPosition().y),
+				std::to_string(physicsNode->GetPosition().z)
 			});
 
-			NCLVector4 rotation = Quaternion::quaternionToAxisAngle(physicsNode->getOrientation());
+			NCLVector4 rotation = Quaternion::quaternionToAxisAngle(physicsNode->GetOrientation());
 
 			state.gameObjectRotations.push_back(std::array<std::string, 4>
 			{
@@ -412,7 +412,7 @@ LevelGameObjectsState XMLWriter::getGameObjectStates()
 			}
 
 			state.collisionShapes.push_back(physicsNode->collisionShapeType);
-			state.mass.push_back(std::to_string(physicsNode->getInverseMass()));
+			state.mass.push_back(std::to_string(physicsNode->GetInverseMass()));
 
 			if (physicsNode->getIsCollision())
 			{
@@ -423,9 +423,9 @@ LevelGameObjectsState XMLWriter::getGameObjectStates()
 				state.isCollision.push_back("False");
 			}
 
-			state.elasticity.push_back(std::to_string(physicsNode->getElasticity()));
+			state.elasticity.push_back(std::to_string(physicsNode->GetElasticity()));
 
-			state.friction.push_back(std::to_string(physicsNode->getFriction()));
+			state.friction.push_back(std::to_string(physicsNode->GetFriction()));
 			state.damping.push_back(std::to_string(physicsNode->getDamping()));
 
 			if (physicsNode->getIsStatic())

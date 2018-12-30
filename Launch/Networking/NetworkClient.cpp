@@ -141,7 +141,7 @@ void NetworkClient::updateNextFrame(const float& deltaTime)
 			GameObject* client = static_cast<GameObject*>(database->getTable("GameObjects")->getResource(playerName));
 
 			DeliverySystem::getPostman()->insertMessage(TextMeshMessage("RenderingSystem", playerName,
-				client->getPhysicsNode()->getPosition() + NCLVector3(24, 14, 0), NCLVector3(7, 7, 1), NCLVector3(1, 1, 1), false));
+				client->getPhysicsNode()->GetPosition() + NCLVector3(24, 14, 0), NCLVector3(7, 7, 1), NCLVector3(1, 1, 1), false));
 		}
 
 		if (transmitNetworkedCollision)
@@ -202,9 +202,9 @@ void NetworkClient::broadcastKinematicState()
 
 	KinematicState state;
 	state.clientID = clientID;
-	state.position = client->getPhysicsNode()->getPosition();
-	state.linearVelocity = client->getPhysicsNode()->getLinearVelocity();
-	state.linearAcceleration = client->getPhysicsNode()->getAcceleration();
+	state.position = client->getPhysicsNode()->GetPosition();
+	state.linearVelocity = client->getPhysicsNode()->GetLinearVelocity();
+	state.linearAcceleration = client->getPhysicsNode()->GetAcceleration();
 
 	ENetPacket* packet = enet_packet_create(&state, sizeof(KinematicState), 0);
 	enet_peer_send(serverConnection, 0, packet);
@@ -217,8 +217,8 @@ void NetworkClient::broadcastMinionState()
 		MinionKinematicState state;
 		state.minionIndex = i;
 		state.position = objectsToToTransmitStatesFor[i]->getPosition();
-		state.linearVelocity = objectsToToTransmitStatesFor[i]->getPhysicsNode()->getLinearVelocity();
-		state.linearAcceleration = objectsToToTransmitStatesFor[i]->getPhysicsNode()->getAcceleration();
+		state.linearVelocity = objectsToToTransmitStatesFor[i]->getPhysicsNode()->GetLinearVelocity();
+		state.linearAcceleration = objectsToToTransmitStatesFor[i]->getPhysicsNode()->GetAcceleration();
 
 		ENetPacket* packet = enet_packet_create(&state, sizeof(MinionKinematicState), 0);
 		enet_peer_send(serverConnection, 0, packet);

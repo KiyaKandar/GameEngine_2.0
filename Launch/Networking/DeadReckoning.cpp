@@ -10,8 +10,8 @@ DeadReckoning::DeadReckoning(KinematicState prediction)
 
 void DeadReckoning::blendStates(PhysicsNode* node)
 {
-	const float interpolationFactor = calculateInterpolationFactor(node->getPosition());
-	node->setPosition(NCLVector3::interpolate(node->getPosition(), prediction.position, interpolationFactor));
+	const float interpolationFactor = calculateInterpolationFactor(node->GetPosition());
+	node->SetPosition(NCLVector3::interpolate(node->GetPosition(), prediction.position, interpolationFactor));
 }
 
 void DeadReckoning::predictPosition(float deltaTime)

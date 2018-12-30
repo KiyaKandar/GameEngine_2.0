@@ -123,6 +123,34 @@ NCLMatrix3 Quaternion::toMatrix3() const
 	return mat;
 }
 
+NCLMatrix4 Quaternion::toMatrix4() const {
+	NCLMatrix4 mat;
+
+	float yy = y * y;
+	float zz = z * z;
+	float xy = x * y;
+	float zw = z * w;
+	float xz = x * z;
+	float yw = y * w;
+	float xx = x * x;
+	float yz = y * z;
+	float xw = x * w;
+
+	mat.values[0] = 1.0f - 2.0f * (yy + zz);
+	mat.values[1] = 2.0f * (xy + zw);
+	mat.values[2] = 2.0f * (xz - yw);
+
+	mat.values[4] = 2.0f * (xy - zw);
+	mat.values[5] = 1.0f - 2.0f * (xx + zz);
+	mat.values[6] = 2.0f * (yz + xw);
+
+	mat.values[8] = 2.0f * (xz + yw);
+	mat.values[9] = 2.0f * (yz - xw);
+	mat.values[10] = 1.0f - 2.0f * (xx + yy);
+
+	return mat;
+}
+
 Quaternion Quaternion::eulerAnglesToQuaternion(float pitch, float yaw, float roll)	{
 	float y2 = (float)DegToRad(yaw/2.0f);
 	float p2 = (float)DegToRad(pitch/2.0f);

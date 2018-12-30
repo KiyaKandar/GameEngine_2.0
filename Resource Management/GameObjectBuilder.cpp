@@ -43,7 +43,7 @@ PhysicsNode* GameObjectBuilder::buildPhysicsNode(Node* node, GameObject* parent)
 {
 	PhysicsNode* physicsnode = new PhysicsNode();
 
-	physicsnode->setParent(parent);
+	physicsnode->SetParent(parent);
 
 	for (Node* child : node->children)
 	{
@@ -65,16 +65,16 @@ PhysicsNode* GameObjectBuilder::buildPhysicsNode(Node* node, GameObject* parent)
 		}
 		else if (child->nodeType == "Mass")
 		{
-			physicsnode->setInverseMass(stof(child->value));
-			physicsnode->setInverseInertia(physicsnode->getCollisionShape()->buildInverseInertia(physicsnode->getInverseMass()));
+			physicsnode->SetInverseMass(stof(child->value));
+			physicsnode->SetInverseInertia(physicsnode->getCollisionShape()->BuildInverseInertia(physicsnode->GetInverseMass()));
 		}
 		else if (child->nodeType == "Elasticity")
 		{
-			physicsnode->setElasticity(stof(child->value));
+			physicsnode->SetElasticity(stof(child->value));
 		}
 		else if (child->nodeType == "Friction")
 		{
-			physicsnode->setFriction(stof(child->value));
+			physicsnode->SetFriction(stof(child->value));
 		}
 		else if (child->nodeType == "Damping")
 		{

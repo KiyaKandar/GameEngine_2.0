@@ -43,6 +43,7 @@ public:
 	void	normalise();
 	NCLMatrix4 toMatrix() const;
 	NCLMatrix3 toMatrix3() const;
+	NCLMatrix4 toMatrix4() const;
 
 
 	Quaternion	conjugate() const;

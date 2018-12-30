@@ -14,34 +14,41 @@ class SortAndSweep
 {
 public:
 
-	static void PerformSortAndSweep(vector<CollisionPair>& pairs, std::vector<PhysicsNode*>& nodes)
+	static void PerformSortAndSweep(std::vector<CollisionPair>& pairs, std::vector<PhysicsNode*>& nodes)
 	{
 		SortEntitiesAlongXAxis(nodes);
 
 		for (unsigned x = 0; x < nodes.size(); ++x)
 		{
-			float maxA = GetMaxXCoordOfNode(nodes[x]);
-
-			for (unsigned y = x + 1; y < nodes.size(); ++y)
+			if (nodes[x]->getEnabled())
 			{
-				float minB = GetMinXCoordOfNode(nodes[y]);
+				float maxA = GetMaxXCoordOfNode(nodes[x]);
 
-				//Are they possibly colliding?
-				//if (maxA > minB)
-				//{
-					//Yes, get Narrow phase to check this pair properly...
-					CollisionPair pair;
-						pair.pObjectA = nodes[x];
-						pair.pObjectB = nodes[y];
-					if (pair.pObjectA->getIsStatic() == false || pair.pObjectB->getIsStatic() == false)
+				for (unsigned y = x + 1; y < nodes.size(); ++y)
+				{
+					if (nodes[y]->getEnabled())
 					{
-						pairs.push_back(pair);
+						if (!(nodes[x]->getIsStatic() && nodes[y]->getIsStatic()))
+						{
+							float minB = GetMinXCoordOfNode(nodes[y]);
+
+							//Are they possibly colliding?
+							if (maxA > minB)
+							{
+								//Yes, get Narrow phase to check this pair properly...
+								CollisionPair pair;
+								pair.pObjectA = nodes[x];
+								pair.pObjectB = nodes[y];
+
+								pairs.push_back(pair);
+							}
+							else
+							{
+								break;
+							}
+						}
 					}
-				//}
-				//else
-				//{
-				//	break;
-				//}
+				}
 			}
 		}
 	}
@@ -65,8 +72,11 @@ public:
 		NCLVector3 currentMinX;
 		NCLVector3 currentMaxX;
 
-		node->getCollisionShape()->getMinMaxVertexOnAxis(X_AXIS, currentMinX, currentMaxX);
-		minXCoord = min(currentMinX.x, minXCoord);
+		for each (CollisionShape* shape in node->collisionShapes)
+		{
+			shape->GetMinMaxVertexOnAxis(X_AXIS, currentMinX, currentMaxX);
+			minXCoord = min(currentMinX.x, minXCoord);
+		}
 
 		return minXCoord;
 	}
@@ -77,8 +87,11 @@ public:
 		NCLVector3 currentMinX;
 		NCLVector3 currentMaxX;
 
-		node->getCollisionShape()->getMinMaxVertexOnAxis(X_AXIS, currentMinX, currentMaxX);
-		maxXCoord = max(currentMaxX.x, maxXCoord);
+		for each (CollisionShape* shape in node->collisionShapes)
+		{
+			shape->GetMinMaxVertexOnAxis(X_AXIS, currentMinX, currentMaxX);
+			maxXCoord = max(currentMaxX.x, maxXCoord);
+		}
 
 		return maxXCoord;
 	}

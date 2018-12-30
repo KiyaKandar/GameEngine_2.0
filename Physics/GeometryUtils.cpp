@@ -1,8 +1,9 @@
 #include "GeometryUtils.h"
+
 #include "../Utilities/Maths/MathsCommon.h"
 
 // Gets the closest point x on the line (edge) to point (pos)
-NCLVector3 GeometryUtils::getClosestPoint(
+NCLVector3 GeometryUtils::GetClosestPoint(
 	const NCLVector3& pos,
 	const Edge& edge)
 {
@@ -34,7 +35,7 @@ NCLVector3 GeometryUtils::getClosestPoint(
 // Iterates through all edges in polygon (defined as a line-loop list
 // of vertices) and returns the closest point X to point (pos) that 
 // resides on any of the given edges of the polygon.
-NCLVector3 GeometryUtils::getClosestPointPolygon(
+NCLVector3 GeometryUtils::GetClosestPointPolygon(
 	const NCLVector3& pos,
 	const std::list<NCLVector3>& polygon)
 {
@@ -45,7 +46,7 @@ NCLVector3 GeometryUtils::getClosestPointPolygon(
 	for (const NCLVector3& next : polygon)
 	{
 
-		NCLVector3 edge_closest_point = getClosestPoint(pos, GeometryUtils::Edge(last, next));
+		NCLVector3 edge_closest_point = GetClosestPoint(pos, GeometryUtils::Edge(last, next));
 
 		//Compute the distance of the closest point on the line to the actual point
 		NCLVector3 diff = pos - edge_closest_point;
@@ -66,7 +67,7 @@ NCLVector3 GeometryUtils::getClosestPointPolygon(
 
 // Iterates through all edges returning the the point X which is the closest
 //   point along any of the given edges to the provided point A as possible.
-NCLVector3 GeometryUtils::getClosestPoint(
+NCLVector3 GeometryUtils::GetClosestPoint(
 	const NCLVector3& pos,
 	std::vector<GeometryUtils::Edge>& edges)
 {
@@ -75,7 +76,7 @@ NCLVector3 GeometryUtils::getClosestPoint(
 
 	for (const GeometryUtils::Edge& edge : edges)
 	{
-		NCLVector3 edge_closest_point = getClosestPoint(pos, edge);
+		NCLVector3 edge_closest_point = GetClosestPoint(pos, edge);
 
 		//Compute the distance of the closest point on the line to the actual point
 		NCLVector3 diff = pos - edge_closest_point;
@@ -94,7 +95,7 @@ NCLVector3 GeometryUtils::getClosestPoint(
 
 // Performs a plane/edge collision test, if an intersection does occur then
 //    it will return the point on the line where it intersected the given plane.
-bool GeometryUtils::planeEdgeIntersection(
+bool GeometryUtils::PlaneEdgeIntersection(
 	const Plane& plane,
 	const NCLVector3& start,
 	const NCLVector3& end,
@@ -116,7 +117,7 @@ bool GeometryUtils::planeEdgeIntersection(
 		float fac = -NCLVector3::dot(plane.getNormal(), start - p_co) / ab_p;
 
 		//Stop any large floating point divide issues with almost parallel planes
-		fac = min(max(fac, 0.0f), 1.0f);
+		fac = min(max(fac, 0.0f), 1.0f); 
 
 		//Return point on edge
 		out_point = start + ab * fac;
@@ -128,7 +129,7 @@ bool GeometryUtils::planeEdgeIntersection(
 
 //Performs sutherland hodgman clipping algorithm to clip the provided mesh
 //    or polygon in regards to each of the provided clipping planes.
-void GeometryUtils::sutherlandHodgmanClipping(
+void GeometryUtils::SutherlandHodgmanClipping(
 	const std::list<NCLVector3>& input_polygon,
 	int num_clip_planes,
 	const Plane* clip_planes,
@@ -184,12 +185,12 @@ void GeometryUtils::sutherlandHodgmanClipping(
 				//If the edge interesects the clipping plane, cut the edge along clip plane
 				else if (startInPlane && !endInPlane)
 				{
-					if (planeEdgeIntersection(plane, startPoint, endPoint, tempPoint))
+					if (PlaneEdgeIntersection(plane, startPoint, endPoint, tempPoint))
 						output->push_back(tempPoint);
 				}
 				else if (!startInPlane && endInPlane)
 				{
-					if (planeEdgeIntersection(plane, startPoint, endPoint, tempPoint))
+					if (PlaneEdgeIntersection(plane, startPoint, endPoint, tempPoint))
 						output->push_back(tempPoint);
 
 					output->push_back(endPoint);

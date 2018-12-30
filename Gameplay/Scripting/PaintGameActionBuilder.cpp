@@ -156,11 +156,11 @@ void PaintGameActionBuilder::initialiseBuilders(Database* database)
 					meteor->setScale(NCLVector3(size, size, size));
 
 					PhysicsNode* physicsNode = new PhysicsNode();
-					physicsNode->setParent(meteor);
-					physicsNode->transmitCollision = true;
+					physicsNode->SetParent(meteor);
+					//physicsNode->transmitCollision = true;
 					physicsNode->setCollisionShape("Sphere");
-					physicsNode->setInverseMass(0.2f);
-					physicsNode->setInverseInertia(physicsNode->getCollisionShape()->buildInverseInertia(physicsNode->getInverseMass()));
+					physicsNode->SetInverseMass(0.2f);
+					physicsNode->SetInverseInertia(physicsNode->getCollisionShape()->BuildInverseInertia(physicsNode->GetInverseMass()));
 					physicsNode->setStatic(false);
 					meteor->setPhysicsNode(physicsNode);
 
@@ -188,7 +188,7 @@ void PaintGameActionBuilder::initialiseBuilders(Database* database)
 		return [gameObject]()
 		{
 
-			if (gameObject->getPhysicsNode()->getLinearVelocity().length() > 0.1f)
+			if (gameObject->getPhysicsNode()->GetLinearVelocity().length() > 0.1f)
 			{
 				gameObject->stats.currentPaint -= 2;
 				int paint = max(gameObject->stats.currentPaint, 0);
@@ -202,7 +202,7 @@ void PaintGameActionBuilder::initialiseBuilders(Database* database)
 					gameObject->getSceneNode()->SetColour(NCLVector4(interpolatedColour.x, interpolatedColour.y, interpolatedColour.z, 1.f));
 				}
 
-				gameObject->getPhysicsNode()->setInverseMass((gameObject->stats.defaultInvMass + massDecrease));
+				gameObject->getPhysicsNode()->SetInverseMass((gameObject->stats.defaultInvMass + massDecrease));
 
 				gameObject->stats.currentPaint = paint;
 			}
@@ -218,7 +218,7 @@ void PaintGameActionBuilder::initialiseBuilders(Database* database)
 
 		return [gameObject]()
 		{
-			gameObject->getPhysicsNode()->setInverseMass(gameObject->stats.defaultInvMass);
+			gameObject->getPhysicsNode()->SetInverseMass(gameObject->stats.defaultInvMass);
 			gameObject->stats.currentPaint = gameObject->stats.maxPaint;
 			gameObject->getSceneNode()->SetColour(gameObject->stats.colourToPaint);
 		};
@@ -233,7 +233,7 @@ void PaintGameActionBuilder::initialiseBuilders(Database* database)
 
 		return [gameObject, paintpool]()
 		{
-			gameObject->getPhysicsNode()->setInverseMass(gameObject->stats.defaultInvMass);
+			gameObject->getPhysicsNode()->SetInverseMass(gameObject->stats.defaultInvMass);
 			gameObject->stats.currentPaint = gameObject->stats.maxPaint;
 			gameObject->getSceneNode()->SetColour(gameObject->stats.colourToPaint);
 

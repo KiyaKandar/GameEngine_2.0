@@ -40,7 +40,7 @@ public:
 	static bool CollidesWithPartition(Partition& parent, CollisionShape* shape)
 	{
 		AABB nodeBox;
-		shape->getMinMaxVertexOnAxis(WORLD_AXIS, nodeBox.min, nodeBox.max);
+		shape->GetMinMaxVertexOnAxis(WORLD_AXIS, nodeBox.min, nodeBox.max);
 
 		AABB partitionBox;
 		partitionBox.min = parent.minPoint;
@@ -88,5 +88,73 @@ public:
 		partitionsToAddTo.push_back(Partition(
 			NCLVector3(quarterDimensions.x, 0, quarterDimensions.z) + basePosition,
 			quarterDimensions));
+	}
+
+	static void DrawPartitionAndChildren(const Partition& partition, std::vector<DebugLineMessage>& lineMessages)
+	{
+		DrawPartition(partition, lineMessages);
+
+		for (const Partition& child : partition.childPartitions)
+		{
+			DrawPartitionAndChildren(child, lineMessages);
+		}
+	}
+
+	static void DrawPartition(const Partition& partition, std::vector<DebugLineMessage>& lineMessages)
+	{
+		NCLVector3 colour = NCLVector3(1.0, 0.0f, 0.0f);
+
+		if (partition.containedNodes.size() == 0)
+		{
+			colour = NCLVector3(0.0, 0.0f, 1.0f);
+		}
+
+		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+			partition.minPoint, NCLVector3(partition.minPoint.x, partition.maxPoint.y, partition.minPoint.z),
+			colour));
+		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+			NCLVector3(partition.maxPoint.x, partition.minPoint.y, partition.maxPoint.z), partition.maxPoint,
+			colour));
+
+		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+			NCLVector3(partition.minPoint.x, partition.minPoint.y, partition.maxPoint.z), 
+			NCLVector3(partition.minPoint.x, partition.maxPoint.y, partition.maxPoint.z),
+			colour));
+		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+			NCLVector3(partition.maxPoint.x, partition.minPoint.y, partition.minPoint.z),
+			NCLVector3(partition.maxPoint.x, partition.maxPoint.y, partition.minPoint.z),
+			colour));
+
+		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+			partition.minPoint, NCLVector3(partition.maxPoint.x, partition.minPoint.y, partition.minPoint.z),
+			colour));
+		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+			NCLVector3(partition.minPoint.x, partition.maxPoint.y, partition.minPoint.z), 
+			NCLVector3(partition.maxPoint.x, partition.maxPoint.y, partition.minPoint.z),
+			colour));
+
+		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+			partition.maxPoint, NCLVector3(partition.minPoint.x, partition.maxPoint.y, partition.maxPoint.z),
+			colour));
+		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+			NCLVector3(partition.maxPoint.x, partition.minPoint.y, partition.maxPoint.z), 
+			NCLVector3(partition.minPoint.x, partition.minPoint.y, partition.maxPoint.z),
+			colour));
+
+		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+			partition.minPoint, NCLVector3(partition.minPoint.x, partition.minPoint.y, partition.maxPoint.z),
+			colour));
+		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+			NCLVector3(partition.minPoint.x, partition.maxPoint.y, partition.minPoint.z), 
+			NCLVector3(partition.minPoint.x, partition.maxPoint.y, partition.maxPoint.z),
+			colour));
+
+		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+			NCLVector3(partition.maxPoint.x, partition.minPoint.y, partition.minPoint.z), 
+			NCLVector3(partition.maxPoint.x, partition.minPoint.y, partition.maxPoint.z),
+			colour));
+		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+			NCLVector3(partition.maxPoint.x, partition.maxPoint.y, partition.minPoint.z), partition.maxPoint,
+			colour));
 	}
 };

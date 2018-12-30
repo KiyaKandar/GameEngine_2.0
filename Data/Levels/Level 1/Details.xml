@@ -3416,11 +3416,11 @@
 		<Enabled>True</Enabled>
 		  <TransmitCollision>False</TransmitCollision>
 		<CollisionShape>Box</CollisionShape>
-		<Mass>0</Mass>	 
+		<Mass>0.1</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
 		<Friction>0.995</Friction>
-	  <isStatic>True</isStatic>
+	  <isStatic>False</isStatic>
 		</PhysicsNode>
 </GameObjects>
 <GameObjects id ="powerup1" >
@@ -3455,11 +3455,11 @@
 		<Enabled>True</Enabled>
 		  <TransmitCollision>False</TransmitCollision>
 		<CollisionShape>Box</CollisionShape>
-		<Mass>0</Mass>	 
+		<Mass>0.1</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
 		<Friction>0.995</Friction>
-	  <isStatic>True</isStatic>
+	  <isStatic>False</isStatic>
 		</PhysicsNode>
 </GameObjects>
 <GameObjects id ="powerup2" >
@@ -3494,11 +3494,11 @@
 		<Enabled>True</Enabled>
 		  <TransmitCollision>False</TransmitCollision>
 		<CollisionShape>Box</CollisionShape>
-		<Mass>0</Mass>	 
+		<Mass>0.1</Mass>	 
 		<isCollision>True</isCollision>		
 		<Elasticity>0.5</Elasticity>
 		<Friction>0.995</Friction>
-	  <isStatic>True</isStatic>
+	  <isStatic>False</isStatic>
 		</PhysicsNode>
 </GameObjects>
 <GameObjects id ="AI" >
