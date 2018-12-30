@@ -55,7 +55,7 @@ void GameObject::Update(float dt)
 	}
 	position = physicsNode->GetPosition();
 	NCLMatrix4 newTransform = this->physicsNode->GetWorldSpaceTransform();
-	newTransform = newTransform * NCLMatrix4::scale(scale);
+	newTransform = newTransform * NCLMatrix4::Scale(scale);
 
 	this->sceneNode->SetTransform(newTransform);
 }
@@ -73,13 +73,13 @@ void GameObject::SetPosition(NCLVector3 position)
 
 void GameObject::SetRotation(NCLVector4 rotation)
 {
-	NCLVector3 position = sceneNode->GetTransform().getPositionVector();
-	NCLVector3 scale = sceneNode->GetTransform().getScalingVector();
+	NCLVector3 position = sceneNode->GetTransform().GetPositionVector();
+	NCLVector3 scale = sceneNode->GetTransform().GetScalingVector();
 	sceneNode->axisAngleRotation = rotation;
 
-	this->sceneNode->SetTransform(NCLMatrix4::translation(position) * 
-		NCLMatrix4::rotation(rotation.w, NCLVector3(rotation.x, rotation.y, rotation.z)) * 
-		NCLMatrix4::scale(scale));
+	this->sceneNode->SetTransform(NCLMatrix4::Translation(position) * 
+		NCLMatrix4::Rotation(rotation.w, NCLVector3(rotation.x, rotation.y, rotation.z)) * 
+		NCLMatrix4::Scale(scale));
 	
 	if (this->physicsNode != nullptr)
 	{

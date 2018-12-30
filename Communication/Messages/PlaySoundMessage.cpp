@@ -40,7 +40,7 @@ PlaySoundMessage PlaySoundMessage::Builder(Node* node)
 		}
 		else if (childNode->nodeType == "position")
 		{
-			position = VectorBuilder::buildVector3(childNode);
+			position = VectorBuilder::BuildVector3(childNode);
 		}
 		else if (childNode->nodeType == "priority")
 		{

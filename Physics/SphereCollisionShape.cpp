@@ -42,7 +42,7 @@ void SphereCollisionShape::GetCollisionAxes(PhysicsNode* otherObject, std::vecto
 	/* There are infinite possible axes on a sphere so we MUST handle it seperately
 		- Luckily we can just get the closest point on the opposite object to our centre and use that.
 	*/
-	NCLVector3 dir = (otherObject->GetPosition() - Parent()->GetPosition()).normalise();
+	NCLVector3 dir = (otherObject->GetPosition() - Parent()->GetPosition()).Normalise();
 
 	NCLVector3 p1 = Parent()->GetPosition();
 	NCLVector3 p2(0, 0, 0);
@@ -51,7 +51,7 @@ void SphereCollisionShape::GetCollisionAxes(PhysicsNode* otherObject, std::vecto
 	for each (CollisionShape* shape in otherObject->collisionShapes)
 	{
 		NCLVector3 current = shape->GetClosestPoint(p1);
-		float currentDist = (p1 - current).length();
+		float currentDist = (p1 - current).Length();
 		if (currentDist < dist)
 		{
 			p2 = current;
@@ -59,12 +59,12 @@ void SphereCollisionShape::GetCollisionAxes(PhysicsNode* otherObject, std::vecto
 		}
 	}
 
-	out_axes.push_back((p1 - p2).normalise());
+	out_axes.push_back((p1 - p2).Normalise());
 }
 
 NCLVector3 SphereCollisionShape::GetClosestPoint(const NCLVector3& point) const
 {
-	NCLVector3 diff = (point - Parent()->GetPosition()).normalise();
+	NCLVector3 diff = (point - Parent()->GetPosition()).Normalise();
 	return Parent()->GetPosition() + diff * m_Radius;
 }
 

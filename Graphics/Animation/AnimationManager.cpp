@@ -38,7 +38,7 @@ AnimationManager::~AnimationManager()
 
 void AnimationManager::UpdateNextFrame(const float& deltaTime)
 {
-	timer->beginTimedSection();
+	timer->BeginTimedSection();
 
 	ToggleDrawingSkeletonIfKeyTriggered();
 	ActivateAnimationsInPlayQueue();
@@ -50,7 +50,7 @@ void AnimationManager::UpdateNextFrame(const float& deltaTime)
 		UpdateActiveAnimationFrame(animationIterator, deltaTime);
 	}
 
-	timer->endTimedSection();
+	timer->EndTimedSection();
 }
 
 void AnimationManager::QueueAnimationPlay(Message* message)
@@ -78,7 +78,7 @@ void AnimationManager::MoveCameraWithAnimatedGameObject(Message* message)
 		}
 	}
 
-	camera->SetPosition(gameObject->GetSceneNode()->GetTransform().getPositionVector() + currentAnimTransform.getPositionVector() + movementMessage->translation);
+	camera->SetPosition(gameObject->GetSceneNode()->GetTransform().GetPositionVector() + currentAnimTransform.GetPositionVector() + movementMessage->translation);
 	camera->SetPitch(movementMessage->pitch);
 	camera->SetYaw(movementMessage->yaw);
 }
@@ -253,7 +253,7 @@ void AnimationManager::DrawActiveSkeleton(std::vector<ActiveAnimation>::iterator
 		aiMatrix4x4 parentTransform;
 		aiMatrix4x4 rotation;
 
-		parentGameObject->GetSceneNode()->GetWorldTransform().toASSIMPaiMatrix(parentTransform);
+		parentGameObject->GetSceneNode()->GetWorldTransform().ToAssimPaiMatrix(parentTransform);
 		aiMatrix4x4::RotationX(DEGREES90_TO_RADIANS, rotation);
 
 		parentTransform = parentTransform * rotation;

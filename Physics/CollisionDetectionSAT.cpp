@@ -51,7 +51,7 @@ bool CollisionDetectionSAT::AreColliding(CollisionData* out_coldata)
 		for (const NCLVector3& norm2 : axes2)
 		{
 			AddPossibleCollisionAxis(
-				NCLVector3::cross(norm1, norm2).normalise());
+				NCLVector3::Cross(norm1, norm2).Normalise());
 		}
 	}
 
@@ -246,7 +246,7 @@ bool CollisionDetectionSAT::AddPossibleCollisionAxis(NCLVector3 axis)
 	if (NCLVector3::dot(axis, axis) < epsilon)
 		return false;
 
-	axis.normalise();
+	axis.Normalise();
 
 	for (const NCLVector3& p_axis : possibleColAxes)
 	{

@@ -121,7 +121,7 @@ void Profiler::UpdateTimers()
 		nextLine += NEXT_LINE_OFFSET;
 
 		std::string profilerText = subsystemTimer.first + "	" + std::to_string(
-			subsystemTimer.second->getTimeTakenForSection());
+			subsystemTimer.second->GetTimeTakenForSection());
 		NCLVector3 position(-500.0f, nextLine, 0);
 
 		messages.push_back(TextMeshMessage("RenderingSystem", profilerText,
@@ -144,7 +144,7 @@ void Profiler::DisplayChildTimers()
 
 void Profiler::SaveProfilingInfo(GameTimer* parentTimer, int currentDepth, float parentXOffset)
 {
-	std::vector<GameTimer*> childTimers = parentTimer->getAllChildTimers();
+	std::vector<GameTimer*> childTimers = parentTimer->GetAllChildTimers();
 
 	float xOffset = parentXOffset + 20.0f;
 
@@ -154,8 +154,8 @@ void Profiler::SaveProfilingInfo(GameTimer* parentTimer, int currentDepth, float
 		{
 			nextLine += NEXT_LINE_OFFSET;
 
-			std::string profilerText = childTimer->getTimerName() + "	" + std::to_string(
-				childTimer->getTimeTakenForSection());
+			std::string profilerText = childTimer->GetTimerName() + "	" + std::to_string(
+				childTimer->GetTimeTakenForSection());
 			messages.push_back(TextMeshMessage("RenderingSystem", profilerText,
 			                                   NCLVector3(xOffset, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
 

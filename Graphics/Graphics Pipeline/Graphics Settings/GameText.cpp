@@ -36,7 +36,7 @@ void GameText::Apply()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
 	//viewMatrix.toIdentity();
-	textureMatrix.toIdentity();
+	textureMatrix.ToIdentity();
 
 
 	SetCurrentShader(UITextShader);
@@ -46,7 +46,7 @@ void GameText::Apply()
 	{
 		if (bufferedOrthographicUsage[i] == true)
 		{
-			viewMatrix.toIdentity();
+			viewMatrix.ToIdentity();
 			glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "viewMatrix"), 1, false, (float*)&viewMatrix);
 			glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix"), 1, false, (float*)&CommonGraphicsData::SHARED_ORTHOGRAPHIC_MATRIX);
 		}
@@ -61,7 +61,7 @@ void GameText::Apply()
 		glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "colour"), 1, (float*)&bufferedColours[i]);
 
 		TextMesh textMesh(bufferedText[i], *font);
-		textMesh.Draw(*currentShader, NCLMatrix4::translation(bufferedPositions[i]) * NCLMatrix4::scale(NCLVector3(bufferedScales[i].x, bufferedScales[i].y, 1)));
+		textMesh.Draw(*currentShader, NCLMatrix4::Translation(bufferedPositions[i]) * NCLMatrix4::Scale(NCLVector3(bufferedScales[i].x, bufferedScales[i].y, 1)));
 	}
 
 	bufferedText.clear();
@@ -74,14 +74,14 @@ void GameText::Apply()
 	{
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		textureMatrix.toIdentity();
+		textureMatrix.ToIdentity();
 
 		SetCurrentShader(textWithBackgrounShader);
 		UpdateShaderMatrices();
 
 		for (int i = 0; i < (int)bufferedBackgroundText.size(); ++i)
 		{
-			viewMatrix.toIdentity();
+			viewMatrix.ToIdentity();
 			glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "viewMatrix"), 1, false, (float*)&viewMatrix);
 			glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix"), 1, false, (float*)&CommonGraphicsData::SHARED_ORTHOGRAPHIC_MATRIX);
 
@@ -89,7 +89,7 @@ void GameText::Apply()
 			glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "colour"), 1, (float*)&colour);
 
 			TextMesh textMesh(bufferedBackgroundText[i], *font);
-			textMesh.Draw(*currentShader, NCLMatrix4::translation(bufferedBackgroundPositions[i]) * NCLMatrix4::scale(bufferedBackgroundScales[i]));
+			textMesh.Draw(*currentShader, NCLMatrix4::Translation(bufferedBackgroundPositions[i]) * NCLMatrix4::Scale(bufferedBackgroundScales[i]));
 		}
 
 		bufferedBackgroundText.clear();

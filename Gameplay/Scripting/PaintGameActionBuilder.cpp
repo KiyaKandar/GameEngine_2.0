@@ -188,7 +188,7 @@ void PaintGameActionBuilder::InitialiseBuilders(Database* database)
 		return [gameObject]()
 		{
 
-			if (gameObject->GetPhysicsNode()->GetLinearVelocity().length() > 0.1f)
+			if (gameObject->GetPhysicsNode()->GetLinearVelocity().Length() > 0.1f)
 			{
 				gameObject->stats.currentPaint -= 2;
 				int paint = max(gameObject->stats.currentPaint, 0);
@@ -198,7 +198,7 @@ void PaintGameActionBuilder::InitialiseBuilders(Database* database)
 				if (paint < 25)
 				{
 					float interpolationFactor = ((float)paint / (float)gameObject->stats.maxPaint) * 4;
-					NCLVector3 interpolatedColour = NCLVector3::interpolate(NCLVector3(1.f, 1.f, 1.f), gameObject->stats.colourToPaint.toVector3(), interpolationFactor);
+					NCLVector3 interpolatedColour = NCLVector3::Interpolate(NCLVector3(1.f, 1.f, 1.f), gameObject->stats.colourToPaint.ToVector3(), interpolationFactor);
 					gameObject->GetSceneNode()->SetColour(NCLVector4(interpolatedColour.x, interpolatedColour.y, interpolatedColour.z, 1.f));
 				}
 

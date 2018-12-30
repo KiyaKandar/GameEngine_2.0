@@ -70,7 +70,7 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 		GameObject* gameObject = static_cast<GameObject*>(
 			database->GetTable("GameObjects")->GetResource(translationMessage->resourceName));
 
-		gameObject->GetPhysicsNode()->SetPosition(translationMessage->transform.getPositionVector());
+		gameObject->GetPhysicsNode()->SetPosition(translationMessage->transform.GetPositionVector());
 	});
 
 	incomingMessages.AddActionToExecuteOnMessage(MessageType::MOVE_GAMEOBJECT, [database = database](Message* message)
@@ -103,12 +103,12 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 		if (rotateMessage->relative)
 		{
 			gameObject->GetPhysicsNode()->SetOrientation(gameObject->GetPhysicsNode()->GetOrientation() *
-				Quaternion::axisAngleToQuaterion(NCLVector3(rotateMessage->rotation.x, rotateMessage->rotation.y, rotateMessage->rotation.z), rotateMessage->rotation.w));
+				Quaternion::AxisAngleToQuaterion(NCLVector3(rotateMessage->rotation.x, rotateMessage->rotation.y, rotateMessage->rotation.z), rotateMessage->rotation.w));
 		}
 		else
 		{
 			gameObject->GetPhysicsNode()->SetOrientation(
-				Quaternion::axisAngleToQuaterion(NCLVector3(rotateMessage->rotation.x, rotateMessage->rotation.y, rotateMessage->rotation.z), rotateMessage->rotation.w));
+				Quaternion::AxisAngleToQuaterion(NCLVector3(rotateMessage->rotation.x, rotateMessage->rotation.y, rotateMessage->rotation.z), rotateMessage->rotation.w));
 		}
 	});
 
@@ -124,18 +124,18 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 		{
 			if (applyForceMessage->xmin != applyForceMessage->xmax)
 			{
-				force.x = VectorBuilder::getRandomVectorComponent(applyForceMessage->xmin, applyForceMessage->xmax) * 50.0f;
+				force.x = VectorBuilder::GetRandomVectorComponent(applyForceMessage->xmin, applyForceMessage->xmax) * 50.0f;
 				//These * 50.0f are needed because currently rand() doesn't give good results for large ranges. 
 				//So a smaller range is needed when choosing random min and max values for vectors, which should then be scaled to the appropriate value
 				//Get rid of them though as any random force component will now be scaled and this isn't good!
 			}
 			if (applyForceMessage->ymin != applyForceMessage->ymax)
 			{
-				force.y = VectorBuilder::getRandomVectorComponent(applyForceMessage->ymin, applyForceMessage->ymax) * 50.0f;
+				force.y = VectorBuilder::GetRandomVectorComponent(applyForceMessage->ymin, applyForceMessage->ymax) * 50.0f;
 			}
 			if (applyForceMessage->zmin != applyForceMessage->zmax)
 			{
-				force.z = VectorBuilder::getRandomVectorComponent(applyForceMessage->zmin, applyForceMessage->zmax) * 50.0f;
+				force.z = VectorBuilder::GetRandomVectorComponent(applyForceMessage->zmin, applyForceMessage->zmax) * 50.0f;
 			}
 		}
 
@@ -154,15 +154,15 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 		{
 			if (applyImpulseMessage->xmin != applyImpulseMessage->xmax)
 			{
-				impulse.x = VectorBuilder::getRandomVectorComponent(applyImpulseMessage->xmin, applyImpulseMessage->xmax);
+				impulse.x = VectorBuilder::GetRandomVectorComponent(applyImpulseMessage->xmin, applyImpulseMessage->xmax);
 			}
 			if (applyImpulseMessage->ymin != applyImpulseMessage->ymax)
 			{
-				impulse.y = VectorBuilder::getRandomVectorComponent(applyImpulseMessage->ymin, applyImpulseMessage->ymax);
+				impulse.y = VectorBuilder::GetRandomVectorComponent(applyImpulseMessage->ymin, applyImpulseMessage->ymax);
 			}
 			if (applyImpulseMessage->zmin != applyImpulseMessage->zmax)
 			{
-				impulse.z = VectorBuilder::getRandomVectorComponent(applyImpulseMessage->zmin, applyImpulseMessage->zmax);
+				impulse.z = VectorBuilder::GetRandomVectorComponent(applyImpulseMessage->zmin, applyImpulseMessage->zmax);
 			}
 		}
 		gObj->GetPhysicsNode()->ApplyImpulse(impulse);
@@ -182,11 +182,11 @@ PhysicsEngine::PhysicsEngine(Database* database, Keyboard* keyboard) : Subsystem
 	updateTimestep = 1.0f / 60.f;
 	updateRealTimeAccum = 0.0f;
 
-	timer->addChildTimer("Broadphase");
-	timer->addChildTimer("Narrowphase");
-	timer->addChildTimer("Solver");
-	timer->addChildTimer("Integrate Position");
-	timer->addChildTimer("Integrate Velocity");
+	timer->AddChildTimer("Broadphase");
+	timer->AddChildTimer("Narrowphase");
+	timer->AddChildTimer("Solver");
+	timer->AddChildTimer("Integrate Position");
+	timer->AddChildTimer("Integrate Velocity");
 }
 
 PhysicsEngine::~PhysicsEngine()
@@ -279,7 +279,7 @@ void PhysicsEngine::RemoveAllPhysicsObjects()
 
 void PhysicsEngine::UpdateNextFrame(const float& deltaTime)
 {
-	timer->beginTimedSection();
+	timer->BeginTimedSection();
 
 	static int maxUpdatesPerFrame = 5;
 
@@ -345,7 +345,7 @@ void PhysicsEngine::UpdateNextFrame(const float& deltaTime)
 		}
 	}
 
-	timer->endTimedSection();
+	timer->EndTimedSection();
 }
 
 
@@ -357,11 +357,11 @@ void PhysicsEngine::UpdatePhysics()
 	}
 	manifolds.clear();
 
-	timer->beginChildTimedSection("Broadphase");
+	timer->BeginChildTimedSection("Broadphase");
 	BroadPhaseCollisions();
-	timer->endChildTimedSection("Broadphase");
+	timer->EndChildTimedSection("Broadphase");
 
-	timer->beginChildTimedSection("Narrowphase");
+	timer->BeginChildTimedSection("Narrowphase");
 	NarrowPhaseCollisions();
 
 	std::random_shuffle(manifolds.begin(), manifolds.end());
@@ -369,9 +369,9 @@ void PhysicsEngine::UpdatePhysics()
 
 	for (Manifold* m : manifolds) m->PreSolverStep(updateTimestep);
 	for (Constraint* c : constraints) c->PreSolverStep(updateTimestep);
-	timer->endChildTimedSection("Narrowphase");
+	timer->EndChildTimedSection("Narrowphase");
 
-	timer->beginChildTimedSection("Integrate Velocity");
+	timer->BeginChildTimedSection("Integrate Velocity");
 	for (PhysicsNode* obj : physicsNodes)
 	{
 		if (obj->GetEnabled())
@@ -379,17 +379,17 @@ void PhysicsEngine::UpdatePhysics()
 			obj->IntegrateForVelocity(updateTimestep);
 		}
 	}
-	timer->endChildTimedSection("Integrate Velocity");
+	timer->EndChildTimedSection("Integrate Velocity");
 
-	timer->beginChildTimedSection("Solver");
+	timer->BeginChildTimedSection("Solver");
 	for (size_t i = 0; i < SOLVER_ITERATIONS; ++i)
 	{
 		for (Manifold* m : manifolds) m->ApplyImpulse();
 		for (Constraint* c : constraints) c->ApplyImpulse();
 	}
-	timer->endChildTimedSection("Solver");
+	timer->EndChildTimedSection("Solver");
 
-	timer->beginChildTimedSection("Integrate Position");
+	timer->BeginChildTimedSection("Integrate Position");
 	for (PhysicsNode* obj : physicsNodes) 
 	{
 		if (obj->GetEnabled())
@@ -397,7 +397,7 @@ void PhysicsEngine::UpdatePhysics()
 			obj->IntegrateForPosition(updateTimestep);
 		}
 	}
-	timer->endChildTimedSection("Integrate Position");
+	timer->EndChildTimedSection("Integrate Position");
 }
 
 void PhysicsEngine::BroadPhaseCollisions()

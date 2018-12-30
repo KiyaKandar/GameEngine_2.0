@@ -28,15 +28,15 @@ AbsoluteTransformMessage AbsoluteTransformMessage::Builder(Node* node)
 		}
 		else if (childNode->nodeType == "translation")
 		{
-			nodeTranslation = VectorBuilder::buildVector3(childNode);
+			nodeTranslation = VectorBuilder::BuildVector3(childNode);
 		}
 		else if (childNode->nodeType == "rotation")
 		{
-			nodeRotation = VectorBuilder::buildVector4(childNode);
+			nodeRotation = VectorBuilder::BuildVector4(childNode);
 		}
 		else if (childNode->nodeType == "scale")
 		{
-			nodeScale = VectorBuilder::buildVector3(childNode);
+			nodeScale = VectorBuilder::BuildVector3(childNode);
 		}
 		else if (childNode->nodeType == "resource")
 		{
@@ -44,9 +44,9 @@ AbsoluteTransformMessage AbsoluteTransformMessage::Builder(Node* node)
 		}
 	}
 
-	NCLMatrix4 nodeTransform = NCLMatrix4::translation(nodeTranslation)
-		* NCLMatrix4::rotation(nodeRotation.w, NCLVector3(nodeRotation.x, nodeRotation.y, nodeRotation.z))
-		* NCLMatrix4::scale(nodeScale);
+	NCLMatrix4 nodeTransform = NCLMatrix4::Translation(nodeTranslation)
+		* NCLMatrix4::Rotation(nodeRotation.w, NCLVector3(nodeRotation.x, nodeRotation.y, nodeRotation.z))
+		* NCLMatrix4::Scale(nodeScale);
 
 	return AbsoluteTransformMessage(nodeDestination, nodeResourcename, nodeTransform);
 }
@@ -55,13 +55,13 @@ AbsoluteTransformMessage AbsoluteTransformMessage::TokensToMessage(std::vector<s
 {
 	std::string nodeDestination = lineTokens[1];
 	std::string nodeResourcename = lineTokens[2];
-	NCLVector3 nodeTranslation = VectorBuilder::buildVector3(lineTokens[3].substr(12));
-	NCLVector4 nodeRotation = VectorBuilder::buildVector4(lineTokens[4].substr(9));
-	NCLVector3 nodeScale = VectorBuilder::buildVector3(lineTokens[5].substr(6));
+	NCLVector3 nodeTranslation = VectorBuilder::BuildVector3(lineTokens[3].substr(12));
+	NCLVector4 nodeRotation = VectorBuilder::BuildVector4(lineTokens[4].substr(9));
+	NCLVector3 nodeScale = VectorBuilder::BuildVector3(lineTokens[5].substr(6));
 
-	NCLMatrix4 nodeTransform = NCLMatrix4::translation(nodeTranslation)
-		* NCLMatrix4::rotation(nodeRotation.w, NCLVector3(nodeRotation.x, nodeRotation.y, nodeRotation.z))
-		* NCLMatrix4::scale(nodeScale);
+	NCLMatrix4 nodeTransform = NCLMatrix4::Translation(nodeTranslation)
+		* NCLMatrix4::Rotation(nodeRotation.w, NCLVector3(nodeRotation.x, nodeRotation.y, nodeRotation.z))
+		* NCLMatrix4::Scale(nodeScale);
 
 	return AbsoluteTransformMessage(nodeDestination, nodeResourcename, nodeTransform);
 }

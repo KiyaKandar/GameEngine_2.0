@@ -114,7 +114,7 @@ void SSAO::GenerateSampleKernel()
 		NCLVector3 sample(randomFloats(generator) * 2.0f - 1.0f,
 			randomFloats(generator) * 2.0f - 1.0f, randomFloats(generator));
 
-		sample.normalise();
+		sample.Normalise();
 		sample = sample * randomFloats(generator);
 		float scale = float(i) / KERNEL_SIZE;
 

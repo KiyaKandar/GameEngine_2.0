@@ -53,9 +53,9 @@ ApplyImpulseMessage ApplyImpulseMessage::Builder(Node* node)
 		}
 		else if (childNode->nodeType == "impulse")
 		{
-			impulse.x = VectorBuilder::getVectorComponentFromNode(childNode->children[0], &xmin, &xmax);
-			impulse.y = VectorBuilder::getVectorComponentFromNode(childNode->children[1], &ymin, &ymax);
-			impulse.z = VectorBuilder::getVectorComponentFromNode(childNode->children[2], &zmin, &zmax);
+			impulse.x = VectorBuilder::GetVectorComponentFromNode(childNode->children[0], &xmin, &xmax);
+			impulse.y = VectorBuilder::GetVectorComponentFromNode(childNode->children[1], &ymin, &ymax);
+			impulse.z = VectorBuilder::GetVectorComponentFromNode(childNode->children[2], &zmin, &zmax);
 		}
 	}
 
@@ -73,7 +73,7 @@ ApplyImpulseMessage ApplyImpulseMessage::TokensToMessage(std::vector<std::string
 	std::string nodeResourcename = lineTokens[2];
 
 	std::string impulseString = lineTokens[3].substr(8);
-	NCLVector3 impulse = VectorBuilder::buildVector3(impulseString);
+	NCLVector3 impulse = VectorBuilder::BuildVector3(impulseString);
 
 	return ApplyImpulseMessage(nodeDestination, nodeResourcename, false, impulse);
 }

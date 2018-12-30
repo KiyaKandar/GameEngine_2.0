@@ -49,7 +49,7 @@ void CuboidCollisionShape::GetCollisionAxes(
 	PhysicsNode* otherObject,
 	std::vector<NCLVector3>& out_axes) const
 {
-	NCLMatrix3 objOrientation = Parent()->GetOrientation().toMatrix3();
+	NCLMatrix3 objOrientation = Parent()->GetOrientation().ToMatrix3();
 	out_axes.push_back(objOrientation * NCLVector3(1.0f, 0.0f, 0.0f)); //X - Axis
 	out_axes.push_back(objOrientation * NCLVector3(0.0f, 1.0f, 0.0f)); //Y - Axis
 	out_axes.push_back(objOrientation * NCLVector3(0.0f, 0.0f, 1.0f)); //Z - Axis
@@ -60,7 +60,7 @@ NCLVector3 CuboidCollisionShape::GetClosestPoint(const NCLVector3& point) const
 	//Iterate over each edge and get the closest point on any edge to point p.
 
 	// Build World Transform
-	NCLMatrix4 wsTransform = Parent()->GetWorldSpaceTransform() * NCLMatrix4::scale(halfDims);
+	NCLMatrix4 wsTransform = Parent()->GetWorldSpaceTransform() * NCLMatrix4::Scale(halfDims);
 
 	// Convert world space axis into model space (Axis Aligned Cuboid)
 	NCLMatrix4 invWsTransform = NCLMatrix4::Inverse(wsTransform);
@@ -93,12 +93,12 @@ void CuboidCollisionShape::GetMinMaxVertexOnAxis(
 	NCLVector3& out_max) const
 {
 	// Build World Transform
-	NCLMatrix4 wsTransform = Parent()->GetWorldSpaceTransform() * NCLMatrix4::scale(halfDims);
+	NCLMatrix4 wsTransform = Parent()->GetWorldSpaceTransform() * NCLMatrix4::Scale(halfDims);
 
 	// Convert world space axis into model space (Axis Aligned Cuboid)
-	NCLMatrix3 invNormalMatrix = NCLMatrix3::inverse(NCLMatrix3(wsTransform));
+	NCLMatrix3 invNormalMatrix = NCLMatrix3::Inverse(NCLMatrix3(wsTransform));
 	NCLVector3 local_axis = invNormalMatrix * axis;
-	local_axis.normalise();
+	local_axis.Normalise();
 
 	// Get closest and furthest vertex id's
 	int vMin, vMax;
@@ -118,11 +118,11 @@ void CuboidCollisionShape::GetIncidentReferencePolygon(
 	std::vector<Plane>& out_adjacent_planes) const
 {
 	//Get the world-space transform
-	NCLMatrix4 wsTransform = Parent()->GetWorldSpaceTransform() * NCLMatrix4::scale(halfDims);
+	NCLMatrix4 wsTransform = Parent()->GetWorldSpaceTransform() * NCLMatrix4::Scale(halfDims);
 
 	//Get normal and inverse-normal matrices to transfom the collision axis to and from modelspace
-	NCLMatrix3 invNormalMatrix = NCLMatrix3::inverse(NCLMatrix3(wsTransform));
-	NCLMatrix3 normalMatrix = NCLMatrix3::inverse(invNormalMatrix);
+	NCLMatrix3 invNormalMatrix = NCLMatrix3::Inverse(NCLMatrix3(wsTransform));
+	NCLMatrix3 normalMatrix = NCLMatrix3::Inverse(invNormalMatrix);
 
 
 	NCLVector3 local_axis = invNormalMatrix * axis;
@@ -152,7 +152,7 @@ void CuboidCollisionShape::GetIncidentReferencePolygon(
 
 
 	// Output face normal
-	out_normal = (normalMatrix * best_face->_normal).normalise();
+	out_normal = (normalMatrix * best_face->_normal).Normalise();
 
 	// Output face vertices (transformed back into world-space)
 	for (int vertIdx : best_face->_vert_ids)
@@ -171,7 +171,7 @@ void CuboidCollisionShape::GetIncidentReferencePolygon(
 	{
 		//We use the negated normal here for the plane, as we want to clip geometry left outside the shape not inside it.
 		NCLVector3 planeNrml = -(normalMatrix * best_face->_normal);
-		planeNrml.normalise();
+		planeNrml.Normalise();
 
 		float planeDist = -NCLVector3::dot(planeNrml, wsPointOnPlane);
 		//out_adjacent_planes.push_back(Plane(planeNrml, planeDist));
@@ -196,7 +196,7 @@ void CuboidCollisionShape::GetIncidentReferencePolygon(
 				const HullFace& adjFace = cubeHull.GetFace(adjFaceIdx);
 
 				NCLVector3 planeNrml = -(normalMatrix * adjFace._normal);
-				planeNrml.normalise();
+				planeNrml.Normalise();
 				float planeDist = -NCLVector3::dot(planeNrml, wsPointOnPlane);
 
 				out_adjacent_planes.push_back(Plane(planeNrml, planeDist));
@@ -210,7 +210,7 @@ void CuboidCollisionShape::GetIncidentReferencePolygon(
 void CuboidCollisionShape::DebugDraw(std::vector<DebugLineMessage>& lineMessages, std::vector<DebugSphereMessage>& sphereMessages) const
 {
 	// Just draw the cuboid hull-mesh at the position of our PhysicsNode
-	NCLMatrix4 transform = Parent()->GetWorldSpaceTransform() * NCLMatrix4::scale(halfDims);
+	NCLMatrix4 transform = Parent()->GetWorldSpaceTransform() * NCLMatrix4::Scale(halfDims);
 	cubeHull.DebugDraw(lineMessages,transform);
 }
 

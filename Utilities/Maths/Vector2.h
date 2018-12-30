@@ -13,46 +13,56 @@ _-_-_-_-_-_-_-""  ""
 */
 #include <iostream>
 
-class NCLVector2	{
+class NCLVector2
+{
 public:
-	NCLVector2(void) {
-		toZero();
+	NCLVector2(void)
+	{
+		ToZero();
 	}
 
-	NCLVector2(const float x, const float y) {
+	NCLVector2(const float x, const float y)
+	{
 		this->x = x;
 		this->y = y;
 	}
 
-	~NCLVector2(void){}
+	~NCLVector2(void)
+	{
+	}
 
 	float x;
 	float y;
 
-	void toZero(){
+	void ToZero()
+	{
 		x = 0.0f;
 		y = 0.0f;
 	}
 
-	inline friend std::ostream& operator<<(std::ostream& o, const NCLVector2& v){
+	inline friend std::ostream& operator<<(std::ostream& o, const NCLVector2& v)
+	{
 		o << "Vector2(" << v.x << "," << v.y << ")" << std::endl;
 		return o;
 	}
 
-	inline NCLVector2  operator-(const NCLVector2  &a) const{
-		return NCLVector2(x - a.x,y - a.y);
+	inline NCLVector2 operator-(const NCLVector2& a) const
+	{
+		return NCLVector2(x - a.x, y - a.y);
 	}
 
-	inline NCLVector2  operator+(const NCLVector2  &a) const{
-		return NCLVector2(x + a.x,y + a.y);
+	inline NCLVector2 operator+(const NCLVector2& a) const
+	{
+		return NCLVector2(x + a.x, y + a.y);
 	}
 
-	inline NCLVector2  operator*(const NCLVector2  &a) const {
+	inline NCLVector2 operator*(const NCLVector2& a) const
+	{
 		return NCLVector2(x * a.x, y * a.y);
 	}
 
-	inline NCLVector2  operator/(const NCLVector2  &a) const {
+	inline NCLVector2 operator/(const NCLVector2& a) const
+	{
 		return NCLVector2(x / a.x, y / a.y);
 	};
 };
-

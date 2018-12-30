@@ -23,12 +23,12 @@ Renderer::Renderer(GameTimer* parentTimer, Window* window, Camera* camera)
 	this->resolution = window->GetScreenSize();
 	this->parentTimer = parentTimer;
 
-	parentTimer->addChildTimer("Update Scene Management");
-	parentTimer->addChildTimer("Render Modules");
+	parentTimer->AddChildTimer("Update Scene Management");
+	parentTimer->AddChildTimer("Render Modules");
 
-	pipeline = GraphicsPipeline(parentTimer->getChildTimer("Render Modules"));
+	pipeline = GraphicsPipeline(parentTimer->GetChildTimer("Render Modules"));
 
-	globalOrthographicMatrix = NCLMatrix4::orthographic(-1.0f,10000.0f, width / 2.0f, -width / 2.0f, height / 2.0f, -height / 2.0f);
+	globalOrthographicMatrix = NCLMatrix4::Orthographic(-1.0f,10000.0f, width / 2.0f, -width / 2.0f, height / 2.0f, -height / 2.0f);
 
 	loadingScreenMesh = new SceneNode("../Data/Resources/Meshes/cube.obj", NCLVector4(1,0,0,1));
 	loadingScreenMesh->GetMesh()->LoadTexture("../Data/Resources/Textures/loadingtexture.png");
@@ -60,7 +60,7 @@ void Renderer::RenderLoadingScreen(const float& deltatime)
 	camera->SetYaw(0);
 
 	loadingScreenMesh->SetTransform(loadingScreenMesh->GetTransform()
-		* NCLMatrix4::rotation(5.0f, NCLVector3(0,1,0)));
+		* NCLMatrix4::Rotation(5.0f, NCLVector3(0,1,0)));
 
 	loadingScreenMesh->Update(deltatime);
 
@@ -141,7 +141,7 @@ GraphicsModule* Renderer::GetGraphicsModule(const std::string& moduleName)
 
 void Renderer::UpdateScene(const float& msec)
 {
-	parentTimer->beginChildTimedSection("Update Scene Management");
+	parentTimer->BeginChildTimedSection("Update Scene Management");
 
 	camera->UpdateCamera();
 	camera->BuildViewMatrix();
@@ -150,16 +150,16 @@ void Renderer::UpdateScene(const float& msec)
 	sceneManager->ClearMeshLists();
 	sceneManager->BuildMeshLists();
 
-	parentTimer->endChildTimedSection("Update Scene Management");
+	parentTimer->EndChildTimedSection("Update Scene Management");
 }
 
 void Renderer::RenderScene()
 {
-	parentTimer->beginChildTimedSection("Render Modules");
+	parentTimer->BeginChildTimedSection("Render Modules");
 
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	pipeline.ExecuteModules();
 	SwapBuffers();
 
-	parentTimer->endChildTimedSection("Render Modules");
+	parentTimer->EndChildTimedSection("Render Modules");
 }

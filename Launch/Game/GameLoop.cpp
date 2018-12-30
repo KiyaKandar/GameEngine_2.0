@@ -92,7 +92,7 @@ void GameLoop::ExecuteGameLoop()
 		engine->UpdateNextSystemFrame();
 		incomingMessages.ProcessMessagesInBuffer();
 		
-		UpdateGameObjects(loopTimer->getTimeSinceLastRetrieval() * deltaTimeMultiplier);
+		UpdateGameObjects(loopTimer->GetTimeSinceLastRetrieval() * deltaTimeMultiplier);
 	}
 }
 

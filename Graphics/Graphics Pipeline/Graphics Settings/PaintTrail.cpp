@@ -17,7 +17,7 @@ using namespace std::chrono;
 PaintTrail::PaintTrail(const std::string identifier, const NCLVector2 resolution, Database* database)
 	: GraphicsModule(identifier, resolution)
 {
-	viewMatrix = NCLMatrix4::buildViewMatrix(NCLVector3(1, 800, 1), NCLVector3(0, 0, 0));
+	viewMatrix = NCLMatrix4::BuildViewMatrix(NCLVector3(1, 800, 1), NCLVector3(0, 0, 0));
 	textureMatrices = biasMatrix * (CommonGraphicsData::SHARED_PROJECTION_MATRIX * viewMatrix);
 	localProj = CommonGraphicsData::SHARED_PROJECTION_MATRIX;
 

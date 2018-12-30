@@ -137,10 +137,10 @@ int main(int arcg, char** argv)
 	Win32_PrintAllAdapterIPAddresses();
 	int numberOfPlayersConnected = 0;
 
-	timer.getMillisecondsSinceStart();
+	timer.GetMillisecondsSinceStart();
 	while (true)
 	{
-		float dt = timer.getMillisecondsSinceStart() * 0.001f;
+		float dt = timer.GetMillisecondsSinceStart() * 0.001f;
 
 		//Handle All Incoming Packets and Send any enqued packets
 		server.ServiceNetwork(dt, [&](const ENetEvent& evnt)

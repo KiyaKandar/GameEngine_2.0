@@ -54,9 +54,9 @@ void GraphicsPipeline::ExecuteModules()
 	{
 		if (module->IsEnabled())
 		{
-			parentTimer->beginChildTimedSection(module->GetIdentifier());
+			parentTimer->BeginChildTimedSection(module->GetIdentifier());
 			module->Apply();
-			parentTimer->endChildTimedSection(module->GetIdentifier());
+			parentTimer->EndChildTimedSection(module->GetIdentifier());
 		}
 	}
 }
@@ -64,7 +64,7 @@ void GraphicsPipeline::ExecuteModules()
 
 void GraphicsPipeline::AddModule(GraphicsModule* module)
 {
-	parentTimer->addChildTimer(module->GetIdentifier());
+	parentTimer->AddChildTimer(module->GetIdentifier());
 	modules.push_back(module);
 }
 

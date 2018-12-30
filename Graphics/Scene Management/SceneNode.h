@@ -27,7 +27,7 @@ public:
 
 	void SetPosition(NCLVector3 position)
 	{
-		transform.setPositionVector(position);
+		transform.SetPositionVector(position);
 	}
 
 	void SetTransform(const NCLMatrix4& matrix)
@@ -37,7 +37,7 @@ public:
 
 	void SetTransform(NCLVector3 pos)
 	{
-		transform.setPositionVector(pos);
+		transform.SetPositionVector(pos);
 	}
 
 	Mesh* GetMesh() const
@@ -65,8 +65,8 @@ public:
 
 	void SetModelScale(NCLVector3 s)
 	{
-		boundingRadius *= s.length();
-		transform.setScalingVector(s);
+		boundingRadius *= s.Length();
+		transform.SetScalingVector(s);
 	}
 
 	float GetCameraDistance() const

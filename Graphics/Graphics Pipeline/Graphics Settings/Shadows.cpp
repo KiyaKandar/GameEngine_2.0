@@ -90,7 +90,7 @@ void Shadows::DrawShadowScene()
 			glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 			glClear(GL_DEPTH_BUFFER_BIT);
 
-			viewMatrix = NCLMatrix4::buildViewMatrix((*i)->GetPosition(), NCLVector3(0, 0, 0));
+			viewMatrix = NCLMatrix4::BuildViewMatrix((*i)->GetPosition(), NCLVector3(0, 0, 0));
 			shadowData->textureMatrices = biasMatrix * (CommonGraphicsData::SHARED_PROJECTION_MATRIX * viewMatrix);
 
 			glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "viewMatrix"), 1, false, (float*)&viewMatrix);

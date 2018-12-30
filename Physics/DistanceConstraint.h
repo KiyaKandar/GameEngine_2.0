@@ -27,15 +27,15 @@ public:
 		// - Ideally we only ever work at the velocity level, so satifying (velA-VelB = 0)
 		//   is enough to ensure the distance never changes.
 		NCLVector3 ab = globalOnB - globalOnA;
-		targetLength = ab.length();
+		targetLength = ab.Length();
 
 		//Get the local points (un-rotated) on the two objects where the constraint should
 		// be attached relative to the objects center. So when we rotate the objects
 		// the constraint attachment point will rotate with it.
 		NCLVector3 r1 = (globalOnA - pnodeA->GetPosition());
 		NCLVector3 r2 = (globalOnB - pnodeB->GetPosition());
-		relPosA = NCLMatrix3::transpose(pnodeA->GetOrientation().toMatrix3()) * r1;
-		relPosB = NCLMatrix3::transpose(pnodeB->GetOrientation().toMatrix3()) * r2;
+		relPosA = NCLMatrix3::Transpose(pnodeA->GetOrientation().ToMatrix3()) * r1;
+		relPosB = NCLMatrix3::Transpose(pnodeB->GetOrientation().ToMatrix3()) * r2;
 	}
 
 	//Solves the constraint and applies a velocity impulse to the two
@@ -43,8 +43,8 @@ public:
 	virtual void ApplyImpulse() override
 	{
 		//Compute current constraint vars based on object A/B’s position / rotation
-		const NCLVector3 r1 = pnodeA->GetOrientation().toMatrix3() * relPosA;
-		const NCLVector3 r2 = pnodeB->GetOrientation().toMatrix3() * relPosB;
+		const NCLVector3 r1 = pnodeA->GetOrientation().ToMatrix3() * relPosA;
+		const NCLVector3 r2 = pnodeB->GetOrientation().ToMatrix3() * relPosB;
 
 		//Get the global contact points in world space
 		const NCLVector3 globalOnA = r1 + pnodeA->GetPosition();
@@ -53,13 +53,13 @@ public:
 		//Get the vector between the two contact points
 		const NCLVector3 ab = globalOnB - globalOnA;
 		NCLVector3 abn = ab;
-		abn.normalise(); 
+		abn.Normalise(); 
 		
 		//Compute the velocity of objects A and B at the point of contact
 		const NCLVector3 v0 = pnodeA->GetLinearVelocity()
-			+ NCLVector3::cross(pnodeA->GetAngularVelocity(), r1);
+			+ NCLVector3::Cross(pnodeA->GetAngularVelocity(), r1);
 		const NCLVector3 v1 = pnodeB->GetLinearVelocity()
-			+ NCLVector3::cross(pnodeB->GetAngularVelocity(), r2);
+			+ NCLVector3::Cross(pnodeB->GetAngularVelocity(), r2);
 
 		//Relative velocity in constraint direction
 		const float abnVel = NCLVector3::dot(v0 - v1, abn);
@@ -70,10 +70,10 @@ public:
 			+ pnodeB->GetInverseMass();
 
 		const float invConstraintMassRot = NCLVector3::dot(abn,
-			NCLVector3::cross(pnodeA->GetInverseInertia()
-			* NCLVector3::cross(r1, abn), r1)
-			+ NCLVector3::cross(pnodeB->GetInverseInertia()
-			* NCLVector3::cross(r2, abn), r2));
+			NCLVector3::Cross(pnodeA->GetInverseInertia()
+			* NCLVector3::Cross(r1, abn), r1)
+			+ NCLVector3::Cross(pnodeB->GetInverseInertia()
+			* NCLVector3::Cross(r2, abn), r2));
 
 		const float constraintMass = invConstraintMassLin + invConstraintMassRot;
 
@@ -91,7 +91,7 @@ public:
 
 			// -Optional -
 			float b = 0.0f;
-			const float distance_offset = ab.length() - targetLength; 
+			const float distance_offset = ab.Length() - targetLength; 
 			const float baumgarte_scalar = 0.3f;
 			b = -(baumgarte_scalar / (1.0f / 60.0f)) * distance_offset;
 			// -Eof Optional -
@@ -116,18 +116,18 @@ public:
 			//Apply rotational velocity impulse 
 			pnodeA->SetAngularVelocity(pnodeA->GetAngularVelocity()
 				+ pnodeA->GetInverseInertia()
-				* NCLVector3::cross(r1, abn * jn));
+				* NCLVector3::Cross(r1, abn * jn));
 			pnodeB->SetAngularVelocity(pnodeB->GetAngularVelocity()
 				- pnodeB->GetInverseInertia()
-				* NCLVector3::cross(r2, abn * jn));
+				* NCLVector3::Cross(r2, abn * jn));
 		}
 	}
 
 	//Draw the constraint visually to the screen for debugging
 	virtual void DebugDraw() const
 	{
-		NCLVector3 globalOnA = pnodeA->GetOrientation().toMatrix3() * relPosA + pnodeA->GetPosition();
-		NCLVector3 globalOnB = pnodeB->GetOrientation().toMatrix3() * relPosB + pnodeB->GetPosition();
+		NCLVector3 globalOnA = pnodeA->GetOrientation().ToMatrix3() * relPosA + pnodeA->GetPosition();
+		NCLVector3 globalOnB = pnodeB->GetOrientation().ToMatrix3() * relPosB + pnodeB->GetPosition();
 
 		//NCLDebug::DrawThickLine(globalOnA, globalOnB, 0.02f, Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 		//NCLDebug::DrawPointNDT(globalOnA, 0.05f, Vector4(1.0f, 0.8f, 1.0f, 1.0f));

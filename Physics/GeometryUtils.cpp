@@ -105,16 +105,16 @@ bool GeometryUtils::PlaneEdgeIntersection(
 
 	//Check that the edge and plane are not parallel and thus never intersect
 	// We do this by projecting the line (start - A, End - B) ab along the plane
-	float ab_p = NCLVector3::dot(plane.getNormal(), ab);
+	float ab_p = NCLVector3::dot(plane.GetNormal(), ab);
 	if (fabs(ab_p) > 1e-6f)
 	{
 		//Generate a random point on the plane (any point on the plane will suffice)
-		NCLVector3 p_co = plane.getNormal() * (-plane.getDistance());
+		NCLVector3 p_co = plane.GetNormal() * (-plane.GetDistance());
 
 		//Work out the edge factor to scale edge by
 		// e.g. how far along the edge to traverse before it meets the plane.
 		//      This is computed by: -proj<plane_nrml>(edge_start - any_planar_point) / proj<plane_nrml>(edge_start - edge_end)
-		float fac = -NCLVector3::dot(plane.getNormal(), start - p_co) / ab_p;
+		float fac = -NCLVector3::dot(plane.GetNormal(), start - p_co) / ab_p;
 
 		//Stop any large floating point divide issues with almost parallel planes
 		fac = min(max(fac, 0.0f), 1.0f); 
@@ -164,8 +164,8 @@ void GeometryUtils::SutherlandHodgmanClipping(
 		NCLVector3 tempPoint, startPoint = input->back();
 		for (const NCLVector3& endPoint : *input)
 		{
-			bool startInPlane = plane.pointInPlane(startPoint);
-			bool endInPlane = plane.pointInPlane(endPoint);
+			bool startInPlane = plane.PointInPlane(startPoint);
+			bool endInPlane = plane.PointInPlane(endPoint);
 
 			//If it's the final pass, just remove all points outside the reference plane
 			// - This won't return a true polygon if set, but is needed for the last step

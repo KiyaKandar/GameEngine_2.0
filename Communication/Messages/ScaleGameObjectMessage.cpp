@@ -30,7 +30,7 @@ ScaleGameObjectMessage ScaleGameObjectMessage::Builder(Node* node)
 		}
 		else if (childNode->nodeType == "scale")
 		{
-			scale = VectorBuilder::buildVector3(childNode);
+			scale = VectorBuilder::BuildVector3(childNode);
 		}
 	}
 
@@ -43,7 +43,7 @@ ScaleGameObjectMessage ScaleGameObjectMessage::TokensToMessage(std::vector<std::
 	std::string nodeResourcename = lineTokens[2];
 
 	std::string scaleString = lineTokens[3].substr(6);
-	NCLVector3 scale = VectorBuilder::buildVector3(scaleString);
+	NCLVector3 scale = VectorBuilder::BuildVector3(scaleString);
 
 	return ScaleGameObjectMessage(nodeDestination, nodeResourcename, scale);
 }

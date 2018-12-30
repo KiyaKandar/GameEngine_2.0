@@ -7,7 +7,7 @@ Subsystem::Subsystem(std::string subsystemName)
 	DeliverySystem::GetPostman()->AddDeliveryPoint(subsystemName);
 	timer = new GameTimer();
 	frameTimer = new GameTimer();
-	timer->addChildTimer("Message Processing");
+	timer->AddChildTimer("Message Processing");
 }
 
 Subsystem::~Subsystem()
@@ -18,14 +18,14 @@ Subsystem::~Subsystem()
 void Subsystem::UpdateSubsystem()
 {
 	ProcessMessages();
-	UpdateNextFrame(frameTimer->getTimeSinceLastRetrieval());
+	UpdateNextFrame(frameTimer->GetTimeSinceLastRetrieval());
 }
 
 void Subsystem::ProcessMessages()
 {
-	timer->beginChildTimedSection("Message Processing");
+	timer->BeginChildTimedSection("Message Processing");
 	incomingMessages.ProcessMessagesInBuffer();
-	timer->endChildTimedSection("Message Processing");
+	timer->EndChildTimedSection("Message Processing");
 }
 
 GameTimer* Subsystem::GetTimer() const

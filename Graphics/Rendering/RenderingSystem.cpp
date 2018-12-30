@@ -139,14 +139,14 @@ void RenderingSystem::Initialise(Database* database)
 		GameObject* gameObject = static_cast<GameObject*>(
 			database->GetTable("GameObjects")->GetResource(rotateMessage->gameObjectID));
 
-		NCLVector3 position = gameObject->GetSceneNode()->GetTransform().getPositionVector();
-		NCLVector3 scale = gameObject->GetSceneNode()->GetTransform().getScalingVector();
+		NCLVector3 position = gameObject->GetSceneNode()->GetTransform().GetPositionVector();
+		NCLVector3 scale = gameObject->GetSceneNode()->GetTransform().GetScalingVector();
 
 		gameObject->GetSceneNode()->axisAngleRotation = rotateMessage->rotation;
 
-		gameObject->GetSceneNode()->SetTransform(NCLMatrix4::translation(position) *
-			NCLMatrix4::rotation(rotateMessage->rotation.w, NCLVector3(rotateMessage->rotation.x, rotateMessage->rotation.y, rotateMessage->rotation.z)) *
-			NCLMatrix4::scale(scale));
+		gameObject->GetSceneNode()->SetTransform(NCLMatrix4::Translation(position) *
+			NCLMatrix4::Rotation(rotateMessage->rotation.w, NCLVector3(rotateMessage->rotation.x, rotateMessage->rotation.y, rotateMessage->rotation.z)) *
+			NCLMatrix4::Scale(scale));
 	});
 
 	incomingMessages.AddActionToExecuteOnMessage(MessageType::TOGGLE_GAMEOBJECT, [database = database](Message* message)
@@ -201,7 +201,7 @@ void RenderingSystem::Initialise(Database* database)
 			GameObject* gameObject = static_cast<GameObject*>(
 				database->GetTable("GameObjects")->GetResource(movementMessage->resourceName));
 
-			camera->SetPosition(gameObject->GetSceneNode()->GetTransform().getPositionVector() + movementMessage->translation);
+			camera->SetPosition(gameObject->GetSceneNode()->GetTransform().GetPositionVector() + movementMessage->translation);
 			camera->SetPitch(movementMessage->pitch);
 			camera->SetYaw(movementMessage->yaw);
 		}
@@ -263,7 +263,7 @@ void RenderingSystem::SetSceneToRender(SceneManager* scene, Database* database)
 
 void RenderingSystem::UpdateNextFrame(const float& deltaTime)
 {
-	timer->beginTimedSection();
+	timer->BeginTimedSection();
 	renderer->Update(deltaTime);
-	timer->endTimedSection();
+	timer->EndTimedSection();
 }

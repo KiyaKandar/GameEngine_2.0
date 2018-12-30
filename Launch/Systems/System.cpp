@@ -35,7 +35,7 @@ System::~System()
 
 void System::UpdateNextSystemFrame()
 {
-	timer->beginTimedSection();
+	timer->BeginTimedSection();
 
 	for (Subsystem* subsystem : subsystems)
 	{
@@ -45,7 +45,7 @@ void System::UpdateNextSystemFrame()
 	DeliverySystem::GetPostman()->ClearAllMessages();
 	DeliverySystem::GetPostman()->DeliverAllMessages();
 
-	timer->endTimedSection();
+	timer->EndTimedSection();
 }
 
 void System::StartConcurrentSubsystems()

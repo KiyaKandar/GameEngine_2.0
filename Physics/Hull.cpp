@@ -89,7 +89,7 @@ int Hull::AddFace(const NCLVector3& _normal, int nVerts, const int* verts)
 	HullFace new_face;
 	new_face._idx = m_vFaces.size();
 	new_face._normal = _normal;
-	new_face._normal.normalise();
+	new_face._normal.Normalise();
 
 	m_vFaces.push_back(new_face);
 	HullFace* new_face_ptr = &m_vFaces[new_face._idx];

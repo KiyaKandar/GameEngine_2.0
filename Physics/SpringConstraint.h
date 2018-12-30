@@ -15,7 +15,7 @@ public:
 		this->damping = damping;
 
 		NCLVector3 dist = globalOnB - globalOnA;
-		restDistance = dist.length();
+		restDistance = dist.Length();
 	}
 
 	~SpringConstraint() {}
@@ -27,7 +27,7 @@ public:
 
 		const NCLVector3 dist = globalB - globalA;
 		NCLVector3 normalisedDist = dist;
-		normalisedDist.normalise();
+		normalisedDist.Normalise();
 
 		const float constraintMass = a->GetInverseMass() + b->GetInverseMass();
 
@@ -36,13 +36,13 @@ public:
 			const NCLVector3 v0 = a->GetLinearVelocity();
 			const NCLVector3 v1 = b->GetLinearVelocity();
 
-			const float distanceOffset = dist.length() - restDistance;
+			const float distanceOffset = dist.Length() - restDistance;
 			const float baumgarteScalar = 0.3f;
 			const float baumgarte = -(baumgarteScalar / (1.0f / 60.0f))
 				* distanceOffset;
 
 			float jn = (-(NCLVector3::Dot(v0 - v1, normalisedDist) + baumgarte)
-				* sprintConstant) - (damping * (v0 - v1).length());
+				* sprintConstant) - (damping * (v0 - v1).Length());
 			jn /= constraintMass;
 
 			a->SetLinearVelocity(a->GetLinearVelocity() + normalisedDist

@@ -6,7 +6,7 @@
 void PhysicsNode::IntegrateForVelocity(float dt)
 {
 	linVelocity = SemiImplicitEuler::UpdateLinearVelocity(this, dt);
-	appliedForce.toZero();
+	appliedForce.ToZero();
 
 	angVelocity = SemiImplicitEuler::UpdateAngularVelocity(this, dt);
 
@@ -26,7 +26,7 @@ void PhysicsNode::IntegrateForPosition(float dt)
 {
 	position = SemiImplicitEuler::UpdateDisplacement(this, dt);
 	orientation = SemiImplicitEuler::UpdateOrentation(this, dt);
-	orientation.normalise();
+	orientation.Normalise();
 
 	for each (CollisionShape* shape in collisionShapes)
 	{

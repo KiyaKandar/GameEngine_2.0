@@ -129,7 +129,7 @@ void Mouse::UpdateHolds()
 	memcpy(holdButtons, buttons, MOUSE_MAX * sizeof(bool));
 	//We sneak this in here, too. Resets how much the mouse has moved
 	//since last update
-	relativePosition.toZero();
+	relativePosition.ToZero();
 	//And the same for the mouse wheel
 	frameWheel = 0;
 }

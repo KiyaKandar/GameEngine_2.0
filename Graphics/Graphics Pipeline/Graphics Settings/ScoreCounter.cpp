@@ -59,7 +59,7 @@ void ScoreCounter::Initialise()
 
 void ScoreCounter::Apply()
 {
-	elapsedTime += timer.getTimeSinceLastRetrieval();
+	elapsedTime += timer.GetTimeSinceLastRetrieval();
 
 	if (elapsedTime >= 30.0f)
 	{
@@ -102,7 +102,7 @@ void ScoreCounter::DisplayScores()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	textureMatrix.toIdentity();
+	textureMatrix.ToIdentity();
 
 	SetCurrentShader(textShader);
 	UpdateShaderMatrices();
@@ -117,7 +117,7 @@ void ScoreCounter::DisplayScores()
 
 	for (size_t i = 0; i < scoreHolders.size(); ++i)
 	{
-		viewMatrix.toIdentity();
+		viewMatrix.ToIdentity();
 		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix"), 1, false, (float*)&CommonGraphicsData::SHARED_ORTHOGRAPHIC_MATRIX);
 
 		NCLVector3 colour(coloursToCount[i].x, coloursToCount[i].y, coloursToCount[i].z);
@@ -136,7 +136,7 @@ void ScoreCounter::DisplayScores()
 		}
 
 		TextMesh textMesh(name, *font);
-		textMesh.Draw(*currentShader, NCLMatrix4::translation(NCLVector3(290, (i * -20.0f) + 320, 0)) * NCLMatrix4::scale(NCLVector3(20, 20, 1)));
+		textMesh.Draw(*currentShader, NCLMatrix4::Translation(NCLVector3(290, (i * -20.0f) + 320, 0)) * NCLMatrix4::Scale(NCLVector3(20, 20, 1)));
 
 		if (PaintGameActionBuilder::online)
 		{

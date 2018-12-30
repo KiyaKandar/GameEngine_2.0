@@ -31,9 +31,9 @@ AudioSystem::AudioSystem(Database *database, Camera *camera) : Subsystem("AudioS
 
 void AudioSystem::UpdateNextFrame(const float& deltaTime)
 {
-	timer->beginTimedSection();
+	timer->BeginTimedSection();
 
 	soundManager->Update(deltaTime);
 
-	timer->endTimedSection();
+	timer->EndTimedSection();
 }

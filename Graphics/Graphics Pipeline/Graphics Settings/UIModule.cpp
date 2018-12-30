@@ -34,8 +34,8 @@ void UIModule::Apply()
 	glDisable(GL_BLEND);
 	glDisable(GL_CULL_FACE);
 
-	viewMatrix.toIdentity();
-	textureMatrix.toIdentity();
+	viewMatrix.ToIdentity();
+	textureMatrix.ToIdentity();
 
 	UpdateShaderMatrices();
 	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix"), 1, false, (float*)&CommonGraphicsData::SHARED_ORTHOGRAPHIC_MATRIX);
@@ -44,7 +44,7 @@ void UIModule::Apply()
 	{
 		glUniform4fv(glGetUniformLocation(UIShader->GetProgram(), "colour"), 1, (float*)&button->colour);
 
-		button->UIMesh->Draw(*currentShader, NCLMatrix4::translation(button->position) * NCLMatrix4::scale(button->scale));
+		button->UIMesh->Draw(*currentShader, NCLMatrix4::Translation(button->position) * NCLMatrix4::Scale(button->scale));
 
 		if (button->childrenEnabled)
 		{
@@ -66,7 +66,8 @@ void UIModule::Apply()
 	{
 		NCLVector2 buttonSize = button->scale / NCLVector2(4.0f, 1.5f);
 		NCLVector2 offset(button->scale.x, 0.0f);
-		button->textMesh->Draw(*currentShader, NCLMatrix4::translation(button->position - offset) * NCLMatrix4::scale(NCLVector3(buttonSize.x, buttonSize.y, 1)));
+		button->textMesh->Draw(*currentShader, NCLMatrix4::Translation(button->position - offset) *
+			NCLMatrix4::Scale(NCLVector3(buttonSize.x, buttonSize.y, 1)));
 
 		if (button->childrenEnabled)
 		{
@@ -100,7 +101,7 @@ void UIModule::RenderButtons(std::vector<Button>& buttons)
 	{
 		glUniform4fv(glGetUniformLocation(UIShader->GetProgram(), "colour"), 1, (float*)&button.colour);
 
-		button.UIMesh->Draw(*currentShader, NCLMatrix4::translation(button.position) * NCLMatrix4::scale(button.scale));
+		button.UIMesh->Draw(*currentShader, NCLMatrix4::Translation(button.position) * NCLMatrix4::Scale(button.scale));
 
 		if (button.childrenEnabled)
 		{
@@ -115,7 +116,7 @@ void UIModule::RenderButtonsText(std::vector<Button>& buttons)
 	{
 		NCLVector2 buttonSize = button.scale / NCLVector2(4.0f, 1.5f);
 		NCLVector2 offset(button.scale.x, 0.0f);
-		button.textMesh->Draw(*currentShader, NCLMatrix4::translation(button.position - offset) * NCLMatrix4::scale(NCLVector3(buttonSize.x, buttonSize.y, 1)));
+		button.textMesh->Draw(*currentShader, NCLMatrix4::Translation(button.position - offset) * NCLMatrix4::Scale(NCLVector3(buttonSize.x, buttonSize.y, 1)));
 
 		if (button.childrenEnabled)
 		{

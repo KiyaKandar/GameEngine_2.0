@@ -4,7 +4,7 @@ bool Frustum::insideFrustum(const NCLVector3& position, const float& radius)
 {
 	for (int p = 0; p < 6; ++p)
 	{
-		if (!planes[p].sphereInPlane(position, radius))
+		if (!planes[p].SphereInPlane(position, radius))
 		{
 			return false;
 		}

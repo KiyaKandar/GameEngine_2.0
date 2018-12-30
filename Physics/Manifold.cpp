@@ -38,9 +38,9 @@ void Manifold::SolveContactPoint(ContactPoint& c)
 	NCLVector3 r2 = c.relPosB;
 
 	NCLVector3 v0 = pnodeA->GetLinearVelocity()
-		+ NCLVector3::cross(pnodeA->GetAngularVelocity(), r1);
+		+ NCLVector3::Cross(pnodeA->GetAngularVelocity(), r1);
 	NCLVector3 v1 = pnodeB->GetLinearVelocity()
-		+ NCLVector3::cross(pnodeB->GetAngularVelocity(), r2);
+		+ NCLVector3::Cross(pnodeB->GetAngularVelocity(), r2);
 
 	NCLVector3 dv = v1 - v0;
 
@@ -48,10 +48,10 @@ void Manifold::SolveContactPoint(ContactPoint& c)
 	float constraintMass =
 		(pnodeA->GetInverseMass() + pnodeB->GetInverseMass()) +
 		NCLVector3::dot(c.colNormal,
-			NCLVector3::cross(pnodeA->GetInverseInertia()
-				* NCLVector3::cross(r1, c.colNormal), r1) +
-			NCLVector3::cross(pnodeB->GetInverseInertia()
-				* NCLVector3::cross(r2, c.colNormal), r2));
+			NCLVector3::Cross(pnodeA->GetInverseInertia()
+				* NCLVector3::Cross(r1, c.colNormal), r1) +
+			NCLVector3::Cross(pnodeB->GetInverseInertia()
+				* NCLVector3::Cross(r2, c.colNormal), r2));
 
 	if (constraintMass > 0.0f)
 	{
@@ -70,15 +70,15 @@ void Manifold::SolveContactPoint(ContactPoint& c)
 
 		pnodeA->SetAngularVelocity(pnodeA->GetAngularVelocity()
 			- pnodeA->GetInverseInertia()
-			* NCLVector3::cross(r1, c.colNormal * jn));
+			* NCLVector3::Cross(r1, c.colNormal * jn));
 		pnodeB->SetAngularVelocity(pnodeB->GetAngularVelocity()
 			+ pnodeB->GetInverseInertia()
-			* NCLVector3::cross(r2, c.colNormal * jn));
+			* NCLVector3::Cross(r2, c.colNormal * jn));
 	}
 
 	//Friction
 	NCLVector3 tangent = dv - c.colNormal * NCLVector3::dot(dv, c.colNormal);
-	float tangent_len = tangent.length();
+	float tangent_len = tangent.Length();
 
 	if (tangent_len > 1e-6f)
 	{
@@ -86,10 +86,10 @@ void Manifold::SolveContactPoint(ContactPoint& c)
 
 		float frictionalMass = (pnodeA->GetInverseMass()
 			+ pnodeB->GetInverseMass()) + NCLVector3::dot(tangent,
-				NCLVector3::cross(pnodeA->GetInverseInertia()
-					* NCLVector3::cross(r1, tangent), r1) +
-				NCLVector3::cross(pnodeB->GetInverseInertia()
-					* NCLVector3::cross(r2, tangent), r2));
+				NCLVector3::Cross(pnodeA->GetInverseInertia()
+					* NCLVector3::Cross(r1, tangent), r1) +
+				NCLVector3::Cross(pnodeB->GetInverseInertia()
+					* NCLVector3::Cross(r2, tangent), r2));
 
 		if (frictionalMass > 0.0f)
 		{
@@ -98,7 +98,7 @@ void Manifold::SolveContactPoint(ContactPoint& c)
 
 			NCLVector3 oldImpulseFriction = c.sumImpulseFriction;
 			c.sumImpulseFriction = c.sumImpulseFriction + tangent * jt;
-			float len = c.sumImpulseFriction.length();
+			float len = c.sumImpulseFriction.Length();
 
 			if (len > 0.0f && len > c.sumImpulseContact)
 			{
@@ -118,10 +118,10 @@ void Manifold::SolveContactPoint(ContactPoint& c)
 
 			pnodeA->SetAngularVelocity(pnodeA->GetAngularVelocity()
 				- pnodeA->GetInverseInertia()
-				* NCLVector3::cross(r1, tangent * jt));
+				* NCLVector3::Cross(r1, tangent * jt));
 			pnodeB->SetAngularVelocity(pnodeB->GetAngularVelocity()
 				+ pnodeB->GetInverseInertia()
-				* NCLVector3::cross(r2, tangent * jt));
+				* NCLVector3::Cross(r2, tangent * jt));
 		}
 	}
 }
@@ -155,9 +155,9 @@ void Manifold::UpdateConstraint(ContactPoint& c, const float deltaTime)
 		pnodeA->GetElasticity() * pnodeB->GetElasticity();
 	const float elasticity_term = NCLVector3::dot(c.colNormal,
 		pnodeA->GetLinearVelocity()
-		+ NCLVector3::cross(c.relPosA, pnodeA->GetAngularVelocity())
+		+ NCLVector3::Cross(c.relPosA, pnodeA->GetAngularVelocity())
 		- pnodeB->GetLinearVelocity()
-		- NCLVector3::cross(c.relPosB, pnodeB->GetAngularVelocity()));
+		- NCLVector3::Cross(c.relPosB, pnodeB->GetAngularVelocity()));
 
 	c.b_term += (elasticity * elasticity_term) / contactPoints.size();
 }
@@ -174,7 +174,7 @@ void Manifold::AddContact(const NCLVector3& globalOnA, const NCLVector3& globalO
 	contact.relPosA = r1;
 	contact.relPosB = r2;
 	contact.colNormal = normal;
-	contact.colNormal.normalise();
+	contact.colNormal.Normalise();
 	contact.colPenetration = penetration;
 
 	contactPoints.push_back(contact);

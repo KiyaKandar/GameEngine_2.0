@@ -105,7 +105,7 @@ Window::Window(std::string title,
 	}
 
 	timer = new GameTimer();
-	elapsedMs = timer->getMillisecondsSinceStart();
+	elapsedMs = timer->GetMillisecondsSinceStart();
 
 	Window::GetMouse()->SetAbsolutePositionBounds((unsigned int)size.x, (unsigned int)size.y);
 
@@ -140,7 +140,7 @@ bool Window::HasInitialised() {
 bool	Window::UpdateWindow() {
 	MSG		msg;
 
-	float diff = timer->getMillisecondsSinceStart() - elapsedMs;
+	float diff = timer->GetMillisecondsSinceStart() - elapsedMs;
 
 	Window::GetMouse()->UpdateDoubleClick(diff);
 
@@ -151,7 +151,7 @@ bool	Window::UpdateWindow() {
 		CheckMessages(msg);
 	}
 
-	elapsedMs = timer->getMillisecondsSinceStart();
+	elapsedMs = timer->GetMillisecondsSinceStart();
 
 	return !forceQuit;
 }

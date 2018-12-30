@@ -53,9 +53,9 @@ ApplyForceMessage ApplyForceMessage::Builder(Node* node)
 		}
 		else if (childNode->nodeType == "force")
 		{
-			force.x = VectorBuilder::getVectorComponentFromNode(childNode->children[0], &xmin, &xmax);
-			force.y = VectorBuilder::getVectorComponentFromNode(childNode->children[1], &ymin, &ymax);
-			force.z = VectorBuilder::getVectorComponentFromNode(childNode->children[2], &zmin, &zmax);
+			force.x = VectorBuilder::GetVectorComponentFromNode(childNode->children[0], &xmin, &xmax);
+			force.y = VectorBuilder::GetVectorComponentFromNode(childNode->children[1], &ymin, &ymax);
+			force.z = VectorBuilder::GetVectorComponentFromNode(childNode->children[2], &zmin, &zmax);
 		}
 	}
 
@@ -74,7 +74,7 @@ ApplyForceMessage ApplyForceMessage::TokensToMessage(std::vector<std::string> li
 	std::string nodeResourcename = lineTokens[2];
 
 	std::string forceString = lineTokens[3].substr(6);
-	NCLVector3 force = VectorBuilder::buildVector3(forceString);
+	NCLVector3 force = VectorBuilder::BuildVector3(forceString);
 
 	return ApplyForceMessage(nodeDestination, nodeResourcename, false, force);
 }

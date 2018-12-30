@@ -55,7 +55,7 @@ void InputManager::UpdateNextFrame(const float& deltatime)
 {
 	if (!blocked)
 	{
-		timer->beginTimedSection();
+		timer->BeginTimedSection();
 
 		for (Player* player : playerbase->GetPlayers())
 		{
@@ -67,7 +67,7 @@ void InputManager::UpdateNextFrame(const float& deltatime)
 			SendInputMessagesForKeys(inputData, player);
 		}
 
-		timer->endTimedSection();
+		timer->EndTimedSection();
 	}
 }
 

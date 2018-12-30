@@ -90,8 +90,8 @@ GameplaySystem::GameplaySystem(Database* database)
 
 	});
 
-	timer->addChildTimer("Level Logic");
-	timer->addChildTimer("Object Logic");
+	timer->AddChildTimer("Level Logic");
+	timer->AddChildTimer("Object Logic");
 }
 
 GameplaySystem::~GameplaySystem()
@@ -106,12 +106,12 @@ void GameplaySystem::UpdateNextFrame(const float& deltaTime)
 	}
 	else
 	{
-		timer->beginTimedSection();
+		timer->BeginTimedSection();
 
 		UpdateGameLogic(deltaTime);
 		UpdateGameObjectLogics(deltaTime);
 
-		timer->endTimedSection();
+		timer->EndTimedSection();
 	}
 
 	RemoveScriptsInbuffer();
@@ -184,12 +184,12 @@ void GameplaySystem::UpdateGameplayWhenTimed(const float& deltaTime)
 
 void GameplaySystem::UpdateGameplayWithTimeRemaining(const float& deltaTime)
 {
-	timer->beginTimedSection();
+	timer->BeginTimedSection();
 
 	UpdateGameLogic(deltaTime);
 	UpdateGameObjectLogics(deltaTime);
 
-	timer->endTimedSection();
+	timer->EndTimedSection();
 
 	UpdateGameTimer(deltaTime);
 	PaintGameActionBuilder::UpdateBufferedVariables();
@@ -226,21 +226,21 @@ void GameplaySystem::UpdateGameOverScreen()
 
 void GameplaySystem::UpdateGameLogic(const float& deltaTime)
 {
-	timer->beginChildTimedSection("Level Logic");
+	timer->BeginChildTimedSection("Level Logic");
 	gameLogic.ExecuteMessageBasedActions();
 	gameLogic.ExecuteTimeBasedActions(deltaTime * 0.001f);
 	gameLogic.ClearNotifications();
-	timer->endChildTimedSection("Level Logic");
+	timer->EndChildTimedSection("Level Logic");
 }
 
 void GameplaySystem::UpdateGameObjectLogics(const float& deltaTime)
 {
-	timer->beginChildTimedSection("Object Logic");
+	timer->BeginChildTimedSection("Object Logic");
 	for (GameObjectLogic& object : objects)
 	{
 		object.Updatelogic(deltaTime * 0.001f);
 	}
-	timer->endChildTimedSection("Object Logic");
+	timer->EndChildTimedSection("Object Logic");
 }
 
 void GameplaySystem::RemoveScriptsInbuffer()

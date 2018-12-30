@@ -327,7 +327,7 @@ void OGLRenderer::DrawDebugOrtho(NCLMatrix4* matrix)
 	}
 	else
 	{
-		static NCLMatrix4 ortho = NCLMatrix4::orthographic(-1, 1, 720, 0, 0, 480);
+		static NCLMatrix4 ortho = NCLMatrix4::Orthographic(-1, 1, 720, 0, 0, 480);
 		glUniformMatrix4fv(glGetUniformLocation(debugDrawShader->GetProgram(), "viewProjMatrix"), 1, false,
 			(float*)&ortho);
 	}

@@ -222,11 +222,11 @@ void SoundManager::CullNodes()
 
 		if(!node.isMoving || (node.isMoving && !node.isGlobal))
 		{
-			distanceBetweenListenerAndSoundNode = (listenerPosition - node.GetPosition()).length();
+			distanceBetweenListenerAndSoundNode = (listenerPosition - node.GetPosition()).Length();
 		}
 		else if (node.isMoving && node.isGlobal)
 		{
-			distanceBetweenListenerAndSoundNode = (listenerPosition - *node.GetMovingPosition()).length();
+			distanceBetweenListenerAndSoundNode = (listenerPosition - *node.GetMovingPosition()).Length();
 		}
 
 		if (distanceBetweenListenerAndSoundNode > node.GetRadius() || !node.HasSound() || node.GetTimeLeft() < 0)

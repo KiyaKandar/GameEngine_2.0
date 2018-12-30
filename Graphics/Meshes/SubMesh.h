@@ -73,11 +73,11 @@ public:
 
 	void SetTransform(NCLMatrix4 newTransform)
 	{
-		if (newTransform.getScalingVector() != transform.getScalingVector())
+		if (newTransform.GetScalingVector() != transform.GetScalingVector())
 		{
 			previousradius = boundingRadius;
 
-			NCLVector3 scale = newTransform.getScalingVector();
+			NCLVector3 scale = newTransform.GetScalingVector();
 			box.max = box.max * (scale);
 			box.min = box.min * (scale);
 			CalculateBoundingRadius();
@@ -114,8 +114,8 @@ public:
 
 	void CalculateBoundingRadius()
 	{
-		float minLength = abs(box.min.length());
-		float maxLength = abs(box.max.length());
+		float minLength = abs(box.min.Length());
+		float maxLength = abs(box.max.Length());
 
 		boundingRadius = max(minLength, maxLength);//(box.max - box.min).Length() / 2;//
 	}

@@ -9,8 +9,8 @@ public:
 	PeriodicTextModifier(std::string baseText, std::string textToPeriodicallyAdd, int maximumAdditions);
 	~PeriodicTextModifier();
 
-	void addTextWhenTimeHasReachedMaximum(const int maximumFramesUntilAddition);
-	std::string getCurrentString() const;
+	void AddTextWhenTimeHasReachedMaximum(const int maximumFramesUntilAddition);
+	std::string GetCurrentString() const;
 
 private:
 	std::string baseText; 

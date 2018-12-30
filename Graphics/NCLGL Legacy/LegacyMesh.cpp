@@ -188,7 +188,7 @@ void LegacyMesh::GenerateNormals()
 			unsigned int b = indices[i + 1];
 			unsigned int c = indices[i + 2];
 
-			NCLVector3 normal = NCLVector3::cross(
+			NCLVector3 normal = NCLVector3::Cross(
 				(vertices[b] - vertices[a]),
 				(vertices[c] - vertices[a]));
 
@@ -206,7 +206,7 @@ void LegacyMesh::GenerateNormals()
 			NCLVector3& b = vertices[i + 1];
 			NCLVector3& c = vertices[i + 2];
 
-			NCLVector3 normal = NCLVector3::cross(b - a, c - a);
+			NCLVector3 normal = NCLVector3::Cross(b - a, c - a);
 
 			normals[i] = normal;
 			normals[i = 1] = normal;
@@ -216,7 +216,7 @@ void LegacyMesh::GenerateNormals()
 
 	for (GLuint i = 0; i < numVertices; ++i)
 	{
-		normals[i].normalise();
+		normals[i].Normalise();
 	}
 }
 
@@ -271,7 +271,7 @@ void LegacyMesh::GenerateTangents()
 
 	for (GLuint i = 0; i < numVertices; ++i)
 	{
-		tangents[i].normalise();
+		tangents[i].Normalise();
 	}
 }
 

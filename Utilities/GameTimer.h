@@ -13,22 +13,22 @@ public:
 	explicit GameTimer(std::string timerName);
 	~GameTimer();
 
-	float getMillisecondsSinceStart();
-	float getTimeSinceLastRetrieval();
+	float GetMillisecondsSinceStart();
+	float GetTimeSinceLastRetrieval();
 
-	void beginTimedSection();
-	void endTimedSection();
-	float getTimeTakenForSection();
+	void BeginTimedSection();
+	void EndTimedSection();
+	float GetTimeTakenForSection();
 
-	void beginChildTimedSection(std::string childTimerName);
-	void endChildTimedSection(std::string childTimerName);
+	void BeginChildTimedSection(std::string childTimerName);
+	void EndChildTimedSection(std::string childTimerName);
 
-	void addChildTimer(std::string childTimerName);
-	GameTimer* getChildTimer(std::string timerName);
+	void AddChildTimer(std::string childTimerName);
+	GameTimer* GetChildTimer(std::string timerName);
 
-	std::vector<GameTimer*> getAllChildTimers();
+	std::vector<GameTimer*> GetAllChildTimers();
 
-	std::string getTimerName()
+	std::string GetTimerName()
 	{
 		return timerName;
 	}

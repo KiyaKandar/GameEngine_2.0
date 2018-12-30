@@ -9,8 +9,8 @@ GameObject* GameObjectBuilder::BuildGameObject(Node* node, Database* database)
 	gameObject->SetName(node->name);
 	gameObject->SetSceneNode(sceneNode);
 	
-	gameObject->stats.colourToPaint = VectorBuilder::buildVector4(node->children[0]->children[1]);
-	gameObject->SetScale(VectorBuilder::buildVector3(node->children[4]));
+	gameObject->stats.colourToPaint = VectorBuilder::BuildVector4(node->children[0]->children[1]);
+	gameObject->SetScale(VectorBuilder::BuildVector3(node->children[4]));
 
 	if (node->children.size() >= 6)
 	{
@@ -18,8 +18,8 @@ GameObject* GameObjectBuilder::BuildGameObject(Node* node, Database* database)
 		gameObject->SetPhysicsNode(physicsNode);
 	}
 
-	gameObject->SetPosition(VectorBuilder::buildVector3(node->children[2]));
-	gameObject->SetRotation(VectorBuilder::buildVector4(node->children[3]));
+	gameObject->SetPosition(VectorBuilder::BuildVector3(node->children[2]));
+	gameObject->SetRotation(VectorBuilder::BuildVector4(node->children[3]));
 
 	return gameObject;
 }
@@ -28,7 +28,7 @@ SceneNode* GameObjectBuilder::BuildSceneNode(Node* node, Database* database)
 {
 	std::string meshName = node->children[0]->value;
 	SceneNode* sceneNode = new SceneNode(static_cast<Mesh*>(database->GetTable("Meshes")->GetResource(meshName)));
-	sceneNode->SetColour(VectorBuilder::buildVector4(node->children[1]));
+	sceneNode->SetColour(VectorBuilder::BuildVector4(node->children[1]));
 
 	if (node->children.size() > 2)
 	{

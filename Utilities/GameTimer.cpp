@@ -7,7 +7,7 @@ GameTimer::GameTimer()
 	QueryPerformanceFrequency((LARGE_INTEGER*)&ticksPerSecond);
 	QueryPerformanceCounter((LARGE_INTEGER*)&start);
 
-	timeSinceLastRetrieval = getMillisecondsSinceStart();
+	timeSinceLastRetrieval = GetMillisecondsSinceStart();
 	timeTakenForSection = 0.0f;
 	sectionStartTime = 0.0f;
 	sectionEndTime = 0.0f;
@@ -20,7 +20,7 @@ GameTimer::GameTimer(std::string timerName)
 	QueryPerformanceFrequency((LARGE_INTEGER*)&ticksPerSecond);
 	QueryPerformanceCounter((LARGE_INTEGER*)&start);
 
-	timeSinceLastRetrieval = getMillisecondsSinceStart();
+	timeSinceLastRetrieval = GetMillisecondsSinceStart();
 	timeTakenForSection = 0.0f;
 	sectionStartTime = 0.0f;
 	sectionEndTime = 0.0f;
@@ -30,7 +30,7 @@ GameTimer::~GameTimer()
 {
 }
 
-float GameTimer::getMillisecondsSinceStart()
+float GameTimer::GetMillisecondsSinceStart()
 {
 	LARGE_INTEGER t;
 	QueryPerformanceCounter(&t);
@@ -38,9 +38,9 @@ float GameTimer::getMillisecondsSinceStart()
 	return (float)((t.QuadPart - start.QuadPart) * 1000.0 / ticksPerSecond.QuadPart);
 }
 
-float GameTimer::getTimeSinceLastRetrieval()
+float GameTimer::GetTimeSinceLastRetrieval()
 {
-	float startTime = getMillisecondsSinceStart();
+	float startTime = GetMillisecondsSinceStart();
 	float deltaTime = startTime - timeSinceLastRetrieval;
 
 	timeSinceLastRetrieval = startTime;
@@ -48,44 +48,44 @@ float GameTimer::getTimeSinceLastRetrieval()
 	return deltaTime;
 }
 
-void GameTimer::beginTimedSection()
+void GameTimer::BeginTimedSection()
 {
-	sectionStartTime = getMillisecondsSinceStart();
+	sectionStartTime = GetMillisecondsSinceStart();
 }
 
-void GameTimer::endTimedSection()
+void GameTimer::EndTimedSection()
 {
-	sectionEndTime = getMillisecondsSinceStart();
+	sectionEndTime = GetMillisecondsSinceStart();
 	timeTakenForSection = sectionEndTime - sectionStartTime;
 }
 
-float GameTimer::getTimeTakenForSection()
+float GameTimer::GetTimeTakenForSection()
 {
 	return timeTakenForSection;
 }
 
-void GameTimer::beginChildTimedSection(std::string childTimerName)
+void GameTimer::BeginChildTimedSection(std::string childTimerName)
 {
-	childTimers.at(childTimerName).beginTimedSection();
+	childTimers.at(childTimerName).BeginTimedSection();
 }
 
-void GameTimer::endChildTimedSection(std::string childTimerName)
+void GameTimer::EndChildTimedSection(std::string childTimerName)
 {
-	childTimers.at(childTimerName).endTimedSection();
+	childTimers.at(childTimerName).EndTimedSection();
 }
 
-void GameTimer::addChildTimer(std::string childTimerName)
+void GameTimer::AddChildTimer(std::string childTimerName)
 {
 	childTimers.insert({ childTimerName, GameTimer(childTimerName) });
 	childTimerBuffer.push_back(&childTimers.at(childTimerName));
 }
 
-GameTimer* GameTimer::getChildTimer(std::string timerName)
+GameTimer* GameTimer::GetChildTimer(std::string timerName)
 {
 	return &childTimers.at(timerName);
 }
 
-std::vector<GameTimer*> GameTimer::getAllChildTimers()
+std::vector<GameTimer*> GameTimer::GetAllChildTimers()
 {
 	return childTimerBuffer;
 }

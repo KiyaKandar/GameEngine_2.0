@@ -381,7 +381,7 @@ LevelGameObjectsState XMLWriter::GetGameObjectStates()
 				std::to_string(physicsNode->GetPosition().z)
 			});
 
-			NCLVector4 rotation = Quaternion::quaternionToAxisAngle(physicsNode->GetOrientation());
+			NCLVector4 rotation = Quaternion::QuaternionToAxisAngle(physicsNode->GetOrientation());
 
 			state.gameObjectRotations.push_back(std::array<std::string, 4>
 			{
@@ -441,9 +441,9 @@ LevelGameObjectsState XMLWriter::GetGameObjectStates()
 		{
 			state.gameObjectPositions.push_back(std::array<std::string, 3>
 			{
-				std::to_string(gameObject->GetSceneNode()->GetTransform().getPositionVector().x),
-				std::to_string(gameObject->GetSceneNode()->GetTransform().getPositionVector().y),
-				std::to_string(gameObject->GetSceneNode()->GetTransform().getPositionVector().z)
+				std::to_string(gameObject->GetSceneNode()->GetTransform().GetPositionVector().x),
+				std::to_string(gameObject->GetSceneNode()->GetTransform().GetPositionVector().y),
+				std::to_string(gameObject->GetSceneNode()->GetTransform().GetPositionVector().z)
 			});
 
 			state.gameObjectRotations.push_back(std::array<std::string, 4>

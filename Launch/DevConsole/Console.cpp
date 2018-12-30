@@ -298,25 +298,25 @@ void Console::MoveCamera()
 	if (keyboard->KeyDown(KEYBOARD_W))
 	{
 		camera->SetPosition(camera->GetPosition() +
-			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(0, 0, -1) * 0.001f);
+			NCLMatrix4::Rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(0, 0, -1) * 0.001f);
 	}
 
 	if (keyboard->KeyDown(KEYBOARD_S))
 	{
 		camera->SetPosition(camera->GetPosition() +
-			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(0, 0, 1) * 0.001f);
+			NCLMatrix4::Rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(0, 0, 1) * 0.001f);
 	}
 
 	if (keyboard->KeyDown(KEYBOARD_A))
 	{
 		camera->SetPosition(camera->GetPosition() +
-			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(-1, 0, 0) * 0.001f);
+			NCLMatrix4::Rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(-1, 0, 0) * 0.001f);
 	}
 
 	if (keyboard->KeyDown(KEYBOARD_D))
 	{
 		camera->SetPosition(camera->GetPosition() +
-			NCLMatrix4::rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(1, 0, 0) * 0.001f);
+			NCLMatrix4::Rotation(yaw, NCLVector3(0, 1, 0)) * NCLVector3(1, 0, 0) * 0.001f);
 	}
 
 	if (keyboard->KeyDown(KEYBOARD_SPACE))

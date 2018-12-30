@@ -16,7 +16,7 @@ PeriodicTextModifier::~PeriodicTextModifier()
 {
 }
 
-void PeriodicTextModifier::addTextWhenTimeHasReachedMaximum(const int maximumFramesUntilAddition)
+void PeriodicTextModifier::AddTextWhenTimeHasReachedMaximum(const int maximumFramesUntilAddition)
 {
 	if (currentFrameCount == maximumFramesUntilAddition)
 	{
@@ -39,7 +39,7 @@ void PeriodicTextModifier::addTextWhenTimeHasReachedMaximum(const int maximumFra
 	++currentFrameCount;
 }
 
-std::string PeriodicTextModifier::getCurrentString() const
+std::string PeriodicTextModifier::GetCurrentString() const
 {
 	return currentText;
 }

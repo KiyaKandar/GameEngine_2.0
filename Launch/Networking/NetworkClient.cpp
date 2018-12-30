@@ -95,9 +95,9 @@ NetworkClient::NetworkClient(InputRecorder* keyboardAndMouse, Database* database
 
 	waitingInLobbyText = PeriodicTextModifier("Waiting for players", ".", 3);
 
-	timer->addChildTimer("Broadcast Kinematic State");
-	timer->addChildTimer("Dead Reckoning");
-	timer->addChildTimer("Process Network Messages");
+	timer->AddChildTimer("Broadcast Kinematic State");
+	timer->AddChildTimer("Dead Reckoning");
+	timer->AddChildTimer("Process Network Messages");
 }
 
 NetworkClient::~NetworkClient()
@@ -106,7 +106,7 @@ NetworkClient::~NetworkClient()
 
 void NetworkClient::UpdateNextFrame(const float& deltaTime)
 {
-	timer->beginTimedSection();
+	timer->BeginTimedSection();
 
 	if (!inLobby)
 	{
@@ -115,7 +115,7 @@ void NetworkClient::UpdateNextFrame(const float& deltaTime)
 		msCounter += deltaTime;
 		updateRealTimeAccum += deltaTime;
 
-		timer->beginChildTimedSection("Broadcast Kinematic State");
+		timer->BeginChildTimedSection("Broadcast Kinematic State");
 		if (timeSinceLastBroadcast >= UPDATE_FREQUENCY && joinedGame)
 		{
 			BroadcastKinematicState();
@@ -125,9 +125,9 @@ void NetworkClient::UpdateNextFrame(const float& deltaTime)
 				BroadcastMinionState();
 			}
 		}
-		timer->endChildTimedSection("Broadcast Kinematic State");
+		timer->EndChildTimedSection("Broadcast Kinematic State");
 
-		timer->beginChildTimedSection("Dead Reckoning");
+		timer->BeginChildTimedSection("Dead Reckoning");
 		if (updateRealTimeAccum >= UPDATE_TIMESTEP)
 		{
 			UpdateDeadReckoningForConnectedClients();
@@ -139,7 +139,7 @@ void NetworkClient::UpdateNextFrame(const float& deltaTime)
 
 			updateRealTimeAccum = 0.0f;
 		}
-		timer->endChildTimedSection("Dead Reckoning");
+		timer->EndChildTimedSection("Dead Reckoning");
 
 		for (int i = 0; i < numberOfOtherPlayersToWaitFor; ++i)
 		{
@@ -167,16 +167,16 @@ void NetworkClient::UpdateNextFrame(const float& deltaTime)
 	}
 	else
 	{
-		waitingInLobbyText.addTextWhenTimeHasReachedMaximum(30);
+		waitingInLobbyText.AddTextWhenTimeHasReachedMaximum(30);
 		DeliverySystem::GetPostman()->InsertMessage(TextMessage("GameLoop", "deltatime disable"));
 
 		DeliverySystem::GetPostman()->InsertMessage(TextMeshMessage("RenderingSystem",
-			waitingInLobbyText.getCurrentString(),
+			waitingInLobbyText.GetCurrentString(),
 			NCLVector3(-200, 0, 0), NCLVector3(20, 20, 1),
 			NCLVector3(1, 1, 1), true));
 	}
 
-	timer->beginChildTimedSection("Process Network Messages");
+	timer->BeginChildTimedSection("Process Network Messages");
 	if (connectedToServer)
 	{
 		ProcessNetworkMessages(deltaTime);
@@ -185,9 +185,9 @@ void NetworkClient::UpdateNextFrame(const float& deltaTime)
 		DeliverySystem::GetPostman()->InsertMessage(
 			TextMessage("Profiler", "Outgoing K/Bs : " + std::to_string(network.m_OutgoingKb)));
 	}
-	timer->endChildTimedSection("Process Network Messages");
+	timer->EndChildTimedSection("Process Network Messages");
 
-	timer->endTimedSection();
+	timer->EndTimedSection();
 }
 
 void NetworkClient::ConnectToServer()

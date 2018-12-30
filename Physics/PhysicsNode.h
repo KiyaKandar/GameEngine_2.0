@@ -197,11 +197,11 @@ public:
 
 	void SetRotation(NCLVector4 rotation)
 	{
-		worldTransform = (NCLMatrix4::translation(position) *
-			NCLMatrix4::rotation(rotation.w, NCLVector3(rotation.x, rotation.y, rotation.z)) *
-			NCLMatrix4::scale(worldTransform.getScalingVector()));
+		worldTransform = (NCLMatrix4::Translation(position) *
+			NCLMatrix4::Rotation(rotation.w, NCLVector3(rotation.x, rotation.y, rotation.z)) *
+			NCLMatrix4::Scale(worldTransform.GetScalingVector()));
 
-		orientation = Quaternion::axisAngleToQuaterion(NCLVector3(rotation.x, rotation.y, rotation.z), rotation.w);
+		orientation = Quaternion::AxisAngleToQuaterion(NCLVector3(rotation.x, rotation.y, rotation.z), rotation.w);
 	}
 
 	inline void AddCollisionShape(CollisionShape* colShape)
@@ -246,10 +246,10 @@ public:
 	inline void FireOnUpdateCallback()
 	{
 		//Build world transform
-		worldTransform = orientation.toMatrix4();
-		worldTransform.setPositionVector(position);
+		worldTransform = orientation.ToMatrix4();
+		worldTransform.SetPositionVector(position);
 
-		if (worldTransform.getPositionVector() != previousTransform.getPositionVector())
+		if (worldTransform.GetPositionVector() != previousTransform.GetPositionVector())
 		{
 			for each (PhysicsUpdateCallback callback in onUpdateCallbacks)
 			{
