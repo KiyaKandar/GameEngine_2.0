@@ -74,6 +74,8 @@ void System::SynchroniseAndStopConcurrentSubsystems()
 	{
 		task.Complete();
 	}
+
+	updates.clear();
 }
 
 void System::AddSubsystem(Subsystem* subsystem)

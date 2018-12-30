@@ -54,6 +54,14 @@ public:
 
 		for (int threadId = 0; threadId < numThreads; ++threadId)
 		{
+			for (int i = 0; i < buffer[threadId].size(); ++i)
+			{
+				if (buffer[threadId][i]->senderAvailable != nullptr)
+				{
+					*buffer[threadId][i]->senderAvailable = true;
+				}
+			}
+
 			buffer[threadId].clear();
 		}
 	}
