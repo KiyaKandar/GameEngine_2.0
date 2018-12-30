@@ -127,6 +127,16 @@ OGLRenderer::OGLRenderer(HWND windowHandle, NCLVector2 size)
 	}
 	//If we get this far, everything's going well!
 
+	if (WGLExtensionSupported("WGL_EXT_swap_control"))
+	{
+		// Extension is supported, init pointers.
+		wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+
+		// this is another function from WGL_EXT_swap_control extension
+		wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)wglGetProcAddress("wglGetSwapIntervalEXT");
+		wglSwapIntervalEXT(0);
+	}
+
 #ifdef OPENGL_DEBUGGING
 	//PFNWGLCREATECONTEXTATTRIBSARBPROC glDebugMessageCallbackTEMP = (PFNWGLCREATECONTEXTATTRIBSARBPROC) wglGetProcAddress("glDebugMessageCallbackARB");
 	glDebugMessageCallbackARB(&OGLRenderer::DebugCallback, NULL);
@@ -337,6 +347,24 @@ void OGLRenderer::DrawDebugOrtho(NCLMatrix4* matrix)
 	orthoDebugData->Clear();
 	drawnDebugOrtho = true;
 	SetCurrentShader(currentShader);
+}
+
+bool OGLRenderer::WGLExtensionSupported(const char* extensionName)
+{
+	// this is pointer to function which returns pointer to string with list of all wgl extensions
+	PFNWGLGETEXTENSIONSSTRINGEXTPROC wglGetExtensionsStringEXT = NULL;
+
+	// determine pointer to wglGetExtensionsStringEXT function
+	wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)wglGetProcAddress("wglGetExtensionsStringEXT");
+
+	if (strstr(wglGetExtensionsStringEXT(), extensionName) == NULL)
+	{
+		// string was not found
+		return false;
+	}
+
+	// extension is supported
+	return true;
 }
 
 void OGLRenderer::DrawDebugLine(DebugDrawMode mode, const NCLVector3& from, const NCLVector3& to,

@@ -28,6 +28,7 @@
 #include "Messages/PlayAnimationMessage.h"
 #include "Messages/DebugLineMessage.h"
 #include "Messages/DebugSphereMessage.h"
+#include "Messages/UIQuadBatchMessage.h"
 #include "MessageRegistry.h"
 #include "MessageStorage.h"
 

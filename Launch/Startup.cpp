@@ -147,7 +147,7 @@ void Startup::AddSystemsToEngine() const
 	engine->AddConcurrentSubsystem(userInterface);
 	engine->AddConcurrentSubsystem(animationPlayer);
 	engine->AddConcurrentSubsystem(physics);
-	engine->AddConcurrentSubsystem(profiler);
+	engine->AddSubsystem(profiler);
 	engine->AddConcurrentSubsystem(new Console(window->GetKeyboard(), camera, window->GetMouse()));
 
 	for (Subsystem* subsystem : engine->GetSubSystems())

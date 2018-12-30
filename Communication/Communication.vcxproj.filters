@@ -129,6 +129,9 @@
     <ClInclude Include="MessageDeliveryBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Messages\UIQuadBatchMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Message.cpp">
@@ -219,6 +222,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Messages\PlayAnimationMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Messages\UIQuadBatchMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

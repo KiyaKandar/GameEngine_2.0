@@ -148,6 +148,11 @@ protected:
 	void DrawDebugPerspective(NCLMatrix4* matrix = 0);
 	void DrawDebugOrtho(NCLMatrix4* matrix = 0);
 
+	bool WGLExtensionSupported(const char* extensionName);
+
+	PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
+	PFNWGLGETSWAPINTERVALEXTPROC wglGetSwapIntervalEXT = NULL;
+
 	Shader* currentShader;
 
 	NCLMatrix4 projMatrix; //Projection matrix
@@ -175,4 +180,4 @@ protected:
 
 	static bool drawnDebugOrtho;
 	static bool drawnDebugPerspective;
-};
+	};

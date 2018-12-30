@@ -20,6 +20,7 @@
 #include "Messages/PlayAnimationMessage.h"
 #include "LockFreeThreadSafeMessageBuffer.h"
 #include "Messages/DebugLineMessage.h"
+#include "Messages/UIQuadBatchMessage.h"
 #include "MessageSenders/TrackedMessageSender.h"
 
 class LetterBox : public MessagingService

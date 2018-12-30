@@ -20,7 +20,6 @@ public:
 		{
 			node->SetForce(node->GetAppliedForce());
 			node->SetAcceleration(node->GetForce() * node->GetInverseMass());
-			node->SetAppliedForce(NCLVector3());
 		}
 
 		//Semi-Implicit Euler Integration

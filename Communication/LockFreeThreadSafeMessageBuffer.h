@@ -62,6 +62,11 @@ public:
 
 			while (!outgoingQueue.empty())
 			{
+				if (outgoingQueue.front().senderAvailable != nullptr)
+				{
+					*outgoingQueue.front().senderAvailable = true;
+				}
+				
 				outgoingQueue.pop();
 			}
 		}
