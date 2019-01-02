@@ -2,23 +2,30 @@
 #include "../../Utility/Camera.h"
 #include "../../GraphicsUtility.h"
 
+#include "../Communication/Messages/UIQuadBatchMessage.h"
+#include "../Resource Management/Database/Database.h"
+
 const int STEP_COUNT = 18;
 const float DIVISOR = 360.0f / STEP_COUNT;
 
-Wireframe::Wireframe(const std::string identifier, const NCLVector2 resolution, Camera* camera) : GraphicsModule(identifier, resolution)
+Wireframe::Wireframe(const std::string identifier, const NCLVector2 resolution, Camera* camera, Database* database) : GraphicsModule(identifier, resolution)
 {
 	debugShader = new Shader(SHADERDIR"/debugVertex.glsl", SHADERDIR"/debugFragment.glsl");
+	quadShader = new Shader(SHADERDIR"/UIVertex.glsl", SHADERDIR"/UIFrag.glsl");
 	this->camera = camera;
+	this->database = database;
 }
 
 Wireframe::~Wireframe()
 {
 	delete debugShader;
+	delete quadShader;
 }
 
 void Wireframe::LinkShaders()
 {
 	debugShader->LinkProgram();
+	quadShader->LinkProgram();
 }
 
 void Wireframe::Initialise()
@@ -46,6 +53,8 @@ void Wireframe::Apply()
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+
+	DrawUIQuads();
 }
 
 void Wireframe::RegenerateShaders()
@@ -66,6 +75,13 @@ void Wireframe::AddSphere(NCLVector3 position, float radius, NCLVector3 colour)
 	spherePositions.push_back(position);
 	sphereColours.push_back(colour);
 	radii.push_back(radius);
+}
+
+void Wireframe::AddUIQuads(const std::vector<UIQuad>& uiQuads)
+{
+	quads = uiQuads;
+
+	std::sort(quads.begin(), quads.end(), UIQuadOrder());
 }
 
 void Wireframe::LocateUniforms()
@@ -132,4 +148,30 @@ void Wireframe::RenderLines()
 		linePoints.clear();
 		lineColours.clear();
 	}
+}
+
+void Wireframe::DrawUIQuads()
+{
+	SetCurrentShader(quadShader);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
+	viewMatrix.ToIdentity();
+	textureMatrix.ToIdentity();
+	UpdateShaderMatrices();
+
+	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix"), 1, 
+		false, (float*)&CommonGraphicsData::SHARED_ORTHOGRAPHIC_MATRIX);
+
+	Mesh* mesh = static_cast<Mesh*>(
+		database->GetTable("UIMeshes")->GetAllResources()->GetResource("UIQuad"));
+
+	for (const UIQuad& quad : quads)
+	{
+		glUniform4fv(glGetUniformLocation(quadShader->GetProgram(), "colour"), 1, (float*)&quad.colour);
+		mesh->Draw(*currentShader, NCLMatrix4::Translation(quad.screenPosition) * NCLMatrix4::Scale(quad.scale));
+	}
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 }

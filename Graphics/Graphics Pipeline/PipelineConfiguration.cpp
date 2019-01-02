@@ -69,7 +69,7 @@ void PipelineConfiguration::InitialiseModules(Database* database)
 	scoreCounter->Initialise();
 	scoreCounter->paintTrailTexture = &paintTrail->paintTrailTexture;
 
-	wireframe = new Wireframe("Wireframe", resolution, camera);
+	wireframe = new Wireframe("Wireframe", resolution, camera, database);
 	wireframe->LinkShaders();
 	wireframe->Initialise();
 

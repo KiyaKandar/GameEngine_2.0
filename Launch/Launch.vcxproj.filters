@@ -55,6 +55,9 @@
     <ClCompile Include="Networking\MinionDeadReckoning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Profiler\VisualProfiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Systems\Subsystem.h" />
@@ -75,5 +78,6 @@
     <ClInclude Include="Threading\Tasks\TaskFuture.h" />
     <ClInclude Include="Threading\Tasks\ThreadTask.h" />
     <ClInclude Include="Networking\MinionDeadReckoning.h" />
+    <ClInclude Include="Profiler\VisualProfiler.h" />
   </ItemGroup>
 </Project>

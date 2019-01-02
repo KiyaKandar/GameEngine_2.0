@@ -16,7 +16,7 @@ Profiler::Profiler(Keyboard* keyboard, Database* database, FPSCounter* fpsCounte
 	this->keyboard = keyboard;
 
 	incomingMessages = MessageProcessor::MessageProcessor(std::vector<MessageType>{MessageType::TEXT},
-	                                                      DeliverySystem::GetPostman()->GetDeliveryPoint("Profiler"));
+		DeliverySystem::GetPostman()->GetDeliveryPoint("Profiler"));
 
 	incomingMessages.AddActionToExecuteOnMessage(MessageType::TEXT, [&externalText = externalText](Message* message)
 	{
@@ -29,6 +29,7 @@ Profiler::Profiler(Keyboard* keyboard, Database* database, FPSCounter* fpsCounte
 
 	f5Listener = SinglePressKeyListener(KEYBOARD_F5, keyboard);
 	f6Listener = SinglePressKeyListener(KEYBOARD_F6, keyboard);
+	f10Listener = SinglePressKeyListener(KEYBOARD_F10, keyboard);
 }
 
 void Profiler::UpdateNextFrame(const float& deltatime)
@@ -45,6 +46,29 @@ void Profiler::UpdateNextFrame(const float& deltatime)
 	{
 		++depth;
 	}
+
+	if (f10Listener.KeyPressed())
+	{
+		++visualProfilerMode;
+
+		if (visualProfilerMode == 1)
+		{
+			visualProfiler.ToggleEnabled();
+		}
+		else if (visualProfilerMode == 2)
+		{
+			visualProfiler.TogglePrecisionMode();
+		}
+		if (visualProfilerMode == 3)
+		{
+			visualProfiler.ToggleEnabled();
+			visualProfiler.TogglePrecisionMode();
+
+			visualProfilerMode = 0;
+		}
+	}
+
+	visualProfiler.DisplayVisualTimers();
 
 	if (profilerEnabled)
 	{
@@ -66,6 +90,7 @@ void Profiler::UpdateNextFrame(const float& deltatime)
 void Profiler::AddSubsystemTimer(string name, GameTimer* timer)
 {
 	timers.insert({name, timer});
+	visualProfiler.AddTimerBar(name, timer);
 }
 
 void Profiler::UpdateProfiling()

@@ -18,7 +18,7 @@ public:
 
 	void BeginTimedSection();
 	void EndTimedSection();
-	float GetTimeTakenForSection();
+	float GetTimeTakenForSection() const;
 
 	void BeginChildTimedSection(std::string childTimerName);
 	void EndChildTimedSection(std::string childTimerName);

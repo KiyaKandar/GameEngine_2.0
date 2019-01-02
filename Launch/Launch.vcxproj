@@ -169,6 +169,7 @@
     <ClCompile Include="Systems\Subsystem.cpp" />
     <ClCompile Include="Systems\System.cpp" />
     <ClCompile Include="Threading\ThreadPool\ThreadPool.cpp" />
+    <ClCompile Include="Profiler\VisualProfiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DevConsole\Console.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="Threading\Tasks\ThreadTask.h" />
     <ClInclude Include="Threading\ThreadPool\ThreadPool.h" />
     <ClInclude Include="Threading\ThreadPool\ThreadQueue.h" />
+    <ClInclude Include="Profiler\VisualProfiler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

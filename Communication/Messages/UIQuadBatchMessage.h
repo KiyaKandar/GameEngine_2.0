@@ -6,9 +6,17 @@
 
 struct UIQuad
 {
-	NCLVector2 screenPosition;
+	NCLVector3 screenPosition;
 	NCLVector3 scale;
 	NCLVector3 colour;
+};
+
+struct UIQuadOrder
+{
+	bool operator() (const UIQuad& lhs, const UIQuad& rhs)
+	{
+		return lhs.screenPosition.z > rhs.screenPosition.z;
+	}
 };
 
 class UIQuadBatchMessage : public Message

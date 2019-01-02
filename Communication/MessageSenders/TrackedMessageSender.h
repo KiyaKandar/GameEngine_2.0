@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../DeliverySystem.h"
+
 template <class MessageType>
 class TrackedMessageSender
 {

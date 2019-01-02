@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include "VisualProfiler.h"
 
 class GameTimer;
 class Database;
@@ -44,6 +45,9 @@ private:
 
 	MemoryWatcher memoryWatcher;
 	FPSCounter* fpsCounter;
+	VisualProfiler visualProfiler;
+	int visualProfilerMode = 0;
+
 	map<string, GameTimer*> timers;
 	std::vector<TextMeshMessage> messages;
 	std::vector<std::string> externalText;
@@ -60,4 +64,5 @@ private:
 
 	SinglePressKeyListener f5Listener;
 	SinglePressKeyListener f6Listener;
+	SinglePressKeyListener f10Listener;
 };

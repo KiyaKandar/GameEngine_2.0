@@ -59,7 +59,7 @@ void GameTimer::EndTimedSection()
 	timeTakenForSection = sectionEndTime - sectionStartTime;
 }
 
-float GameTimer::GetTimeTakenForSection()
+float GameTimer::GetTimeTakenForSection() const
 {
 	return timeTakenForSection;
 }

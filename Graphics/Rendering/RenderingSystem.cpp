@@ -40,7 +40,7 @@ void RenderingSystem::Initialise(Database* database)
 		MessageType::TOGGLE_GRAPHICS_MODULE, MessageType::MOVE_CAMERA_RELATIVE_TO_GAMEOBJECT, MessageType::PREPARE_PAINT_SURFACE,
 		MessageType::SCALE_GAMEOBJECT, MessageType::PAINT_TRAIL_FOR_GAMEOBJECT, MessageType::ADD_SCORE_HOLDER,
 		MessageType::ABSOLUTE_TRANSFORM, MessageType::MOVE_GAMEOBJECT, MessageType::ROTATE_GAMEOBJECT,
-		MessageType::TOGGLE_GAMEOBJECT, MessageType::DEBUG_LINE, MessageType::DEBUG_SPHERE};
+		MessageType::TOGGLE_GAMEOBJECT, MessageType::DEBUG_LINE, MessageType::DEBUG_SPHERE, MessageType::UIQUAD};
 
 	incomingMessages = MessageProcessor(types, DeliverySystem::GetPostman()->GetDeliveryPoint("RenderingSystem"));
 
@@ -56,6 +56,11 @@ void RenderingSystem::Initialise(Database* database)
 		static_cast<Wireframe*>(renderer->GetGraphicsModule("Wireframe"))->AddSphere(debugCircleMessage->position, debugCircleMessage->radius, debugCircleMessage->colour);
 	});
 
+	incomingMessages.AddActionToExecuteOnMessage(MessageType::UIQUAD, [&renderer = renderer](Message* message)
+	{
+		UIQuadBatchMessage* uiQuadBatchMessage = static_cast<UIQuadBatchMessage*>(message);
+		static_cast<Wireframe*>(renderer->GetGraphicsModule("Wireframe"))->AddUIQuads(*uiQuadBatchMessage->uiQuads);
+	});
 
 	incomingMessages.AddActionToExecuteOnMessage(MessageType::TEXT, [&renderer = renderer, database = database, &blockCamera = blockCamera](Message* message)
 	{
