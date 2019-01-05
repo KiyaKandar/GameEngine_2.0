@@ -36,7 +36,7 @@
     
     <SendMessage type="PLAY_ANIMATION">
       <destination>AnimationManager</destination>
-      <resource>player0</resource>
+      <resource>hellknight2</resource>
       <animation>
         <lerpToTime>0.0</lerpToTime>
         <loop>True</loop>
@@ -88,7 +88,7 @@
 
     <SendMessage type="PLAY_ANIMATION">
       <destination>AnimationManager</destination>
-      <resource>player0</resource>
+      <resource>hellknight2</resource>
       <animation>
         <lerpToTime>0.3</lerpToTime>
         <loop>False</loop>

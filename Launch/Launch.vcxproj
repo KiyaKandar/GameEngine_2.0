@@ -157,6 +157,7 @@
     <ClCompile Include="DevConsole\Console.cpp" />
     <ClCompile Include="DevConsole\LevelEditor.cpp" />
     <ClCompile Include="Networking\MinionDeadReckoning.cpp" />
+    <ClCompile Include="Threading\Scheduler\ProcessScheduler.cpp" />
     <ClCompile Include="Profiler\Profiler.cpp" />
     <ClCompile Include="Profiler\MemoryWatcher.cpp" />
     <ClCompile Include="Profiler\FPSCounter.cpp" />
@@ -168,13 +169,14 @@
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Systems\Subsystem.cpp" />
     <ClCompile Include="Systems\System.cpp" />
-    <ClCompile Include="Threading\ThreadPool\ThreadPool.cpp" />
+    <ClCompile Include="Threading\Scheduler\PersistentProcessScheduler.cpp" />
     <ClCompile Include="Profiler\VisualProfiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DevConsole\Console.h" />
     <ClInclude Include="DevConsole\LevelEditor.h" />
     <ClInclude Include="Networking\MinionDeadReckoning.h" />
+    <ClInclude Include="Threading\Scheduler\ProcessScheduler.h" />
     <ClInclude Include="Profiler\Profiler.h" />
     <ClInclude Include="Profiler\MemoryWatcher.h" />
     <ClInclude Include="Profiler\FPSCounter.h" />
@@ -185,11 +187,11 @@
     <ClInclude Include="Startup.h" />
     <ClInclude Include="Systems\Subsystem.h" />
     <ClInclude Include="Systems\System.h" />
-    <ClInclude Include="Threading\Tasks\Task.h" />
-    <ClInclude Include="Threading\Tasks\TaskFuture.h" />
-    <ClInclude Include="Threading\Tasks\ThreadTask.h" />
-    <ClInclude Include="Threading\ThreadPool\ThreadPool.h" />
-    <ClInclude Include="Threading\ThreadPool\ThreadQueue.h" />
+    <ClInclude Include="Threading\Scheduler\PersistentProcessScheduler.h" />
+    <ClInclude Include="Threading\ThreadUtility\Task.h" />
+    <ClInclude Include="Threading\ThreadUtility\TaskFuture.h" />
+    <ClInclude Include="Threading\ThreadUtility\ThreadTask.h" />
+    <ClInclude Include="Threading\ThreadUtility\ThreadQueue.h" />
     <ClInclude Include="Profiler\VisualProfiler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

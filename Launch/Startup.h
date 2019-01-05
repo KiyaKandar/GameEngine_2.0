@@ -21,7 +21,7 @@ class UserInterface;
 class Startup
 {
 public:
-	Startup(ThreadPool* threadpool);
+	Startup();
 	~Startup();
 
 	void InitialiseRenderingSystem();

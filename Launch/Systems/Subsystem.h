@@ -14,6 +14,7 @@ public:
 	virtual ~Subsystem();
 
 	void UpdateSubsystem();
+	void PersistentlyUpdateSubsystem();
 	virtual void UpdateNextFrame(const float& deltaTime = 0.0f) = 0;
 
 	void ProcessMessages();

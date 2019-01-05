@@ -1,5 +1,6 @@
 #include "Subsystem.h"
 #include "../Utilities/GameTimer.h"
+#include "System.h"
 
 Subsystem::Subsystem(std::string subsystemName)
 {
@@ -19,6 +20,18 @@ void Subsystem::UpdateSubsystem()
 {
 	ProcessMessages();
 	UpdateNextFrame(frameTimer->GetTimeSinceLastRetrieval());
+}
+
+void Subsystem::PersistentlyUpdateSubsystem()
+{
+	while (!System::stop)
+	{
+		ProcessMessages();
+		UpdateNextFrame(frameTimer->GetTimeSinceLastRetrieval());
+
+		DeliverySystem::GetPostman()->ClearAllMessages();
+		DeliverySystem::GetPostman()->DeliverAllMessages();
+	}
 }
 
 void Subsystem::ProcessMessages()

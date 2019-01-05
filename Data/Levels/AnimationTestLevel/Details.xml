@@ -27,7 +27,7 @@
 			<Z>1</Z>
 		</Scale>
 </GameObjects>
-  <GameObjects name="player0" >
+  <GameObjects name="hellknight2" >
     <SceneNode>
       <Mesh>HellknightMesh</Mesh>
       <Colour>

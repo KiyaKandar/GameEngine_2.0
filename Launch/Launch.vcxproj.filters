@@ -49,13 +49,16 @@
     <ClCompile Include="DevConsole\LevelEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Threading\ThreadPool\ThreadPool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Networking\MinionDeadReckoning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Profiler\VisualProfiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Threading\Scheduler\PersistentProcessScheduler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Threading\Scheduler\ProcessScheduler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -72,12 +75,13 @@
     <ClInclude Include="Profiler\Profiler.h" />
     <ClInclude Include="DevConsole\Console.h" />
     <ClInclude Include="DevConsole\LevelEditor.h" />
-    <ClInclude Include="Threading\ThreadPool\ThreadPool.h" />
-    <ClInclude Include="Threading\ThreadPool\ThreadQueue.h" />
-    <ClInclude Include="Threading\Tasks\Task.h" />
-    <ClInclude Include="Threading\Tasks\TaskFuture.h" />
-    <ClInclude Include="Threading\Tasks\ThreadTask.h" />
     <ClInclude Include="Networking\MinionDeadReckoning.h" />
     <ClInclude Include="Profiler\VisualProfiler.h" />
+    <ClInclude Include="Threading\Scheduler\PersistentProcessScheduler.h" />
+    <ClInclude Include="Threading\Scheduler\ProcessScheduler.h" />
+    <ClInclude Include="Threading\ThreadUtility\Task.h" />
+    <ClInclude Include="Threading\ThreadUtility\TaskFuture.h" />
+    <ClInclude Include="Threading\ThreadUtility\ThreadQueue.h" />
+    <ClInclude Include="Threading\ThreadUtility\ThreadTask.h" />
   </ItemGroup>
 </Project>

@@ -6,13 +6,13 @@
 #include <iostream>
 #include <ctime>
 
-System::System(ThreadPool* threadPool)
+atomic_bool System::stop = false;
+
+System::System()
 {
 	letterBox = new LetterBox();
 	DeliverySystem::Provide(letterBox);
-	this->threadPool = threadPool;
 	timer = new GameTimer();
-	running = false;
 }
 
 System::~System()
@@ -28,7 +28,6 @@ System::~System()
 	}
 
 	subsystems.clear();
-	concurrentSubsystems.clear();
 
 	delete timer;
 }
@@ -50,32 +49,18 @@ void System::UpdateNextSystemFrame()
 
 void System::StartConcurrentSubsystems()
 {
-	running = true;
+	stop = false;
 
-	for (Subsystem* subsystem : concurrentSubsystems)
+	for (Subsystem*& subsystem : concurrentSubsystems)
 	{
-		updates.push_back(threadPool->SubmitJob([](const bool* running, Subsystem* subsystem)
-		{
-			while (*running)
-			{
-				subsystem->UpdateSubsystem();
-				DeliverySystem::GetPostman()->ClearAllMessages();
-				DeliverySystem::GetPostman()->DeliverAllMessages();
-			}
-		}, &running, subsystem));
+		ProcessScheduler::Retrieve()->RegisterProcess(std::bind(&Subsystem::PersistentlyUpdateSubsystem, subsystem));
 	}
 }
 
 void System::SynchroniseAndStopConcurrentSubsystems()
 {
-	running = false;
-
-	for (auto& task : updates)
-	{
-		task.Complete();
-	}
-
-	updates.clear();
+	stop = true;
+	ProcessScheduler::Retrieve()->CompleteWorkerProcesses();
 }
 
 void System::AddSubsystem(Subsystem* subsystem)

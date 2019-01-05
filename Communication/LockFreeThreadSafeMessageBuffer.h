@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../Launch/Threading/ThreadPool/ThreadPool.h"
 #include "MessageStorage.h"
 
 #include <queue>
 #include <utility>
+#include "Launch/Threading/Scheduler/ProcessScheduler.h"
 
 template <class MessageType>
 class LockFreeThreadSafeMessageBuffer
@@ -12,7 +12,7 @@ class LockFreeThreadSafeMessageBuffer
 public:
 	LockFreeThreadSafeMessageBuffer()
 	{
-		numberOfMessageSenders = ThreadPool::GetTotalNumberOfThreads();
+		numberOfMessageSenders = ProcessScheduler::Retrieve()->GetTotalNumberOfThreads();
 		outgoingMessages = new std::queue<MessageType>[numberOfMessageSenders];
 		sentMessages = new std::queue<MessageType>[numberOfMessageSenders];
 	}
@@ -25,12 +25,12 @@ public:
 
 	void InsertOutgoingMessage(MessageType message)
 	{
-		outgoingMessages[ThreadPool::GetLocalThreadId()].push(message);
+		outgoingMessages[ProcessScheduler::Retrieve()->GetLocalThreadId()].push(message);
 	}
 
 	void SendMessages(MessageStorage* messageStorage)
 	{
-		unsigned int localThreadId = ThreadPool::GetLocalThreadId();
+		unsigned int localThreadId = ProcessScheduler::Retrieve()->GetLocalThreadId();
 
 		std::queue<MessageType>& outgoingQueue = outgoingMessages[localThreadId];
 
@@ -46,7 +46,7 @@ public:
 
 	void ClearSentMessages()
 	{
-		unsigned int localThreadId = ThreadPool::GetLocalThreadId();
+		unsigned int localThreadId = ProcessScheduler::Retrieve()->GetLocalThreadId();
 
 		while (!sentMessages[localThreadId].empty() && sentMessages[localThreadId].front().processed)
 		{

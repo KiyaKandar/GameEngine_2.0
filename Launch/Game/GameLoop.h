@@ -23,6 +23,7 @@ public:
 	GameLoop(System* gameSystem, Database* database, Startup* startup);
 	~GameLoop();
 
+	void PrepareGameLoop();
 	void ExecuteGameLoop();
 	void UpdateGameObjects(float deltaTime) const;
 

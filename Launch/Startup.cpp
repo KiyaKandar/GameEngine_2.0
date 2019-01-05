@@ -25,9 +25,9 @@
 #include "../Gameplay/Scripting/PaintGameActionBuilder.h"
 #include "Resource Management/XMLWriter.h"
 
-Startup::Startup(ThreadPool* threadpool)
+Startup::Startup()
 {
-	engine = new System(threadpool);
+	engine = new System();
 	game = new GameLoop(engine, nullptr, this);
 	loopTimer = new GameTimer();
 }
@@ -238,5 +238,7 @@ void Startup::BeginOnlineLobby()
 
 void Startup::StartGameLoop() const
 {
-	game->ExecuteGameLoop();
+	game->PrepareGameLoop();
+	ProcessScheduler::Retrieve()->AttachMainThreadProcess(std::bind(&GameLoop::ExecuteGameLoop, game));
+	ProcessScheduler::Retrieve()->ExecuteMainThreadTask();
 }

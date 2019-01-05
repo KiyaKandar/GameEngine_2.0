@@ -1,16 +1,17 @@
 #pragma once
 
 #include "Message.h"
-#include "../Launch/Threading/ThreadPool/ThreadPool.h"
+#include "Launch/Threading/Scheduler/ProcessScheduler.h"
 
 #include <deque>
+#include <mutex>
 
 class MessageDeliveryBuffer
 {
 public:
 	MessageDeliveryBuffer()
 	{
-		unsigned int numThreads = ThreadPool::GetTotalNumberOfThreads();
+		unsigned int numThreads = ProcessScheduler::Retrieve()->GetTotalNumberOfThreads();
 		buffer = new std::deque<Message*>[numThreads];
 		locks = new std::mutex[numThreads];
 	}
@@ -50,7 +51,7 @@ public:
 
 	void ClearAll()
 	{
-		unsigned int numThreads = ThreadPool::GetTotalNumberOfThreads();
+		unsigned int numThreads = ProcessScheduler::Retrieve()->GetTotalNumberOfThreads();
 
 		for (int threadId = 0; threadId < numThreads; ++threadId)
 		{

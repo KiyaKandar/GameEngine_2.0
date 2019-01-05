@@ -1,7 +1,6 @@
 #include "MessageProcessor.h"
 
 #include "MessageDeliveryBuffer.h"
-#include "../Launch/Threading/ThreadPool/ThreadPool.h"
 
 MessageProcessor::MessageProcessor(std::vector<MessageType> typeOfMessagesToListenFor, 
 	MessageDeliveryBuffer* subsystemBuffer)
@@ -39,7 +38,7 @@ void MessageProcessor::ProcessMessagesInBuffer()
 
 void MessageProcessor::GetReceivedMessagesFromDeliveryBuffer(std::vector<Message*>& receivedMessages)
 {
-	unsigned int numberOfThreadSenders = ThreadPool::GetTotalNumberOfThreads();
+	unsigned int numberOfThreadSenders = ProcessScheduler::Retrieve()->GetTotalNumberOfThreads();
 
 	for (int threadId = 0; threadId < numberOfThreadSenders; ++threadId)
 	{

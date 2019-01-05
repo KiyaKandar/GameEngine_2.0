@@ -80,13 +80,15 @@ GameLoop::~GameLoop()
 {
 }
 
-void GameLoop::ExecuteGameLoop()
+void GameLoop::PrepareGameLoop()
 {
 	camera->SetPitch(24.0f);
 	camera->SetYaw(-133.0f);
-
 	engine->StartConcurrentSubsystems();
+}
 
+void GameLoop::ExecuteGameLoop()
+{
 	while (window->UpdateWindow() && !quit)
 	{
 		engine->UpdateNextSystemFrame();

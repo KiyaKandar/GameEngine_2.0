@@ -12,6 +12,7 @@
 #include "Systems\System.h"
 #include "Launch/Startup.h"
 #include "Communication/SendMessageActionBuilder.h"
+#include "Threading/Scheduler/PersistentProcessScheduler.h"
 
 int main()
 {
@@ -21,20 +22,21 @@ int main()
 	}
 
 	SendMessageActionBuilder::InitialiseBuilders();
-	ThreadPool threadPool;
+	ProcessScheduler::Create(new PersistentProcessScheduler());
 
-	Startup startup(&threadPool);
+	Startup startup;
+	bool loadedSubsystems = false;
 	startup.InitialiseRenderingSystem();
 
-	bool loadedSubsystems = false;
-
-	threadPool.SubmitJob([&startup = startup, &loadedSubsystems = loadedSubsystems]()
+	ProcessScheduler::Retrieve()->RegisterProcess([&startup = startup, &loadedSubsystems = loadedSubsystems]()
 	{
 		startup.InitialiseSubsystems();
-		startup.LoadMainMenu();
+		startup.LoadMainMenu(); 
 
 		loadedSubsystems = true;
 	});
+
+	ProcessScheduler::Retrieve()->BeginWorkerProcesses();
 
 	while (!loadedSubsystems)
 	{

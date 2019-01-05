@@ -5,8 +5,8 @@
 
 #include <vector>
 #include <memory>
-#include "../Threading/ThreadPool/ThreadPool.h"
 #include "Rendering/RenderingSystem.h"
+#include "Launch/Threading/Scheduler/ProcessScheduler.h"
 
 class LetterBox;
 class Profiler;
@@ -15,10 +15,9 @@ class GameTimer;
 class System
 {
 public:
-	System(ThreadPool* threadPool);
+	System();
 	~System();
 
-	void UpdateNextSystemFrame();
 	void StartConcurrentSubsystems();
 	void SynchroniseAndStopConcurrentSubsystems();
 
@@ -31,14 +30,15 @@ public:
 
 	std::vector<Subsystem*> GetSubSystems();
 
+	static std::atomic_bool stop;
+
+	void UpdateNextSystemFrame();
 private:
+
 	MessageStorage messageBuffers;
 	LetterBox* letterBox;
-	ThreadPool* threadPool;
 	GameTimer* timer;
 
 	std::vector<Subsystem*> subsystems;
 	std::vector<Subsystem*> concurrentSubsystems;
-	vector<TaskFuture<void>> updates;
-	bool running;
 };
