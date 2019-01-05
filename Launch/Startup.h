@@ -27,7 +27,7 @@ public:
 	void InitialiseRenderingSystem();
 	void StartUserInterface() const;
 	void StartRenderingSystem() const;
-	void SetupMeshes() const;
+	void InitialiseGraphicalAssets() const;
 	void RenderLoadingScreen() const;
 	void InitialiseSubsystems();
 	void StartGameLoop() const;

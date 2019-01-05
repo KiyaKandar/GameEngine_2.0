@@ -26,6 +26,8 @@ public:
 		this->shadowData = shadowData;
 	}
 
+	void BufferLightDataOnNextUpdate();
+
 	void Initialise() override;
 	void Apply() override;
 
@@ -39,7 +41,7 @@ private:
 	void LightingPass();
 
 	//Uniform locations
-	GLint lightDataBuffer;
+	GLuint lightDataBuffer;
 
 	GLint loc_gPosition;
 	GLint loc_gNormal;
@@ -59,5 +61,7 @@ private:
 	ShadowData* shadowData;
 	GBufferData*	gBuffer;
 	SSAOTextures* ambientTextures;
+
+	bool bufferLightData;
 };
 

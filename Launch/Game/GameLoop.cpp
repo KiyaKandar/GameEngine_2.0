@@ -56,7 +56,7 @@ GameLoop::GameLoop(System* gameSystem, Database* database, Startup* startup)
 				startup->LoadLevel(tokens[2], false);
 			}
 
-			startup->SetupMeshes();
+			startup->InitialiseGraphicalAssets();
 			startup->StartUserInterface();
 
 			XMLParser::DeleteAllParsedXml();

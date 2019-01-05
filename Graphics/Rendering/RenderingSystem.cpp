@@ -85,6 +85,7 @@ void RenderingSystem::Initialise(Database* database)
 		{
 			Light* light = static_cast<Light*>(database->GetTable("Lights")->GetResource(tokens[1]));
 			(*renderer->GetSceneManager()->GetAllLights())->push_back(light);
+			static_cast<BPLighting*>(renderer->GetGraphicsModule("BPLighting"))->BufferLightDataOnNextUpdate();
 		}
 		else if (tokens[0] == "removelight")
 		{
@@ -250,7 +251,7 @@ void RenderingSystem::RenderLoadingScreen(const float& deltaTime)
 	renderer->RenderLoadingScreen(deltaTime);
 }
 
-void RenderingSystem::SetupMeshes()
+void RenderingSystem::InitialiseGraphicalAssets()
 {
 	std::vector<SceneNode*>** nodes = scene->GetAllNodes();
 
@@ -258,12 +259,15 @@ void RenderingSystem::SetupMeshes()
 	{
 		node->GetMesh()->SetupMesh();
 	}
+
+	static_cast<BPLighting*>(renderer->GetGraphicsModule("BPLighting"))->BufferLightDataOnNextUpdate();
 }
 
 void RenderingSystem::SetSceneToRender(SceneManager* scene, Database* database)
 {
 	this->scene = scene;
 	renderer->Initialise(scene, database);
+	static_cast<BPLighting*>(renderer->GetGraphicsModule("BPLighting"))->BufferLightDataOnNextUpdate();
 }
 
 void RenderingSystem::UpdateNextFrame(const float& deltaTime)

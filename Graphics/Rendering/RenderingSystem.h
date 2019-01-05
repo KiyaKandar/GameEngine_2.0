@@ -18,7 +18,7 @@ public:
 	void Initialise(Database* database);
 	void RenderLoadingScreen(const float& deltaTime);
 
-	void SetupMeshes();
+	void InitialiseGraphicalAssets();
 	void SetSceneToRender(SceneManager* scene, Database* database);
 	void UpdateNextFrame(const float& deltaTime) override;
 

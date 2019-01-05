@@ -30,7 +30,7 @@ void Wireframe::LinkShaders()
 
 void Wireframe::Initialise()
 {
-	
+	glGenVertexArrays(1, &array);
 }
 
 void Wireframe::Apply()
@@ -125,7 +125,6 @@ void Wireframe::RenderLines()
 {
 	if (!linePoints.empty())
 	{
-		glGenVertexArrays(1, &array);
 		glBindVertexArray(array);
 		glGenBuffers(2, buffers);
 

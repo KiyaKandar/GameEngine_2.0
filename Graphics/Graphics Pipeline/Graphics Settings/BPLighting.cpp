@@ -35,22 +35,20 @@ void BPLighting::RegenerateShaders()
 	lightingPassShader->Regenerate();
 }
 
+void BPLighting::BufferLightDataOnNextUpdate()
+{
+	bufferLightData = true;
+}
+
 void BPLighting::Initialise()
 {
 	glGenFramebuffers(1, &FBO);
 	LocateUniforms();
 
-	if(lightDatas.size() > 0)
-	{
-		lightDataBuffer = GraphicsUtility::InitSSBO(1, 1, lightDataBuffer, sizeof(LightData) * lightDatas.size(), &lightDatas, GL_STATIC_COPY);
-
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightDataBuffer);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(LightData) * lightDatas.size(),
-			&lightDatas[0], GL_STATIC_COPY);
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightDataBuffer);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-	}
-
+	glGenBuffers(1, &lightDataBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightDataBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightDataBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
 void BPLighting::LocateUniforms()
@@ -69,21 +67,29 @@ void BPLighting::LocateUniforms()
 
 void BPLighting::Apply()
 {
-	lightDatas.clear();
-	for (Light* light : **lights)
+	if (bufferLightData)
 	{
-		lightDatas.push_back(light->GetData());
-	}
+		lightDatas.clear();
+		for (Light* light : **lights)
+		{
+			lightDatas.push_back(light->GetData());
+		}
 
-	if (lightDatas.size() > 0)
-	{
-		lightDataBuffer = GraphicsUtility::InitSSBO(1, 1, lightDataBuffer, sizeof(LightData) * lightDatas.size(), &lightDatas, GL_STATIC_COPY);
+		if (lightDatas.size() > 0)
+		{
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightDataBuffer);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(LightData) * lightDatas.size(),
+				&lightDatas[0], GL_STATIC_COPY);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		}
+		else
+		{
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightDataBuffer);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, 0, 0, GL_STATIC_COPY);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		}
 
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightDataBuffer);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(LightData) * lightDatas.size(),
-			&lightDatas[0], GL_STATIC_COPY);
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightDataBuffer);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		bufferLightData = false;
 	}
 
 	LightingPass();

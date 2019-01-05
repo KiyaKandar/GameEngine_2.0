@@ -44,7 +44,7 @@ int main()
 	}
 
 	startup.StartRenderingSystem();
-	startup.SetupMeshes();
+	startup.InitialiseGraphicalAssets();
 	startup.StartUserInterface();
 
 	startup.StartGameLoop();

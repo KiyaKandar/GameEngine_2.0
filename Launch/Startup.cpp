@@ -103,9 +103,9 @@ void Startup::StartRenderingSystem() const
 	rendering->SetSceneToRender(scene, database);
 }
 
-void Startup::SetupMeshes() const
+void Startup::InitialiseGraphicalAssets() const
 {
-	rendering->SetupMeshes();
+	rendering->InitialiseGraphicalAssets();
 }
 
 void Startup::InitialiseAudioSystem()
