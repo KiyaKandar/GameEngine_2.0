@@ -279,11 +279,16 @@ void PhysicsEngine::RemoveAllPhysicsObjects()
 
 void PhysicsEngine::UpdateNextFrame(const float& deltaTime)
 {
-	timer->BeginTimedSection();
-
-	static int maxUpdatesPerFrame = 5;
-
+	static const int maxUpdatesPerFrame = 5;
 	updateRealTimeAccum += deltaTime * 0.001f;
+	const bool doUpdate = updateRealTimeAccum >= updateTimestep;
+
+	if (doUpdate)
+	{
+		timer->BeginTimedSection();
+	}
+
+
 	for (int i = 0; (updateRealTimeAccum >= updateTimestep) && i < maxUpdatesPerFrame; ++i)
 	{
 		updateRealTimeAccum -= updateTimestep;
@@ -345,7 +350,10 @@ void PhysicsEngine::UpdateNextFrame(const float& deltaTime)
 		}
 	}
 
-	timer->EndTimedSection();
+	if (doUpdate)
+	{
+		timer->EndTimedSection();
+	}
 }
 
 

@@ -68,6 +68,8 @@ void UserInterface::Initialise(Database* database)
 
 void UserInterface::UpdateNextFrame(const float& deltaTime)
 {
+	timer->BeginTimedSection();
+
 	if (escapeListener.KeyPressed())
 	{
 		ToggleModule();
@@ -93,6 +95,8 @@ void UserInterface::UpdateNextFrame(const float& deltaTime)
 			UserInterfaceDisplay::GetInterface()->ExecuteSelectedButton();
 		}
 	}
+
+	timer->EndTimedSection();
 }
 
 void UserInterface::ToggleModule()
