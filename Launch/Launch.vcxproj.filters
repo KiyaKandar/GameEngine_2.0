@@ -61,6 +61,15 @@
     <ClCompile Include="Threading\Scheduler\ProcessScheduler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Threading\Scheduler\SubsystemScheduler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Threading\Scheduler\ThreadPackingLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Threading\Scheduler\SubsystemWorkload.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Systems\Subsystem.h" />
@@ -83,5 +92,8 @@
     <ClInclude Include="Threading\ThreadUtility\TaskFuture.h" />
     <ClInclude Include="Threading\ThreadUtility\ThreadQueue.h" />
     <ClInclude Include="Threading\ThreadUtility\ThreadTask.h" />
+    <ClInclude Include="Threading\Scheduler\SubsystemScheduler.h" />
+    <ClInclude Include="Threading\Scheduler\SubsystemWorkload.h" />
+    <ClInclude Include="Threading\Scheduler\ThreadPackingLayer.h" />
   </ItemGroup>
 </Project>

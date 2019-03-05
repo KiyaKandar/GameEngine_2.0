@@ -12,15 +12,17 @@
 #include <thread>
 #include <future>
 
-typedef TaskFuture<void> ProcessPromise;
+struct SubsystemWorkload;
+struct Worker;
+struct SchedulerClock;
 
-class PersistentProcessScheduler : public ProcessScheduler
+class SubsystemScheduler : public ProcessScheduler
 {
 public:
-	PersistentProcessScheduler();
-	~PersistentProcessScheduler() = default;
+	SubsystemScheduler();
+	~SubsystemScheduler();
 
-	void InitialiseWorkers() override {}
+	void InitialiseWorkers();
 
 	void RegisterProcess(const Process& process) override;
 	void AttachMainThreadProcess(const Process& process) override;
@@ -32,16 +34,15 @@ public:
 	int GetLocalThreadId() override;
 	unsigned int GetTotalNumberOfThreads() override;
 
+	static std::atomic_bool workersRunning;
+
 private:
-	void WorkerThreadProcess(const int threadId);
-
-	ThreadQueue<std::unique_ptr<Task>> taskQueue;
-	std::vector<Process> registeredProcesses;
-	std::vector<ProcessPromise> promises;
-	std::vector<std::thread> availableWorkerThreads;
-
-	Process attachedMainThreadTask;
+	std::vector<SubsystemWorkload> swl;
+	Worker* workers;
+	Worker* mainThreadWorker;
 
 	std::atomic_bool running;
-	std::atomic_bool completeWorkerProcesses;
+
+	std::atomic_int activeWorkerCount;
+	SchedulerClock* schedulerClock;
 };

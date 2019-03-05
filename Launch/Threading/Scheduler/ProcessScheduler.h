@@ -18,6 +18,8 @@ public:
 		scheduler = newScheduler;
 	}
 
+	virtual void InitialiseWorkers() = 0;
+
 	virtual void RegisterProcess(const Process& process) = 0;
 	virtual void AttachMainThreadProcess(const Process& process) = 0;
 

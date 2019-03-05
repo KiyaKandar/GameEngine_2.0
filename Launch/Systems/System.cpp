@@ -10,8 +10,6 @@ atomic_bool System::stop = false;
 
 System::System()
 {
-	letterBox = new LetterBox();
-	DeliverySystem::Provide(letterBox);
 	timer = new GameTimer();
 }
 
@@ -53,8 +51,10 @@ void System::StartConcurrentSubsystems()
 
 	for (Subsystem*& subsystem : concurrentSubsystems)
 	{
-		ProcessScheduler::Retrieve()->RegisterProcess(std::bind(&Subsystem::PersistentlyUpdateSubsystem, subsystem));
+		ProcessScheduler::Retrieve()->RegisterProcess(std::bind(&Subsystem::UpdateSubsystem, subsystem));
 	}
+
+	ProcessScheduler::Retrieve()->BeginWorkerProcesses();
 }
 
 void System::SynchroniseAndStopConcurrentSubsystems()

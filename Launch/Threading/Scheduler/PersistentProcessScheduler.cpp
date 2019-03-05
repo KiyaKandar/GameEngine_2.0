@@ -1,14 +1,17 @@
 #include "PersistentProcessScheduler.h"
 
-thread_local int LOCAL_THREAD_ID = 0;
-unsigned int TOTAL_NUM_THREADS = 0;
-
 typedef std::packaged_task<void()> ASyncReadyProcess;
 typedef ThreadTask<ASyncReadyProcess> ExecutableProcess;
 
+namespace PersistentThreadIds
+{
+	thread_local int LOCAL_THREAD_ID = 0;
+	unsigned int TOTAL_NUM_THREADS = 0;
+}
+
 PersistentProcessScheduler::PersistentProcessScheduler() : ProcessScheduler()
 {
-	TOTAL_NUM_THREADS = std::thread::hardware_concurrency();
+	PersistentThreadIds::TOTAL_NUM_THREADS = std::thread::hardware_concurrency();
 	running = true;
 	completeWorkerProcesses = false;
 }
@@ -32,7 +35,7 @@ void PersistentProcessScheduler::ExecuteMainThreadTask()
 
 void PersistentProcessScheduler::BeginWorkerProcesses()
 {
-	for (int i = 0; i < TOTAL_NUM_THREADS - 1; ++i)
+	for (int i = 0; i < PersistentThreadIds::TOTAL_NUM_THREADS - 1; ++i)
 	{
 		const int threadId = i + 1;
 		availableWorkerThreads.emplace_back(&PersistentProcessScheduler::WorkerThreadProcess, this, threadId);
@@ -53,17 +56,17 @@ void PersistentProcessScheduler::CompleteWorkerProcesses()
 
 int PersistentProcessScheduler::GetLocalThreadId()
 {
-	return LOCAL_THREAD_ID;
+	return PersistentThreadIds::LOCAL_THREAD_ID;
 }
 
 unsigned PersistentProcessScheduler::GetTotalNumberOfThreads()
 {
-	return TOTAL_NUM_THREADS;
+	return PersistentThreadIds::TOTAL_NUM_THREADS;
 }
 
 void PersistentProcessScheduler::WorkerThreadProcess(const int threadId)
 {
-	LOCAL_THREAD_ID = threadId;
+	PersistentThreadIds::LOCAL_THREAD_ID = threadId;
 
 	while (running)
 	{

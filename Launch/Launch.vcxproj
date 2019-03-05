@@ -171,6 +171,9 @@
     <ClCompile Include="Systems\System.cpp" />
     <ClCompile Include="Threading\Scheduler\PersistentProcessScheduler.cpp" />
     <ClCompile Include="Profiler\VisualProfiler.cpp" />
+    <ClCompile Include="Threading\Scheduler\SubsystemScheduler.cpp" />
+    <ClCompile Include="Threading\Scheduler\SubsystemWorkload.cpp" />
+    <ClCompile Include="Threading\Scheduler\ThreadPackingLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DevConsole\Console.h" />
@@ -188,11 +191,14 @@
     <ClInclude Include="Systems\Subsystem.h" />
     <ClInclude Include="Systems\System.h" />
     <ClInclude Include="Threading\Scheduler\PersistentProcessScheduler.h" />
+    <ClInclude Include="Threading\Scheduler\SubsystemScheduler.h" />
+    <ClInclude Include="Threading\Scheduler\SubsystemWorkload.h" />
     <ClInclude Include="Threading\ThreadUtility\Task.h" />
     <ClInclude Include="Threading\ThreadUtility\TaskFuture.h" />
     <ClInclude Include="Threading\ThreadUtility\ThreadTask.h" />
     <ClInclude Include="Threading\ThreadUtility\ThreadQueue.h" />
     <ClInclude Include="Profiler\VisualProfiler.h" />
+    <ClInclude Include="Threading\Scheduler\ThreadPackingLayer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

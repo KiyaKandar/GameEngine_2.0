@@ -13,6 +13,8 @@
 #include "Launch/Startup.h"
 #include "Communication/SendMessageActionBuilder.h"
 #include "Threading/Scheduler/PersistentProcessScheduler.h"
+#include "Threading/Scheduler/SubsystemScheduler.h"
+#include "Communication/LetterBox.h"
 
 int main()
 {
@@ -21,17 +23,24 @@ int main()
 		return -1;
 	}
 
+	ProcessScheduler::Create(new SubsystemScheduler());
+	DeliverySystem::Provide(new LetterBox());
 	SendMessageActionBuilder::InitialiseBuilders();
-	ProcessScheduler::Create(new PersistentProcessScheduler());
+
+	ProcessScheduler::Retrieve()->InitialiseWorkers();
 
 	Startup startup;
 	bool loadedSubsystems = false;
 	startup.InitialiseRenderingSystem();
 
+	//TODO Need to put this on a generic scheduler, not a subsystem scheduler that wraps work in loops
 	ProcessScheduler::Retrieve()->RegisterProcess([&startup = startup, &loadedSubsystems = loadedSubsystems]()
 	{
-		startup.InitialiseSubsystems();
-		startup.LoadMainMenu(); 
+		if (!loadedSubsystems)
+		{
+			startup.InitialiseSubsystems();
+			startup.LoadMainMenu();
+		}
 
 		loadedSubsystems = true;
 	});
@@ -42,6 +51,8 @@ int main()
 	{
 		startup.RenderLoadingScreen();
 	}
+	
+	ProcessScheduler::Retrieve()->CompleteWorkerProcesses();
 
 	startup.StartRenderingSystem();
 	startup.InitialiseGraphicalAssets();

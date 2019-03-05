@@ -89,12 +89,16 @@ void GameLoop::PrepareGameLoop()
 
 void GameLoop::ExecuteGameLoop()
 {
-	while (window->UpdateWindow() && !quit)
+	if (window->UpdateWindow() && !quit)
 	{
 		engine->UpdateNextSystemFrame();
 		incomingMessages.ProcessMessagesInBuffer();
-		
+
 		UpdateGameObjects(loopTimer->GetTimeSinceLastRetrieval() * deltaTimeMultiplier);
+	}
+	else
+	{
+		engine->SynchroniseAndStopConcurrentSubsystems();
 	}
 }
 

@@ -33,10 +33,8 @@ public:
 	static std::atomic_bool stop;
 
 	void UpdateNextSystemFrame();
-private:
 
-	MessageStorage messageBuffers;
-	LetterBox* letterBox;
+private:
 	GameTimer* timer;
 
 	std::vector<Subsystem*> subsystems;
