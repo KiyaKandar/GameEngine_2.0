@@ -1,11 +1,16 @@
 #include "SubsystemWorkload.h"
 
-//#pragma optimize("", off)
+#include "SchedulerSystemClock.h"
 
 namespace SubsystemThreadIds
 {
 	thread_local int LOCAL_THREAD_ID = 0;
 	unsigned int TOTAL_NUM_THREADS = 0;
+}
+
+void Worker::SetSchedulerClock(SchedulerSystemClock* schedulerClock)
+{
+	this->schedulerClock = schedulerClock;
 }
 
 void Worker::InitialiseTotalNumberOfThreads()
@@ -23,15 +28,15 @@ unsigned Worker::GetTotalNumberOfThreads()
 	return SubsystemThreadIds::TOTAL_NUM_THREADS;
 }
 
-void Worker::SpoolWorker(const unsigned threadId, SchedulerClock* schedulerClock, atomic_int& activeWorkerCount)
+void Worker::SpoolWorker(const unsigned threadId)
 {
 	if (threadId == 0)
 	{
-		Run(threadId, activeWorkerCount, schedulerClock);
+		Run(threadId);
 	}
 	else
 	{
-		workerThread = std::thread(&Worker::Run, this, threadId, std::ref(activeWorkerCount), std::ref(schedulerClock));
+		workerThread = std::thread(&Worker::Run, this, threadId);
 	}
 }
 
@@ -40,25 +45,26 @@ void Worker::BulkSetWorkload(std::vector<SubsystemWorkload> workload)
 	assignedWorkload = workload;
 }
 
-void Worker::Run(const unsigned int threadId, atomic_int & activeWorkerCount, SchedulerClock* schedulerClock)
+void Worker::Run(const unsigned int threadId)
 {
 	SubsystemThreadIds::LOCAL_THREAD_ID = threadId;
 
-	WaitUntilHasWorkload();
+	if (assignedWorkload.empty())
+	{
+		WaitUntilHasWorkload();
+	}
+	else if (threadId != 0)
+	{
+		schedulerClock->RegisterActiveThread();
+	}
 
 	while (SubsystemScheduler::workersRunning)
 	{
-		timer.BeginTimedSection();
-
 		PerformWork();
 		CalculateWorkerInstability();
 		//process movementbuffer;
 
-		WaitUntilHasWorkload();
-
-		timer.EndTimedSection();
-		//SignalWorkerFinishedIteration(activeWorkerCount, schedulerClock->finishListener);
-		WaitForNextSynchronisedLaunch(schedulerClock, activeWorkerCount, timer.GetTimeTakenForSection());
+		WaitUntilHasActivity();
 	}
 }
 
@@ -75,46 +81,29 @@ void Worker::PerformWork()
 	DeliverySystem::GetPostman()->DeliverAllMessages();
 }
 
-void Worker::WaitUntilHasWorkload()
+void Worker::WaitUntilHasActivity()
 {
 	if (assignedWorkload.empty())
 	{
-		std::unique_lock<std::mutex> workloadLock(waitForWorkload);
-		hasWork.wait(workloadLock, [&assignedWorkload = assignedWorkload]
-		{
-			return !assignedWorkload.empty() || !SubsystemScheduler::workersRunning;
-		});
-	}
-}
-
-void Worker::WaitForNextSynchronisedLaunch(SchedulerClock* schedulerClock, atomic_int& activeWorkerCount, const float elapsedTimeInMilliseconds)
-{
-	if (!schedulerClock->TryAssumeControl(activeWorkerCount))
-	{
-		//wait to be signalled to start
-		std::unique_lock<std::mutex> lock(schedulerClock->signalMutex);
-		schedulerClock->launcher.wait(lock, [schedulerClock]() { return schedulerClock->launch.load(); });
-		activeWorkerCount++;
+		schedulerClock->UnregisterActiveThread();
+		WaitUntilHasWorkload();
 	}
 	else
 	{
-		activeWorkerCount--;
-		schedulerClock->finishListener.notify_one();
+		schedulerClock->WaitForSynchronisedLaunch();
 	}
-
-	//const float frameLengthMS = (1.0f / 360.0f) * 1000.0f;//16.6666667f;
-	//const float timeToSleep = frameLengthMS - elapsedTimeInMilliseconds;
-
-	//if (timeToSleep > 0.0f)
-	//{
-	//	Sleep(timeToSleep);
-	//}
 }
 
-void Worker::SignalWorkerFinishedIteration(atomic_int& activeWorkerCount, condition_variable& finishingCondition)
+void Worker::WaitUntilHasWorkload()
 {
-	//activeWorkerCount--;
-	//finishingCondition.notify_one();
+	std::unique_lock<std::mutex> workloadLock(waitForWorkload);
+	std::cout << "Thread " << SubsystemThreadIds::LOCAL_THREAD_ID << " waiting for work." << std::endl;
+	hasWork.wait(workloadLock, [&assignedWorkload = assignedWorkload]
+	{
+		return !assignedWorkload.empty() || !SubsystemScheduler::workersRunning;
+	});
+
+	schedulerClock->RegisterActiveThread();
 }
 
 void Worker::CalculateWorkerInstability()

@@ -1,6 +1,7 @@
 #include "SubsystemScheduler.h"
 
 #include "SubsystemWorkload.h"
+#include "SchedulerSystemClock.h"
 
 atomic_bool SubsystemScheduler::workersRunning = false;
 
@@ -10,19 +11,26 @@ SubsystemScheduler::SubsystemScheduler() : ProcessScheduler()
 	running = true;
 	workersRunning = true;
 
-	schedulerClock = new SchedulerClock();
+	schedulerClock = new SchedulerSystemClock(1);
 }
 
 SubsystemScheduler::~SubsystemScheduler()
 {
-	delete[] workers;
 	delete mainThreadWorker;
 }
 
 void SubsystemScheduler::InitialiseWorkers()
 {
-	workers = new Worker[Worker::GetTotalNumberOfThreads() - 1];
+	const unsigned int numWorkers = Worker::GetTotalNumberOfThreads() - 1;
+	workers = std::vector<Worker>(numWorkers);
+
+	for (int i = 0; i < numWorkers; ++i)
+	{
+		workers[i].SetSchedulerClock(schedulerClock);
+	}
+
 	mainThreadWorker = new Worker();
+	mainThreadWorker->SetSchedulerClock(schedulerClock);
 }
 
 void SubsystemScheduler::RegisterProcess(const Process& process)
@@ -37,27 +45,41 @@ void SubsystemScheduler::AttachMainThreadProcess(const Process& process)
 
 void SubsystemScheduler::ExecuteMainThreadTask()
 {
-	mainThreadWorker->SpoolWorker(0, schedulerClock, activeWorkerCount);
+	mainThreadWorker->SpoolWorker(0);
 }
 
 void SubsystemScheduler::BeginWorkerProcesses()
 {
-	workers[0].BulkSetWorkload(swl);
-	activeWorkerCount.store(1);
-	workersRunning = true;
-
+	int workerId = 0;
 	unsigned int numThreads = Worker::GetTotalNumberOfThreads();
 
+	while (!swl.empty())
+	{
+		workers[workerId].assignedWorkload.push_back(swl.back());
+		swl.pop_back();
+
+		++workerId;
+		if (workerId == numThreads - 1)
+		{
+			workerId = 0;
+		}
+	}
+
+	workersRunning = true;
+
+	schedulerClock->MarkLaunchStartTime();
 	for (int i = 0; i < numThreads - 1; ++i)
 	{
 		const int threadId = i + 1;
-		workers[i].SpoolWorker(threadId, schedulerClock, activeWorkerCount);
+		workers[i].SpoolWorker(threadId);
 	}
 }
 
 void SubsystemScheduler::CompleteWorkerProcesses()
 {
 	workersRunning = false;
+	schedulerClock->CancelFrameSynchronisation();
+
 	bool finished = false;
 
 	unsigned int numThreads = Worker::GetTotalNumberOfThreads();
@@ -72,6 +94,7 @@ void SubsystemScheduler::CompleteWorkerProcesses()
 	for (int i = 0; i < numThreads - 1; ++i)
 	{
 		workers[i].ClearWorkload();
+		schedulerClock->UnregisterActiveThread();
 	}
 }
 

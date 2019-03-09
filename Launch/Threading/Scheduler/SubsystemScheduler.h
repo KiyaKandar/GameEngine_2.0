@@ -14,7 +14,7 @@
 
 struct SubsystemWorkload;
 struct Worker;
-struct SchedulerClock;
+struct SchedulerSystemClock;
 
 class SubsystemScheduler : public ProcessScheduler
 {
@@ -38,11 +38,10 @@ public:
 
 private:
 	std::vector<SubsystemWorkload> swl;
-	Worker* workers;
+	std::vector<Worker> workers;
 	Worker* mainThreadWorker;
 
 	std::atomic_bool running;
 
-	std::atomic_int activeWorkerCount;
-	SchedulerClock* schedulerClock;
+	SchedulerSystemClock* schedulerClock;
 };
