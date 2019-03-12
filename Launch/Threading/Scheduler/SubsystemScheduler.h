@@ -22,7 +22,7 @@ public:
 	SubsystemScheduler();
 	~SubsystemScheduler();
 
-	void InitialiseWorkers();
+	void InitialiseWorkers() override;
 
 	void RegisterProcess(const Process& process) override;
 	void AttachMainThreadProcess(const Process& process) override;
@@ -33,6 +33,8 @@ public:
 
 	int GetLocalThreadId() override;
 	unsigned int GetTotalNumberOfThreads() override;
+
+	void RegisterWithProfiler(Profiler* profiler) override;
 
 	static std::atomic_bool workersRunning;
 

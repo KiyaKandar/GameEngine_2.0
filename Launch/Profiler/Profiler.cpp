@@ -39,7 +39,7 @@ void Profiler::UpdateNextFrame(const float& deltatime)
 	if (f5Listener.KeyPressed())
 	{
 		profilerEnabled = !profilerEnabled;
-		depth = 0;
+		depth = -1;
 	}
 
 	if (f6Listener.KeyPressed())
@@ -100,17 +100,21 @@ void Profiler::UpdateProfiling()
 	if (timersDisplayed)
 	{
 		UpdateFps();
-		UpdateMemory();
-		UpdateTimers();
 
-		for (std::string text : externalText)
+		if (depth >= 0)
 		{
-			messages.push_back(TextMeshMessage("RenderingSystem", text,
-				NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
-			nextLine += NEXT_LINE_OFFSET;
-		}
+			UpdateMemory();
+			UpdateTimers();
 
-		timersDisplayed = false;
+			for (std::string text : externalText)
+			{
+				messages.push_back(TextMeshMessage("RenderingSystem", text,
+					NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
+				nextLine += NEXT_LINE_OFFSET;
+			}
+
+			timersDisplayed = false;
+		}
 	}
 }
 
@@ -145,8 +149,14 @@ void Profiler::UpdateTimers()
 	{
 		nextLine += NEXT_LINE_OFFSET;
 
-		std::string profilerText = subsystemTimer.first + "	" + std::to_string(
-			subsystemTimer.second->GetTimeTakenForSection());
+		const float timeTaken = subsystemTimer.second->GetTimeTakenForSection();
+		std::string profilerText = subsystemTimer.first + "	" + std::to_string(timeTaken);
+
+		if (timeTaken > FLT_EPSILON)
+		{
+			profilerText += "  ---  " + std::to_string(1000.0f / timeTaken) + "fps";
+		}
+		
 		NCLVector3 position(-500.0f, nextLine, 0);
 
 		messages.push_back(TextMeshMessage("RenderingSystem", profilerText,

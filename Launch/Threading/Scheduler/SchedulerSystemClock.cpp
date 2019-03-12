@@ -5,11 +5,14 @@
 
 const float frameLengthMS = (1.0f / 60.0f) * 1000.0f;
 
-SchedulerSystemClock::SchedulerSystemClock(const int activeThreadCount)
+SchedulerSystemClock::SchedulerSystemClock(const int activeThreadCount, std::vector<Worker>* workers, Worker* mainThreadWorker)
 {
 	numThreadsToWaitFor = activeThreadCount;
 	numActiveThreads = activeThreadCount;
 	syncGeneration = 0;
+
+	this->workers = workers;
+	this->mainThreadWorker = mainThreadWorker;
 }
 
 void SchedulerSystemClock::WaitForSynchronisedLaunch()
@@ -41,10 +44,9 @@ void SchedulerSystemClock::UnregisterActiveThread()
 	--numThreadsToWaitFor;
 }
 
-
-float SchedulerSystemClock::GetLastFrameTime() const
+GameTimer* SchedulerSystemClock::GetClockTimer()
 {
-	return frameTime;
+	return &clock;
 }
 
 void SchedulerSystemClock::CancelFrameSynchronisation()
@@ -67,12 +69,23 @@ void SchedulerSystemClock::CompleteFrame()
 void SchedulerSystemClock::SleepUntilNextFrameLaunch()
 {
 	frameTime = clock.GetTimeTakenForSection();
-	const float timeToSleep = frameLengthMS - frameTime;
+	const float timeToSleep = CalculatelargestTimeTakenForWorker() - frameTime;
 
 	if (timeToSleep > FLT_EPSILON)
 	{
 		Sleep(timeToSleep);
 	}
+}
+
+float SchedulerSystemClock::CalculatelargestTimeTakenForWorker() const
+{
+	float maxWorkload = mainThreadWorker->currentWorkloadSize;
+	for (int i = 0; i < workers->size(); ++i)
+	{
+		maxWorkload = max(maxWorkload, (*workers)[i].currentWorkloadSize);
+	}
+
+	return maxWorkload;
 }
 
 void SchedulerSystemClock::MarkLaunchStartTime()

@@ -85,6 +85,7 @@ void Worker::WaitUntilHasActivity()
 {
 	if (assignedWorkload.empty())
 	{
+		currentWorkloadSize = 0.0f;
 		schedulerClock->UnregisterActiveThread();
 		WaitUntilHasWorkload();
 	}

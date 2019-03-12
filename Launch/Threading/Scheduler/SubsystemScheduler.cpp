@@ -10,8 +10,6 @@ SubsystemScheduler::SubsystemScheduler() : ProcessScheduler()
 	Worker::InitialiseTotalNumberOfThreads();
 	running = true;
 	workersRunning = true;
-
-	schedulerClock = new SchedulerSystemClock(1);
 }
 
 SubsystemScheduler::~SubsystemScheduler()
@@ -23,13 +21,15 @@ void SubsystemScheduler::InitialiseWorkers()
 {
 	const unsigned int numWorkers = Worker::GetTotalNumberOfThreads() - 1;
 	workers = std::vector<Worker>(numWorkers);
+	mainThreadWorker = new Worker();
+
+	schedulerClock = new SchedulerSystemClock(1, &workers, mainThreadWorker);
 
 	for (int i = 0; i < numWorkers; ++i)
 	{
 		workers[i].SetSchedulerClock(schedulerClock);
 	}
 
-	mainThreadWorker = new Worker();
 	mainThreadWorker->SetSchedulerClock(schedulerClock);
 }
 
@@ -106,4 +106,9 @@ int SubsystemScheduler::GetLocalThreadId()
 unsigned SubsystemScheduler::GetTotalNumberOfThreads()
 {
 	return Worker::GetTotalNumberOfThreads();
+}
+
+void SubsystemScheduler::RegisterWithProfiler(Profiler* profiler)
+{
+	profiler->AddSubsystemTimer("System Frame", schedulerClock->GetClockTimer());
 }

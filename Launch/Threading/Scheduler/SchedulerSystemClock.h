@@ -4,17 +4,19 @@
 
 #include <mutex>
 
+struct Worker;
+
 class SchedulerSystemClock
 {
 public:
-	explicit SchedulerSystemClock(const int activeThreadCount);
+	SchedulerSystemClock(const int activeThreadCount, std::vector<Worker>* workers, Worker* mainThreadWorker);
 
 	void WaitForSynchronisedLaunch();
 
 	void RegisterActiveThread();
 	void UnregisterActiveThread();
 
-	float GetLastFrameTime() const;
+	GameTimer* GetClockTimer();
 	void CancelFrameSynchronisation();
 
 	void MarkLaunchStartTime();
@@ -23,6 +25,10 @@ public:
 private:
 	void CompleteFrame();
 	void SleepUntilNextFrameLaunch();
+	float CalculatelargestTimeTakenForWorker() const;
+
+	std::vector<Worker>* workers;
+	Worker* mainThreadWorker;
 
 	std::mutex syncMutex;
 	std::mutex registrationMutex;

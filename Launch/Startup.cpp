@@ -155,7 +155,7 @@ void Startup::AddSystemsToEngine() const
 		profiler->AddSubsystemTimer(subsystem->GetSubsystemName(), subsystem->GetTimer());
 	}
 
-	engine->RegisterWithProfiler(profiler);
+	ProcessScheduler::Retrieve()->RegisterWithProfiler(profiler);
 }
 
 void Startup::LoadMainMenu() const

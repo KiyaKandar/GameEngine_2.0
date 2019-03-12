@@ -26,8 +26,6 @@ public:
 
 	void RemoveSubsystem(std::string subsystemName);
 
-	void RegisterWithProfiler(Profiler* profiler) const;
-
 	std::vector<Subsystem*> GetSubSystems();
 
 	static std::atomic_bool stop;

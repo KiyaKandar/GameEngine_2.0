@@ -101,11 +101,6 @@ void System::RemoveSubsystem(std::string subsystemName)
 	}
 }
 
-void System::RegisterWithProfiler(Profiler* profiler) const
-{
-	profiler->AddSubsystemTimer("System Frame", timer);
-}
-
 std::vector<Subsystem*> System::GetSubSystems()
 {
 	vector<Subsystem*> allSubsystems;

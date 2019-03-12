@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include "../../Profiler/Profiler.h"
 #include "../ThreadUtility/TaskFuture.h"
 
 typedef std::function<void()> Process;
@@ -29,6 +30,8 @@ public:
 
 	virtual int GetLocalThreadId() = 0;
 	virtual unsigned int GetTotalNumberOfThreads() = 0;
+
+	virtual void RegisterWithProfiler(Profiler* profiler) = 0;
 
 protected:
 	ProcessScheduler() {}

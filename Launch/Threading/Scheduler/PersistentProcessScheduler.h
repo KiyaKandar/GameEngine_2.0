@@ -32,6 +32,8 @@ public:
 	int GetLocalThreadId() override;
 	unsigned int GetTotalNumberOfThreads() override;
 
+	void RegisterWithProfiler(Profiler* profiler) override {}
+
 private:
 	void WorkerThreadProcess(const int threadId);
 
