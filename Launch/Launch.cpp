@@ -43,7 +43,7 @@ int main()
 		}
 
 		loadedSubsystems = true;
-	});
+	}, "loading");
 
 	ProcessScheduler::Retrieve()->BeginWorkerProcesses();
 

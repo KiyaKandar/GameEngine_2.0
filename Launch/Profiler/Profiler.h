@@ -10,6 +10,7 @@
 #include <vector>
 #include "VisualProfiler.h"
 
+struct Worker;
 class GameTimer;
 class Database;
 class FPSCounter;
@@ -25,8 +26,10 @@ public:
 
 	void UpdateNextFrame(const float& deltatime) override;
 	void AddSubsystemTimer(std::string name, GameTimer* timer);
+	void RegisterWorkers(std::vector<Worker>* workers, Worker* mainThreadWorker);
 
 private:
+	void DisplayWorkerDebugInfo();
 	void UpdateProfiling();
 
 	void UpdateFps();
@@ -52,8 +55,12 @@ private:
 	std::vector<TextMeshMessage> messages;
 	std::vector<std::string> externalText;
 
+	std::vector<Worker>* workers;
+	Worker* mainThreadWorker;
+
 	int depth = -1;
 	bool profilerEnabled = false;
+	bool workerDebugEnabled = false;
 
 	NCLVector4 defaultColour = NCLVector4(1, 1, 1, 1);
 	NCLVector2 defaultSize = NCLVector2(16, 16);
@@ -62,6 +69,7 @@ private:
 	TrackedGroupMessageSender<TextMeshMessage> profilerTextSender;
 	bool timersDisplayed = true;
 
+	SinglePressKeyListener f4Listener;
 	SinglePressKeyListener f5Listener;
 	SinglePressKeyListener f6Listener;
 	SinglePressKeyListener f10Listener;

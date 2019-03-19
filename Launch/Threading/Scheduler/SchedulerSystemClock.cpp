@@ -58,7 +58,6 @@ void SchedulerSystemClock::CompleteFrame()
 {
 	std::lock_guard<std::mutex> lock(registrationMutex);
 	MarkLaunchEndTime();
-	SleepUntilNextFrameLaunch();
 
 	syncGeneration++;
 	numActiveThreads = numThreadsToWaitFor;

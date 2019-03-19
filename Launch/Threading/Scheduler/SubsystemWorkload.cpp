@@ -70,12 +70,14 @@ void Worker::Run(const unsigned int threadId)
 
 void Worker::PerformWork()
 {
-	currentWorkloadSize = 0.0f;
+	float frameWorkload = 0.0f;
 	for (SubsystemWorkload& work : assignedWorkload)
 	{
 		work.Tick();
-		currentWorkloadSize += work.workloadSize;
+		frameWorkload += work.workloadSize;
 	}
+
+	currentWorkloadSize = frameWorkload;
 
 	DeliverySystem::GetPostman()->ClearAllMessages();
 	DeliverySystem::GetPostman()->DeliverAllMessages();

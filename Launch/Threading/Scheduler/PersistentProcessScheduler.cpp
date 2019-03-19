@@ -16,14 +16,14 @@ PersistentProcessScheduler::PersistentProcessScheduler() : ProcessScheduler()
 	completeWorkerProcesses = false;
 }
 
-void PersistentProcessScheduler::RegisterProcess(const Process& process)
+void PersistentProcessScheduler::RegisterProcess(const Process& process, const std::string debugName)
 {
 	ASyncReadyProcess task{ std::move(process) };
 	promises.push_back(ProcessPromise{ task.get_future() });
 	taskQueue.Push(std::make_unique<ExecutableProcess>(std::move(task)));
 }
 
-void PersistentProcessScheduler::AttachMainThreadProcess(const Process& process)
+void PersistentProcessScheduler::AttachMainThreadProcess(const Process& process, const std::string debugName)
 {
 	attachedMainThreadTask = process;
 }

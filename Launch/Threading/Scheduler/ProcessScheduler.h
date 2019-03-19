@@ -21,8 +21,8 @@ public:
 
 	virtual void InitialiseWorkers() = 0;
 
-	virtual void RegisterProcess(const Process& process) = 0;
-	virtual void AttachMainThreadProcess(const Process& process) = 0;
+	virtual void RegisterProcess(const Process& process, const std::string debugName) = 0;
+	virtual void AttachMainThreadProcess(const Process& process, const std::string debugName) = 0;
 
 	virtual void ExecuteMainThreadTask() = 0;
 	virtual void BeginWorkerProcesses() = 0;

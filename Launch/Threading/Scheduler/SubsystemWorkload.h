@@ -10,9 +10,10 @@ struct SchedulerSystemClock;
 
 struct SubsystemWorkload
 {
-	SubsystemWorkload(Process process)
+	SubsystemWorkload(Process process, const std::string& debugName)
 	{
 		this->process = process;
+		this->debugName = debugName;
 	}
 
 	void Tick()
@@ -33,6 +34,8 @@ struct SubsystemWorkload
 	float workloadSize = 0.0f;
 	bool lockedToMainThread = false;
 	unsigned int moveToWorker = NO_WORKER_MOVE;
+
+	std::string debugName;
 
 private:
 	Process process;

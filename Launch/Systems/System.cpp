@@ -39,9 +39,6 @@ void System::UpdateNextSystemFrame()
 		subsystem->UpdateSubsystem();
 	}
 
-	DeliverySystem::GetPostman()->ClearAllMessages();
-	DeliverySystem::GetPostman()->DeliverAllMessages();
-
 	timer->EndTimedSection();
 }
 
@@ -51,7 +48,7 @@ void System::StartConcurrentSubsystems()
 
 	for (Subsystem*& subsystem : concurrentSubsystems)
 	{
-		ProcessScheduler::Retrieve()->RegisterProcess(std::bind(&Subsystem::UpdateSubsystem, subsystem));
+		ProcessScheduler::Retrieve()->RegisterProcess(std::bind(&Subsystem::UpdateSubsystem, subsystem), subsystem->GetSubsystemName());
 	}
 
 	ProcessScheduler::Retrieve()->BeginWorkerProcesses();

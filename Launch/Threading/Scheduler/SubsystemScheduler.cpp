@@ -33,14 +33,14 @@ void SubsystemScheduler::InitialiseWorkers()
 	mainThreadWorker->SetSchedulerClock(schedulerClock);
 }
 
-void SubsystemScheduler::RegisterProcess(const Process& process)
+void SubsystemScheduler::RegisterProcess(const Process& process, const std::string debugName)
 {
-	swl.push_back(SubsystemWorkload(process));
+	swl.push_back(SubsystemWorkload(process, debugName));
 }
 
-void SubsystemScheduler::AttachMainThreadProcess(const Process& process)
+void SubsystemScheduler::AttachMainThreadProcess(const Process& process, const std::string debugName)
 {
-	mainThreadWorker->assignedWorkload.push_back(process);
+	mainThreadWorker->assignedWorkload.push_back(SubsystemWorkload(process, debugName));
 }
 
 void SubsystemScheduler::ExecuteMainThreadTask()
@@ -111,4 +111,5 @@ unsigned SubsystemScheduler::GetTotalNumberOfThreads()
 void SubsystemScheduler::RegisterWithProfiler(Profiler* profiler)
 {
 	profiler->AddSubsystemTimer("System Frame", schedulerClock->GetClockTimer());
+	profiler->RegisterWorkers(&workers, mainThreadWorker);
 }
