@@ -53,7 +53,6 @@ void System::StartConcurrentSubsystems(GameLoop* game)
 	}
 
 	ProcessScheduler::Retrieve()->AttachMainThreadProcess(std::bind(&GameLoop::ExecuteGameLoop, game), "Renderer");
-
 	ProcessScheduler::Retrieve()->BeginWorkerProcesses();
 }
 

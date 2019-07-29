@@ -25,9 +25,9 @@ public:
 	void MarkLaunchEndTime();
 
 private:
-	void CompleteFrame();
-	void SleepUntilNextFrameLaunch();
-	float CalculatelargestTimeTakenForWorker() const;
+	void CompleteFrameAsLastFinishedThread();
+	void RescheduleWorkloadIfFrameCountDelayElapsed();
+	void RelaunchThreadsAtThreadBarrier();
 
 	std::vector<Worker>* workers;
 	Worker* mainThreadWorker;

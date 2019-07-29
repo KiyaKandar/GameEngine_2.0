@@ -4,7 +4,7 @@
 #include "SubsystemScheduler.h"
 #include "ThreadPackingLayer.h"
 
-const float frameLengthMS = (1.0f / 60.0f) * 1000.0f;
+const int REDISTRIBUTE_WORKLOAD_FRAME_DELAY = 2;
 
 SchedulerSystemClock::SchedulerSystemClock(const int activeThreadCount, std::vector<Worker>* workers, Worker* mainThreadWorker,
 	std::vector<SubsystemWorkload*>* processes, std::vector<SubsystemWorkload*>* mainThreadProcesses)
@@ -28,7 +28,7 @@ void SchedulerSystemClock::WaitForSynchronisedLaunch()
 		auto localGeneration = syncGeneration;
 		if (!--numActiveThreads)
 		{
-			CompleteFrame();
+			CompleteFrameAsLastFinishedThread();
 		}
 		else
 		{
@@ -59,19 +59,30 @@ void SchedulerSystemClock::CancelFrameSynchronisation()
 	launchCondition.notify_all();
 }
 
-void SchedulerSystemClock::CompleteFrame()
+void SchedulerSystemClock::CompleteFrameAsLastFinishedThread()
 {
 	std::lock_guard<std::mutex> lock(registrationMutex);
 	MarkLaunchEndTime();
 
+	RescheduleWorkloadIfFrameCountDelayElapsed();
+	RelaunchThreadsAtThreadBarrier();
+
+	MarkLaunchStartTime();
+}
+
+void SchedulerSystemClock::RescheduleWorkloadIfFrameCountDelayElapsed()
+{
 	++frameCount;
-	if (frameCount == 2)
+	if (frameCount == REDISTRIBUTE_WORKLOAD_FRAME_DELAY)
 	{
 		ThreadPackingLayer::DistributeWorkloadAmongWorkerThreads(*workers, mainThreadWorker,
 			*processes, *mainThreadProcesses);
 		frameCount = 0;
 	}
+}
 
+void SchedulerSystemClock::RelaunchThreadsAtThreadBarrier()
+{
 	syncGeneration++;
 	numActiveThreads = numThreadsToWaitFor;
 	launchCondition.notify_all();
@@ -80,30 +91,6 @@ void SchedulerSystemClock::CompleteFrame()
 	{
 		worker.hasWork.notify_one();
 	}
-
-	MarkLaunchStartTime();
-}
-
-void SchedulerSystemClock::SleepUntilNextFrameLaunch()
-{
-	frameTime = clock.GetTimeTakenForSection();
-	const float timeToSleep = CalculatelargestTimeTakenForWorker() - frameTime;
-
-	if (timeToSleep > FLT_EPSILON)
-	{
-		Sleep(timeToSleep);
-	}
-}
-
-float SchedulerSystemClock::CalculatelargestTimeTakenForWorker() const
-{
-	float maxWorkload = mainThreadWorker->currentWorkloadSize;
-	for (int i = 0; i < workers->size(); ++i)
-	{
-		maxWorkload = max(maxWorkload, (*workers)[i].currentWorkloadSize);
-	}
-
-	return maxWorkload;
 }
 
 void SchedulerSystemClock::MarkLaunchStartTime()

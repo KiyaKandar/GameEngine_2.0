@@ -60,7 +60,6 @@ struct Worker
 	std::condition_variable waitForNextLaunch;
 
 	void SpoolWorker(const unsigned int threadId);
-	void BulkSetWorkload(std::vector<SubsystemWorkload> workload);
 
 	void Run(const unsigned int threadId);
 	void PerformWork();

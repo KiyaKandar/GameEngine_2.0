@@ -67,37 +67,10 @@ void SubsystemScheduler::BeginWorkerProcesses()
 void SubsystemScheduler::CompleteWorkerProcesses()
 {
 	workersRunning = false;
-	schedulerClock->CancelFrameSynchronisation();
 
-	bool finished = false;
-
-	unsigned int numThreads = Worker::GetTotalNumberOfThreads();
-	for (int i = 0; i < numThreads - 1; ++i)
-	{
-		workers[i].hasWork.notify_one();
-		workers[i].workerThread.join();
-	}
-
-	mainThreadWorker->ClearWorkload();
-
-	for (int i = 0; i < numThreads - 1; ++i)
-	{
-		workers[i].ClearWorkload();
-		schedulerClock->UnregisterActiveThread();
-	}
-
-	for (int i = 0; i < registeredProcesses.size(); ++i)
-	{
-		delete registeredProcesses[i];
-	}
-
-	for (int i = 0; i < registeredProcessesLockedToMainThread.size(); ++i)
-	{
-		delete registeredProcessesLockedToMainThread[i];
-	}
-
-	registeredProcesses.clear();
-	registeredProcessesLockedToMainThread.clear();
+	StopAllNonMainThreadWorkers(); 
+	ClearWorkersFromScheduler();
+	DeleteAllRegisteredProcesses();
 }
 
 int SubsystemScheduler::GetLocalThreadId()
@@ -114,4 +87,42 @@ void SubsystemScheduler::RegisterWithProfiler(Profiler* profiler)
 {
 	profiler->AddSubsystemTimer("System Frame", schedulerClock->GetClockTimer());
 	profiler->RegisterWorkers(&workers, mainThreadWorker);
+}
+
+void SubsystemScheduler::StopAllNonMainThreadWorkers()
+{
+	schedulerClock->CancelFrameSynchronisation();
+
+	const unsigned int numThreads = Worker::GetTotalNumberOfThreads();
+	for (int i = 0; i < numThreads - 1; ++i)
+	{
+		workers[i].hasWork.notify_one();
+		workers[i].workerThread.join();
+	}
+}
+
+void SubsystemScheduler::ClearWorkersFromScheduler()
+{
+	const unsigned int numThreads = Worker::GetTotalNumberOfThreads();
+	for (int i = 0; i < numThreads - 1; ++i)
+	{
+		workers[i].ClearWorkload();
+		schedulerClock->UnregisterActiveThread();
+	}
+}
+
+void SubsystemScheduler::DeleteAllRegisteredProcesses()
+{
+	for (int i = 0; i < registeredProcesses.size(); ++i)
+	{
+		delete registeredProcesses[i];
+	}
+
+	for (int i = 0; i < registeredProcessesLockedToMainThread.size(); ++i)
+	{
+		delete registeredProcessesLockedToMainThread[i];
+	}
+
+	registeredProcesses.clear();
+	registeredProcessesLockedToMainThread.clear();
 }

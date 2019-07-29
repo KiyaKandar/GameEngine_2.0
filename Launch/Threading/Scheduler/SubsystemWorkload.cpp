@@ -40,11 +40,6 @@ void Worker::SpoolWorker(const unsigned threadId)
 	}
 }
 
-void Worker::BulkSetWorkload(std::vector<SubsystemWorkload> workload)
-{
-	//assignedWorkload = workload;
-}
-
 void Worker::Run(const unsigned int threadId)
 {
 	SubsystemThreadIds::LOCAL_THREAD_ID = threadId;

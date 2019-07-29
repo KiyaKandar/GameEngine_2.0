@@ -38,6 +38,10 @@ public:
 	static std::atomic_bool workersRunning;
 
 private:
+	void StopAllNonMainThreadWorkers();
+	void ClearWorkersFromScheduler();
+	void DeleteAllRegisteredProcesses();
+
 	std::vector<SubsystemWorkload*> registeredProcesses;
 	std::vector<SubsystemWorkload*> registeredProcessesLockedToMainThread;
 
