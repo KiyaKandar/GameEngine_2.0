@@ -8,6 +8,7 @@
 #include "Rendering/RenderingSystem.h"
 #include "Launch/Threading/Scheduler/ProcessScheduler.h"
 
+class GameLoop;
 class LetterBox;
 class Profiler;
 class GameTimer;
@@ -18,7 +19,7 @@ public:
 	System();
 	~System();
 
-	void StartConcurrentSubsystems();
+	void StartConcurrentSubsystems(GameLoop* game);
 	void SynchroniseAndStopConcurrentSubsystems();
 
 	void AddSubsystem(Subsystem* subsystem);

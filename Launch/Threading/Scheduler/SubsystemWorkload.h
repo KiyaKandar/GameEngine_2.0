@@ -49,7 +49,7 @@ struct Worker
 	static int GetLocalThreadId();
 	static unsigned int GetTotalNumberOfThreads();
 
-	std::vector<SubsystemWorkload> assignedWorkload; //use a threadsafe queue
+	std::vector<SubsystemWorkload*> assignedWorkload; //use a threadsafe queue
 	float maximumWorkloadSize = 1.0 / 60.0f; //TODO - Dynamically calculate this
 	float currentWorkloadSize = 0.0f;
 	float currentWorkerInstability = 0.0f;

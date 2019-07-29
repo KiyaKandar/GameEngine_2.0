@@ -239,6 +239,4 @@ void Startup::BeginOnlineLobby()
 void Startup::StartGameLoop() const
 {
 	game->PrepareGameLoop();
-	ProcessScheduler::Retrieve()->AttachMainThreadProcess(std::bind(&GameLoop::ExecuteGameLoop, game), "Renderer");
-	ProcessScheduler::Retrieve()->ExecuteMainThreadTask();
 }

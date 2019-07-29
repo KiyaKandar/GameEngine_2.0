@@ -25,7 +25,6 @@ public:
 	void RegisterProcess(const Process& process, const std::string debugName) override;
 	void AttachMainThreadProcess(const Process& process, const std::string debugName) override;
 
-	void ExecuteMainThreadTask() override;
 	void BeginWorkerProcesses() override;
 	void CompleteWorkerProcesses() override;
 

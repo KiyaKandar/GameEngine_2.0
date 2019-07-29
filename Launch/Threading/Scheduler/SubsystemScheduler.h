@@ -27,7 +27,6 @@ public:
 	void RegisterProcess(const Process& process, const std::string debugName) override;
 	void AttachMainThreadProcess(const Process& process, const std::string debugName) override;
 
-	void ExecuteMainThreadTask() override;
 	void BeginWorkerProcesses() override;
 	void CompleteWorkerProcesses() override;
 
@@ -39,7 +38,9 @@ public:
 	static std::atomic_bool workersRunning;
 
 private:
-	std::vector<SubsystemWorkload> swl;
+	std::vector<SubsystemWorkload*> registeredProcesses;
+	std::vector<SubsystemWorkload*> registeredProcessesLockedToMainThread;
+
 	std::vector<Worker> workers;
 	Worker* mainThreadWorker;
 

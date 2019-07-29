@@ -2,10 +2,12 @@
 
 #include "SubsystemWorkload.h"
 #include "SubsystemScheduler.h"
+#include "ThreadPackingLayer.h"
 
 const float frameLengthMS = (1.0f / 60.0f) * 1000.0f;
 
-SchedulerSystemClock::SchedulerSystemClock(const int activeThreadCount, std::vector<Worker>* workers, Worker* mainThreadWorker)
+SchedulerSystemClock::SchedulerSystemClock(const int activeThreadCount, std::vector<Worker>* workers, Worker* mainThreadWorker,
+	std::vector<SubsystemWorkload*>* processes, std::vector<SubsystemWorkload*>* mainThreadProcesses)
 {
 	numThreadsToWaitFor = activeThreadCount;
 	numActiveThreads = activeThreadCount;
@@ -13,6 +15,9 @@ SchedulerSystemClock::SchedulerSystemClock(const int activeThreadCount, std::vec
 
 	this->workers = workers;
 	this->mainThreadWorker = mainThreadWorker;
+
+	this->processes = processes;
+	this->mainThreadProcesses = mainThreadProcesses;
 }
 
 void SchedulerSystemClock::WaitForSynchronisedLaunch()
@@ -59,9 +64,23 @@ void SchedulerSystemClock::CompleteFrame()
 	std::lock_guard<std::mutex> lock(registrationMutex);
 	MarkLaunchEndTime();
 
+	++frameCount;
+	if (frameCount == 2)
+	{
+		ThreadPackingLayer::DistributeWorkloadAmongWorkerThreads(*workers, mainThreadWorker,
+			*processes, *mainThreadProcesses);
+		frameCount = 0;
+	}
+
 	syncGeneration++;
 	numActiveThreads = numThreadsToWaitFor;
 	launchCondition.notify_all();
+
+	for (Worker& worker : *workers)
+	{
+		worker.hasWork.notify_one();
+	}
+
 	MarkLaunchStartTime();
 }
 

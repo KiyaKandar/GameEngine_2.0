@@ -113,10 +113,10 @@ void Profiler::DisplayWorkerDebugInfo()
 		NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
 	nextLine += NEXT_LINE_OFFSET;
 
-	const std::vector<SubsystemWorkload>& workload = mainThreadWorker->assignedWorkload;
+	const std::vector<SubsystemWorkload*>& workload = mainThreadWorker->assignedWorkload;
 	for (int i = 0; i < workload.size(); ++i)
 	{
-		std::string workText = workload[i].debugName + "  " + std::to_string(workload[i].workloadSize);
+		std::string workText = workload[i]->debugName + "  " + std::to_string(workload[i]->workloadSize);
 		messages.push_back(TextMeshMessage("RenderingSystem", workText,
 			NCLVector3(-480.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
 		nextLine += NEXT_LINE_OFFSET;
@@ -129,10 +129,10 @@ void Profiler::DisplayWorkerDebugInfo()
 			NCLVector3(-500.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
 		nextLine += NEXT_LINE_OFFSET;
 
-		const std::vector<SubsystemWorkload>& workload1 = (*workers)[i].assignedWorkload;
+		const std::vector<SubsystemWorkload*>& workload1 = (*workers)[i].assignedWorkload;
 		for (int i = 0; i < workload1.size(); ++i)
 		{
-			std::string workText1 = workload1[i].debugName + "  " + std::to_string(workload1[i].workloadSize);
+			std::string workText1 = workload1[i]->debugName + "  " + std::to_string(workload1[i]->workloadSize);
 			messages.push_back(TextMeshMessage("RenderingSystem", workText1,
 				NCLVector3(-480.0f, nextLine, 0), TEXT_SIZE, TEXT_COLOUR, true, true));
 			nextLine += NEXT_LINE_OFFSET;

@@ -34,8 +34,8 @@ int main()
 	startup.InitialiseRenderingSystem();
 
 	//TODO Need to put this on a generic scheduler, not a subsystem scheduler that wraps work in loops
-	ProcessScheduler::Retrieve()->RegisterProcess([&startup = startup, &loadedSubsystems = loadedSubsystems]()
-	{
+	//ProcessScheduler::Retrieve()->RegisterProcess([&startup = startup, &loadedSubsystems = loadedSubsystems]()
+	//{
 		if (!loadedSubsystems)
 		{
 			startup.InitialiseSubsystems();
@@ -43,16 +43,18 @@ int main()
 		}
 
 		loadedSubsystems = true;
-	}, "loading");
+	//}, "loading");
 
-	ProcessScheduler::Retrieve()->BeginWorkerProcesses();
+	//ProcessScheduler::Retrieve()->AttachMainThreadProcess([&loadedSubsystems, &startup]()
+	//{
+	//	while (!loadedSubsystems)
+	//	{
+	//		startup.RenderLoadingScreen();
+	//	}
+	//}, "Loading Screen");
 
-	while (!loadedSubsystems)
-	{
-		startup.RenderLoadingScreen();
-	}
-	
-	ProcessScheduler::Retrieve()->CompleteWorkerProcesses();
+	//ProcessScheduler::Retrieve()->BeginWorkerProcesses();
+	//ProcessScheduler::Retrieve()->CompleteWorkerProcesses();
 
 	startup.StartRenderingSystem();
 	startup.InitialiseGraphicalAssets();

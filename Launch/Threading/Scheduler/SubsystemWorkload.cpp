@@ -42,7 +42,7 @@ void Worker::SpoolWorker(const unsigned threadId)
 
 void Worker::BulkSetWorkload(std::vector<SubsystemWorkload> workload)
 {
-	assignedWorkload = workload;
+	//assignedWorkload = workload;
 }
 
 void Worker::Run(const unsigned int threadId)
@@ -71,10 +71,10 @@ void Worker::Run(const unsigned int threadId)
 void Worker::PerformWork()
 {
 	float frameWorkload = 0.0f;
-	for (SubsystemWorkload& work : assignedWorkload)
+	for (SubsystemWorkload* work : assignedWorkload)
 	{
-		work.Tick();
-		frameWorkload += work.workloadSize;
+		work->Tick();
+		frameWorkload += work->workloadSize;
 	}
 
 	currentWorkloadSize = frameWorkload;
@@ -113,8 +113,8 @@ void Worker::CalculateWorkerInstability()
 {
 	currentWorkerInstability = 0.0f;
 
-	for (SubsystemWorkload& work : assignedWorkload)
+	for (SubsystemWorkload* work : assignedWorkload)
 	{
-		currentWorkerInstability += work.CalculateInstability();
+		currentWorkerInstability += work->CalculateInstability();
 	}
 }

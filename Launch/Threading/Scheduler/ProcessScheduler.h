@@ -24,7 +24,6 @@ public:
 	virtual void RegisterProcess(const Process& process, const std::string debugName) = 0;
 	virtual void AttachMainThreadProcess(const Process& process, const std::string debugName) = 0;
 
-	virtual void ExecuteMainThreadTask() = 0;
 	virtual void BeginWorkerProcesses() = 0;
 	virtual void CompleteWorkerProcesses() = 0;
 

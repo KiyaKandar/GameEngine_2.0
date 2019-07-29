@@ -5,6 +5,7 @@
 #include "../Profiler/Profiler.h"
 #include <iostream>
 #include <ctime>
+#include "Launch/Game/GameLoop.h"
 
 atomic_bool System::stop = false;
 
@@ -42,7 +43,7 @@ void System::UpdateNextSystemFrame()
 	timer->EndTimedSection();
 }
 
-void System::StartConcurrentSubsystems()
+void System::StartConcurrentSubsystems(GameLoop* game)
 {
 	stop = false;
 
@@ -50,6 +51,8 @@ void System::StartConcurrentSubsystems()
 	{
 		ProcessScheduler::Retrieve()->RegisterProcess(std::bind(&Subsystem::UpdateSubsystem, subsystem), subsystem->GetSubsystemName());
 	}
+
+	ProcessScheduler::Retrieve()->AttachMainThreadProcess(std::bind(&GameLoop::ExecuteGameLoop, game), "Renderer");
 
 	ProcessScheduler::Retrieve()->BeginWorkerProcesses();
 }

@@ -2,6 +2,7 @@
 
 #include "SubsystemWorkload.h"
 #include "SchedulerSystemClock.h"
+#include "ThreadPackingLayer.h"
 
 atomic_bool SubsystemScheduler::workersRunning = false;
 
@@ -23,7 +24,8 @@ void SubsystemScheduler::InitialiseWorkers()
 	workers = std::vector<Worker>(numWorkers);
 	mainThreadWorker = new Worker();
 
-	schedulerClock = new SchedulerSystemClock(1, &workers, mainThreadWorker);
+	schedulerClock = new SchedulerSystemClock(1, &workers, mainThreadWorker, 
+		&registeredProcesses, &registeredProcessesLockedToMainThread);
 
 	for (int i = 0; i < numWorkers; ++i)
 	{
@@ -35,44 +37,31 @@ void SubsystemScheduler::InitialiseWorkers()
 
 void SubsystemScheduler::RegisterProcess(const Process& process, const std::string debugName)
 {
-	swl.push_back(SubsystemWorkload(process, debugName));
+	registeredProcesses.push_back(new SubsystemWorkload(process, debugName));
 }
 
 void SubsystemScheduler::AttachMainThreadProcess(const Process& process, const std::string debugName)
 {
-	mainThreadWorker->assignedWorkload.push_back(SubsystemWorkload(process, debugName));
-}
-
-void SubsystemScheduler::ExecuteMainThreadTask()
-{
-	mainThreadWorker->SpoolWorker(0);
+	registeredProcessesLockedToMainThread.push_back(new SubsystemWorkload(process, debugName));
 }
 
 void SubsystemScheduler::BeginWorkerProcesses()
 {
-	int workerId = 0;
 	unsigned int numThreads = Worker::GetTotalNumberOfThreads();
 
-	while (!swl.empty())
-	{
-		workers[workerId].assignedWorkload.push_back(swl.back());
-		swl.pop_back();
-
-		++workerId;
-		if (workerId == numThreads - 1)
-		{
-			workerId = 0;
-		}
-	}
+	ThreadPackingLayer::DistributeWorkloadAmongWorkerThreads(workers, mainThreadWorker,
+		registeredProcesses, registeredProcessesLockedToMainThread);
 
 	workersRunning = true;
-
 	schedulerClock->MarkLaunchStartTime();
+
 	for (int i = 0; i < numThreads - 1; ++i)
 	{
 		const int threadId = i + 1;
 		workers[i].SpoolWorker(threadId);
 	}
+
+	mainThreadWorker->SpoolWorker(0);
 }
 
 void SubsystemScheduler::CompleteWorkerProcesses()
@@ -89,13 +78,26 @@ void SubsystemScheduler::CompleteWorkerProcesses()
 		workers[i].workerThread.join();
 	}
 
-	swl.clear();
+	mainThreadWorker->ClearWorkload();
 
 	for (int i = 0; i < numThreads - 1; ++i)
 	{
 		workers[i].ClearWorkload();
 		schedulerClock->UnregisterActiveThread();
 	}
+
+	for (int i = 0; i < registeredProcesses.size(); ++i)
+	{
+		delete registeredProcesses[i];
+	}
+
+	for (int i = 0; i < registeredProcessesLockedToMainThread.size(); ++i)
+	{
+		delete registeredProcessesLockedToMainThread[i];
+	}
+
+	registeredProcesses.clear();
+	registeredProcessesLockedToMainThread.clear();
 }
 
 int SubsystemScheduler::GetLocalThreadId()

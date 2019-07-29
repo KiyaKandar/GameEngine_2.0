@@ -23,7 +23,7 @@ GameLoop::GameLoop(System* gameSystem, Database* database, Startup* startup)
 		DeliverySystem::GetPostman()->GetDeliveryPoint("GameLoop"));
 
 	incomingMessages.AddActionToExecuteOnMessage(MessageType::TEXT, [startup = startup, &quit = quit,
-		&deltaTimeMultiplier = deltaTimeMultiplier, &engine = engine](Message* message)
+		&deltaTimeMultiplier = deltaTimeMultiplier, &engine = engine, game = this](Message* message)
 	{
 		TextMessage* textMessage = static_cast<TextMessage*>(message);
 
@@ -60,7 +60,7 @@ GameLoop::GameLoop(System* gameSystem, Database* database, Startup* startup)
 			startup->StartUserInterface();
 
 			XMLParser::DeleteAllParsedXml();
-			engine->StartConcurrentSubsystems();
+			engine->StartConcurrentSubsystems(game);
 		}
 		else if (tokens[0] == "deltatime")
 		{
@@ -84,7 +84,7 @@ void GameLoop::PrepareGameLoop()
 {
 	camera->SetPitch(24.0f);
 	camera->SetYaw(-133.0f);
-	engine->StartConcurrentSubsystems();
+	engine->StartConcurrentSubsystems(this);
 }
 
 void GameLoop::ExecuteGameLoop()

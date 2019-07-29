@@ -28,11 +28,6 @@ void PersistentProcessScheduler::AttachMainThreadProcess(const Process& process,
 	attachedMainThreadTask = process;
 }
 
-void PersistentProcessScheduler::ExecuteMainThreadTask()
-{
-	attachedMainThreadTask();
-}
-
 void PersistentProcessScheduler::BeginWorkerProcesses()
 {
 	for (int i = 0; i < PersistentThreadIds::TOTAL_NUM_THREADS - 1; ++i)
@@ -40,6 +35,8 @@ void PersistentProcessScheduler::BeginWorkerProcesses()
 		const int threadId = i + 1;
 		availableWorkerThreads.emplace_back(&PersistentProcessScheduler::WorkerThreadProcess, this, threadId);
 	}
+
+	attachedMainThreadTask();
 }
 
 void PersistentProcessScheduler::CompleteWorkerProcesses()
