@@ -3,6 +3,7 @@
 #include "SubsystemWorkload.h"
 #include "SubsystemScheduler.h"
 #include "ThreadPackingLayer.h"
+#include "Launch/Profiler/SchedulerPerformanceLog.h"
 
 const int REDISTRIBUTE_WORKLOAD_FRAME_DELAY = 2;
 
@@ -62,12 +63,11 @@ void SchedulerSystemClock::CancelFrameSynchronisation()
 void SchedulerSystemClock::CompleteFrameAsLastFinishedThread()
 {
 	std::lock_guard<std::mutex> lock(registrationMutex);
-	MarkLaunchEndTime();
 
 	RescheduleWorkloadIfFrameCountDelayElapsed();
-	RelaunchThreadsAtThreadBarrier();
-
+	MarkLaunchEndTime();
 	MarkLaunchStartTime();
+	RelaunchThreadsAtThreadBarrier();
 }
 
 void SchedulerSystemClock::RescheduleWorkloadIfFrameCountDelayElapsed()
@@ -101,4 +101,6 @@ void SchedulerSystemClock::MarkLaunchStartTime()
 void SchedulerSystemClock::MarkLaunchEndTime()
 {
 	clock.EndTimedSection();
+
+	SchedulerPerformanceLog::Retrieve()->AddElapsedFrameTime(clock.GetTimeTakenForSection());
 }

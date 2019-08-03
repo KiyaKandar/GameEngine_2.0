@@ -15,6 +15,7 @@
 #include "Threading/Scheduler/PersistentProcessScheduler.h"
 #include "Threading/Scheduler/SubsystemScheduler.h"
 #include "Communication/LetterBox.h"
+#include "Profiler/SchedulerPerformanceLog.h"
 
 int main()
 {
@@ -23,6 +24,7 @@ int main()
 		return -1;
 	}
 
+	SchedulerPerformanceLog::Create();
 	ProcessScheduler::Create(new SubsystemScheduler());
 	DeliverySystem::Provide(new LetterBox());
 	SendMessageActionBuilder::InitialiseBuilders();
@@ -61,6 +63,8 @@ int main()
 	startup.StartUserInterface();
 
 	startup.StartGameLoop();
+	SchedulerPerformanceLog::Retrieve()->LogAverageFrameTimeToFile();
+	SchedulerPerformanceLog::Destroy();
 
 	return 0;
 }

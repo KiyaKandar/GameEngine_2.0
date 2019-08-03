@@ -334,3 +334,4 @@ ASALocalRun/
 .localhistory/
 *.diagsession
 /Output-DiagnosticsHub.txt
+/Launch/SchedulerPerformanceLog.txt

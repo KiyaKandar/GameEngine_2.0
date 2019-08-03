@@ -157,6 +157,7 @@
     <ClCompile Include="DevConsole\Console.cpp" />
     <ClCompile Include="DevConsole\LevelEditor.cpp" />
     <ClCompile Include="Networking\MinionDeadReckoning.cpp" />
+    <ClCompile Include="Profiler\SchedulerPerformanceLog.cpp" />
     <ClCompile Include="Threading\Scheduler\SchedulerSystemClock.cpp" />
     <ClCompile Include="Threading\Scheduler\ProcessScheduler.cpp" />
     <ClCompile Include="Profiler\Profiler.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="DevConsole\Console.h" />
     <ClInclude Include="DevConsole\LevelEditor.h" />
     <ClInclude Include="Networking\MinionDeadReckoning.h" />
+    <ClInclude Include="Profiler\SchedulerPerformanceLog.h" />
     <ClInclude Include="Threading\Scheduler\SchedulerSystemClock.h" />
     <ClInclude Include="Threading\Scheduler\ProcessScheduler.h" />
     <ClInclude Include="Profiler\Profiler.h" />

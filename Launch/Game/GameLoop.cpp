@@ -12,6 +12,7 @@
 #include "Communication/Messages/PlaySoundMessage.h"
 #include "../Startup.h"
 #include <iterator>
+#include "Launch/Profiler/SchedulerPerformanceLog.h"
 
 GameLoop::GameLoop(System* gameSystem, Database* database, Startup* startup)
 {
@@ -42,6 +43,10 @@ GameLoop::GameLoop(System* gameSystem, Database* database, Startup* startup)
 			DeliverySystem::GetPostman()->CancelOutgoingMessages();
 			DeliverySystem::GetPostman()->CancelDeliveredMessages();
 			DeliverySystem::GetPostman()->DeleteAllTrackedSenders();
+
+			SchedulerPerformanceLog::Retrieve()->LogAverageFrameTimeToFile();
+			SchedulerPerformanceLog::Retrieve()->EndLoggedSection();
+
 			startup->SwitchLevel();
 			deltaTimeMultiplier = 1.0f;
 

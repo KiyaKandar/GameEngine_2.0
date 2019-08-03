@@ -73,6 +73,9 @@
     <ClCompile Include="Threading\Scheduler\SchedulerSystemClock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Profiler\SchedulerPerformanceLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Systems\Subsystem.h" />
@@ -99,5 +102,6 @@
     <ClInclude Include="Threading\Scheduler\SubsystemWorkload.h" />
     <ClInclude Include="Threading\Scheduler\ThreadPackingLayer.h" />
     <ClInclude Include="Threading\Scheduler\SchedulerSystemClock.h" />
+    <ClInclude Include="Profiler\SchedulerPerformanceLog.h" />
   </ItemGroup>
 </Project>
