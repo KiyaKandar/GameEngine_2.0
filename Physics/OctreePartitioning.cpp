@@ -288,10 +288,10 @@ void OctreePartitioning::ClearEmptyOctants(Partition& partition)
 	}
 }
 
-void OctreePartitioning::DrawWireFrameOctrees(std::vector<DebugLineMessage>& lineMessages)
+void OctreePartitioning::DrawWireFrameOctrees()
 {
 	for (const Partition& partition : baseOctreePartitions)
 	{
-		PartitionUtility::DrawPartitionAndChildren(partition, lineMessages);
+		PartitionUtility::DrawPartitionAndChildren(partition);
 	}
 }

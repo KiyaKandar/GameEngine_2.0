@@ -186,9 +186,9 @@ void GameplaySystem::UpdateGameplayWithTimeRemaining(const float& deltaTime)
 {
 	timer->BeginTimedSection();
 
+
 	UpdateGameLogic(deltaTime);
 	UpdateGameObjectLogics(deltaTime);
-
 	timer->EndTimedSection();
 
 	UpdateGameTimer(deltaTime);
@@ -197,12 +197,8 @@ void GameplaySystem::UpdateGameplayWithTimeRemaining(const float& deltaTime)
 
 void GameplaySystem::UpdateGameOverScreen()
 {
-	if (gameOverMessageSender.ReadyToSendNextMessage())
-	{
-		gameOverMessageSender.SetMessage(TextMeshMessage("RenderingSystem", "GAME OVER!",
-			NCLVector3(-50, -50, 0), NCLVector3(50, 50, 50), NCLVector3(1, 0, 0), true, true));
-		gameOverMessageSender.SendTrackedMessage();
-	}
+	DeliverySystem::GetPostman()->InsertMessage(TextMeshMessage("RenderingSystem", "GAME OVER!",
+		NCLVector3(-50, -50, 0), NCLVector3(50, 50, 50), NCLVector3(1, 0, 0), true, true));
 
 	int winningPlayerID = -1;
 	int minScore = 0;
@@ -216,12 +212,8 @@ void GameplaySystem::UpdateGameOverScreen()
 		}
 	}
 
-	if (winningPlayerMessageSender.ReadyToSendNextMessage())
-	{
-		winningPlayerMessageSender.SetMessage(TextMeshMessage("RenderingSystem", "Player" + std::to_string(winningPlayerID) + " wins!!! :)",
-			NCLVector3(-50, -100, 0), NCLVector3(20, 20, 20), NCLVector3(1, 1, 1), true, true));
-		winningPlayerMessageSender.SendTrackedMessage();
-	}
+	DeliverySystem::GetPostman()->InsertMessage(TextMeshMessage("RenderingSystem", "Player" + std::to_string(winningPlayerID) + " wins!!! :)",
+		NCLVector3(-50, -100, 0), NCLVector3(20, 20, 20), NCLVector3(1, 1, 1), true, true));
 }
 
 void GameplaySystem::UpdateGameLogic(const float& deltaTime)
@@ -264,12 +256,7 @@ void GameplaySystem::UpdateGameTimer(const float& deltaTime)
 {
 	gameLogic.elapsedTime += (deltaTime * 0.001f);
 
-	if (timerMessageSender.ReadyToSendNextMessage())
-	{
-		timerMessageSender.SetMessage(TextMeshMessage("RenderingSystem", std::to_string((int)round(gameLogic.maxTime - gameLogic.elapsedTime)),
-			NCLVector3(-75, 310, 0), NCLVector3(30, 30, 30), NCLVector3(1, 0, 0), true, true));
-
-		timerMessageSender.SendTrackedMessage();
-	}
+	DeliverySystem::GetPostman()->InsertMessage(TextMeshMessage("RenderingSystem", std::to_string((int)round(gameLogic.maxTime - gameLogic.elapsedTime)),
+		NCLVector3(-75, 310, 0), NCLVector3(30, 30, 30), NCLVector3(1, 0, 0), true, true));
 }
 

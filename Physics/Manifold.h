@@ -56,7 +56,7 @@ public:
 	void PreSolverStep(float dt);
 
 	//Debug draws the manifold surface area
-	void DebugDraw(std::vector<DebugLineMessage>& lineMessages, std::vector<DebugSphereMessage>& sphereMessages) const;
+	void DebugDraw() const;
 
 	//Get the physics objects
 	PhysicsNode* NodeA() { return pnodeA; }

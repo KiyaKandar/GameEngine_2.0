@@ -73,16 +73,8 @@ void InputManager::UpdateNextFrame(const float& deltatime)
 
 void InputManager::SendInputMessagesForKeys(std::vector<ButtonInputData>& inputData, Player* player)
 {
-	if (inputMessageSender.ReadyToSendNextMessageGroup())
+	for (int i = 0; i < inputData.size(); ++i)
 	{
-		std::vector<PlayerInputMessage> messages;
-
-		for (int i = 0; i < inputData.size(); ++i)
-		{
-			messages.push_back(PlayerInputMessage("Gameplay", player, inputData[i]));
-		}
-
-		inputMessageSender.SetMessageGroup(messages);
-		inputMessageSender.SendMessageGroup();
+		DeliverySystem::GetPostman()->InsertMessage(PlayerInputMessage("Gameplay", player, inputData[i]));
 	}
 }

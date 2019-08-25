@@ -46,7 +46,7 @@ public:
 	virtual NCLMatrix3 BuildInverseInertia(float invMass) const = 0;
 
 	// Draws this collision shape to the debug renderer
-	virtual void DebugDraw(std::vector<DebugLineMessage>& lineMessages, std::vector<DebugSphereMessage>& sphereMessages) const = 0;
+	virtual void DebugDraw() const = 0;
 
 	inline void SetParent(PhysicsNode* node) { m_Parent = node; }
 	inline		 PhysicsNode* Parent()		 { return m_Parent; }

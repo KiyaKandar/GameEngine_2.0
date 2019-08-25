@@ -13,7 +13,7 @@ public:
 		//Apply Gravity
 		if (node->GetInverseMass() > 0.0f)
 		{
-			velocity += NCLVector3(0.0f, -9.81f, 0.0f) * dt;
+			velocity += NCLVector3(0.0f, -98.1f, 0.0f) * dt;
 		}
 
 		if (!node->constantAcceleration)

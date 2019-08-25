@@ -376,6 +376,7 @@ protected:
 	//	CSC3224 NCODE BLOCK ENDS
 };
 
+//Deprecated - TODO use KeyTriggered from Keyboard instead
 struct SinglePressKeyListener
 {
 public:
@@ -393,21 +394,7 @@ public:
 
 	bool KeyPressed()
 	{
-		if (!listenEnabled)
-		{
-			if (!keyboard->KeyDown(keyToListenTo))
-			{
-				listenEnabled = true;
-			}
-		}
-
-		if (listenEnabled && keyboard->KeyTriggered(keyToListenTo))
-		{
-			listenEnabled = false;
-			return true;
-		}
-
-		return false;
+		return keyboard->KeyTriggered(keyToListenTo);
 	}
 
 private:

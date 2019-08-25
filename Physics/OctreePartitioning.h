@@ -28,7 +28,7 @@ public:
 		}
 	}
 
-	void DrawWireFrameOctrees(std::vector<DebugLineMessage>& lineMessages);
+	void DrawWireFrameOctrees();
 
 	int ENTITY_PER_PARTITION_THRESHOLD = 10;
 private:

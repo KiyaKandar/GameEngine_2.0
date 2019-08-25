@@ -39,7 +39,7 @@ public:
 	float	GetRadius() const { return m_Radius; }
 
 	// Debug Collision Shape
-	virtual void DebugDraw(std::vector<DebugLineMessage>& lineMessages, std::vector<DebugSphereMessage>& sphereMessages) const override;
+	virtual void DebugDraw() const override;
 
 	// Build Inertia Matrix for rotational mass
 	virtual NCLMatrix3 BuildInverseInertia(float invMass) const override;

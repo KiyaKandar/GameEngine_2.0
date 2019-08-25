@@ -1,34 +1,9 @@
 #include "SkeletonDisplay.h"
 
 #include "Skeleton.h"
+#include "../../Communication/DeliverySystem.h"
 
 void SkeletonDisplay::DrawSkeleton(const MeshNode& parentNode, const aiMatrix4x4& parentTransform)
-{
-	if (ReadyToDrawSkeleton())
-	{
-		ClearPreviousDraw();
-		PrepareSkeletonBoneRendering(parentNode, parentTransform);
-
-		skeletonBoneMessageSender.SetMessageGroup(skeletonBoneMessages);
-		skeletonJointMessageSender.SetMessageGroup(skeletonJointMessages);
-
-		skeletonBoneMessageSender.SendMessageGroup();
-		skeletonJointMessageSender.SendMessageGroup();
-	}
-}
-
-bool SkeletonDisplay::ReadyToDrawSkeleton()
-{
-	return skeletonBoneMessageSender.ReadyToSendNextMessageGroup() && skeletonJointMessageSender.ReadyToSendNextMessageGroup();
-}
-
-void SkeletonDisplay::ClearPreviousDraw()
-{
-	skeletonBoneMessages.clear();
-	skeletonJointMessages.clear();
-}
-
-void SkeletonDisplay::PrepareSkeletonBoneRendering(const MeshNode& parentNode, const aiMatrix4x4& parentTransform)
 {
 	aiVector3D startPosition;
 	GetJointPosition(startPosition, parentTransform * parentNode.rawTransform);
@@ -52,7 +27,7 @@ void SkeletonDisplay::DrawChildSkeletonBone(const MeshNode& parentNode, const ai
 	{
 		for (int i = 0; i < numChildren; ++i)
 		{
-			PrepareSkeletonBoneRendering(parentNode.children[i], parentTransform);
+			DrawSkeleton(parentNode.children[i], parentTransform);
 		}
 	}
 	else
@@ -70,10 +45,10 @@ void SkeletonDisplay::GetJointPosition(aiVector3D& position, const aiMatrix4x4& 
 
 void SkeletonDisplay::DisplayJointNode(const aiVector3D& position)
 {
-	skeletonJointMessages.push_back(DebugSphereMessage("RenderingSystem", position, 0.5f, NCLVector3(1.0f, 0.0f, 0.0f)));
+	DeliverySystem::GetPostman()->InsertMessage(DebugSphereMessage("RenderingSystem", position, 0.5f, NCLVector3(1.0f, 0.0f, 0.0f)));
 }
 
 void SkeletonDisplay::DisplayBoneLine(const aiVector3D& startPosition, const aiVector3D& endPosition)
 {
-	skeletonBoneMessages.push_back(DebugLineMessage("RenderingSystem", startPosition, endPosition, NCLVector3(0.0f, 1.0f, 0.2f)));
+	DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem", startPosition, endPosition, NCLVector3(0.0f, 1.0f, 0.2f)));
 }

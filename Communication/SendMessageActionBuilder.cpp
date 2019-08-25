@@ -51,87 +51,87 @@ void SendMessageActionBuilder::InitialiseNodeBuilders()
 
 	builders.insert({ "RELATIVE_TRANSFORM" , [](Node* node)
 	{
-		return BuildExecutable<RelativeTransformMessage>(node, &LetterBox::ADD_SENDER_RelativeTransformMessage);
+		return BuildExecutable<RelativeTransformMessage>(node);
 	} });
 
 	builders.insert({ "ABSOLUTE_TRANSFORM" , [](Node* node)
 	{
-		return BuildExecutable<AbsoluteTransformMessage>(node, &LetterBox::ADD_SENDER_AbsoluteTransformMessage);
+		return BuildExecutable<AbsoluteTransformMessage>(node);
 	} });
 
 	builders.insert({ "MOVE_CAMERA_RELATIVE_TO_GAMEOBJECT" , [](Node* node)
 	{
-		return BuildExecutable<MoveCameraRelativeToGameObjectMessage>(node, &LetterBox::ADD_SENDER_MoveCameraRelativeToGameObjectMessage);
+		return BuildExecutable<MoveCameraRelativeToGameObjectMessage>(node);
 	} });
 
 	builders.insert({ "TOGGLE_GRAPHICS_MODULE" , [](Node* node)
 	{
-		return BuildExecutable<ToggleGraphicsModuleMessage>(node, &LetterBox::ADD_SENDER_ToggleGraphicsModuleMessage);
+		return BuildExecutable<ToggleGraphicsModuleMessage>(node);
 	} });
 
 	builders.insert({ "PREPARE_PAINT_SURFACE" , [](Node* node)
 	{
-		return BuildExecutable<PreparePaintSurfaceMessage>(node, &LetterBox::ADD_SENDER_PreparePaintSurfaceMessage);
+		return BuildExecutable<PreparePaintSurfaceMessage>(node);
 	} });
 
 	builders.insert({ "PAINT_TRAIL_FOR_GAMEOBJECT" , [](Node* node)
 	{
-		return BuildExecutable<PaintTrailForGameObjectMessage>(node, &LetterBox::ADD_SENDER_PaintTrailForGameObjectMessage);
+		return BuildExecutable<PaintTrailForGameObjectMessage>(node);
 	} });
 
 	builders.insert({ "APPLY_IMPULSE" , [](Node* node)
 	{
-		return BuildExecutable<ApplyImpulseMessage>(node, &LetterBox::ADD_SENDER_ApplyImpulseMessage);
+		return BuildExecutable<ApplyImpulseMessage>(node);
 	} });
 
 	builders.insert({ "APPLY_FORCE" , [](Node* node)
 	{
-		return BuildExecutable<ApplyForceMessage>(node, &LetterBox::ADD_SENDER_ApplyForceMessage);
+		return BuildExecutable<ApplyForceMessage>(node);
 	} });
 
 	builders.insert({ "ADD_SCORE_HOLDER" , [](Node* node)
 	{
-		return BuildExecutable<AddScoreHolderMessage>(node, &LetterBox::ADD_SENDER_AddScoreHolderMessage);
+		return BuildExecutable<AddScoreHolderMessage>(node);
 	} });
 
 	builders.insert({ "MOVE_GAMEOBJECT" , [](Node* node)
 	{
-		return BuildExecutable<MoveGameObjectMessage>(node, &LetterBox::ADD_SENDER_MoveGameObjectMessage);
+		return BuildExecutable<MoveGameObjectMessage>(node);
 	} });
 
 	builders.insert({ "SCALE_GAMEOBJECT" , [](Node* node)
 	{
-		return BuildExecutable<ScaleGameObjectMessage>(node, &LetterBox::ADD_SENDER_ScaleGameObjectMessage);
+		return BuildExecutable<ScaleGameObjectMessage>(node);
 	} });
 
 	builders.insert({ "ROTATE_GAMEOBJECT" , [](Node* node)
 	{
-		return BuildExecutable<RotateGameObjectMessage>(node, &LetterBox::ADD_SENDER_RotateGameObjectMessage);
+		return BuildExecutable<RotateGameObjectMessage>(node);
 	} });
 
 	builders.insert({ "TOGGLE_GAMEOBJECT" , [](Node* node)
 	{
-		return BuildExecutable<ToggleGameObjectMessage>(node, &LetterBox::ADD_SENDER_ToggleGameObjectMessage);
+		return BuildExecutable<ToggleGameObjectMessage>(node);
 	} });
 
 	builders.insert({ "PLAY_ANIMATION" , [](Node* node)
 	{
-		return BuildExecutable<PlayAnimationMessage>(node, &LetterBox::ADD_SENDER_PlayAnimationMessage);
+		return BuildExecutable<PlayAnimationMessage>(node);
 	} });
 
 	builders.insert({ "PLAY_SOUND" , [](Node* node)
 	{
-		return BuildExecutable<PlaySoundMessage>(node, &LetterBox::ADD_SENDER_PlaySoundMessage);
+		return BuildExecutable<PlaySoundMessage>(node);
 	} });
 
 	builders.insert({ "MOVING_SOUND" , [](Node* node)
 	{
-		return BuildExecutable<PlayMovingSoundMessage>(node, &LetterBox::ADD_SENDER_PlayMovingSoundMessage);
+		return BuildExecutable<PlayMovingSoundMessage>(node);
 	} });
 
 	builders.insert({ "TEXT_MESH" , [](Node* node) -> Executable
 	{
-		return BuildExecutable<TextMeshMessage>(node, &LetterBox::ADD_SENDER_TextMeshMessage);
+		return BuildExecutable<TextMeshMessage>(node);
 	} });
 }
 

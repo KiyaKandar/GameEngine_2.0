@@ -63,13 +63,6 @@ Player* PlayerBase::AddNewPlayer(InputRecorder* recorder, int id)
 	std::string seperator = "|";
 	std::string keyboardButtonsToListenTo = "";
 
-	b = new bool[inputParser.parsedXml->children.size()];
-
-	for (size_t i = 0; i < inputParser.parsedXml->children.size(); i++)
-	{
-		b[i] = true;
-	}
-
 	for (size_t i = 0; i < inputParser.parsedXml->children.size(); i++) 
 	{
 		std::string keyName = inputParser.parsedXml->children[i]->children[0]->value;
@@ -91,24 +84,17 @@ Player* PlayerBase::AddNewPlayer(InputRecorder* recorder, int id)
 		NCLVector3 translation(xPosition, yPosition, zPosition);
 		std::string type = magnitude->nodeType;
 
-		newPlayersActions.AttachKeyToAction(InputUtility::GetKeyId(keyName), [&b = b[i], translation, type, playerName](Player* player)
+		newPlayersActions.AttachKeyToAction(InputUtility::GetKeyId(keyName), [translation, type, playerName](Player* player)
 		{
-			if (b)
+			if (type == "Move")
 			{
-				b = false;
-
-				if (type == "Move")
-				{
-					ApplyForceMessage m("Physics", playerName, false, translation);
-					m.senderAvailable = &b;
-					DeliverySystem::GetPostman()->InsertMessage(m);
-				}
-				else if (type == "Impulse")
-				{
-					ApplyImpulseMessage m("Physics", playerName, false, translation);
-					m.senderAvailable = &b;
-					DeliverySystem::GetPostman()->InsertMessage(m);
-				}
+				ApplyForceMessage m("Physics", playerName, false, translation);
+				DeliverySystem::GetPostman()->InsertMessage(m);
+			}
+			else if (type == "Impulse")
+			{
+				ApplyImpulseMessage m("Physics", playerName, false, translation);
+				DeliverySystem::GetPostman()->InsertMessage(m);
 			}
 		});
 	}

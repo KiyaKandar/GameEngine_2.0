@@ -137,6 +137,11 @@ bool Window::HasInitialised() {
 	return init;
 }
 
+bool Window::WillForceQuit() const
+{
+	return forceQuit;
+}
+
 bool	Window::UpdateWindow() {
 	MSG		msg;
 

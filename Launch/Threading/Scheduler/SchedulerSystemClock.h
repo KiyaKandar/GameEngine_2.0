@@ -11,7 +11,8 @@ class SchedulerSystemClock
 {
 public:
 	SchedulerSystemClock(const int activeThreadCount, std::vector<Worker>* workers, Worker* mainThreadWorker,
-		std::vector<SubsystemWorkload*>* processes, std::vector<SubsystemWorkload*>* mainThreadProcesses);
+		std::vector<SubsystemWorkload*>* processes, std::vector<SubsystemWorkload*>* mainThreadProcesses, Window* window);
+	~SchedulerSystemClock();
 
 	void WaitForSynchronisedLaunch();
 
@@ -47,4 +48,6 @@ private:
 
 	GameTimer clock;
 	float frameTime;
+
+	Window* window;
 };

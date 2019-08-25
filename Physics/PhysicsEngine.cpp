@@ -212,16 +212,12 @@ void PhysicsEngine::AddPhysicsObject(PhysicsNode* obj)
 		{
 			if (!this_obj->hasTransmittedCollision)
 			{
-				if (this_obj->collisionMessageSender.ReadyToSendNextMessage())
-				{
-					this_obj->collisionMessageSender.SetMessage(CollisionMessage("Gameplay", collisionData,
-						this_obj->GetParent()->GetName(), colliding_obj->GetParent()->GetName()));
-					this_obj->collisionMessageSender.SendTrackedMessage();
+				DeliverySystem::GetPostman()->InsertMessage(CollisionMessage("Gameplay", collisionData,
+					this_obj->GetParent()->GetName(), colliding_obj->GetParent()->GetName()));
 
-					if (!this_obj->multipleTransmitions)
-					{
-						this_obj->hasTransmittedCollision = true;
-					}
+				if (!this_obj->multipleTransmitions)
+				{
+					this_obj->hasTransmittedCollision = true;
 				}
 			}
 
@@ -318,35 +314,35 @@ void PhysicsEngine::UpdateNextFrame(const float& deltaTime)
 
 	if (debugRenderMode > 0)
 	{
-		if (cubeDrawMessageSender.ReadyToSendNextMessageGroup() && sphereDrawMessageSender.ReadyToSendNextMessageGroup())
+		if (debugRenderMode == 1)
 		{
-			std::vector<DebugLineMessage> cubeDrawMessages;
-			std::vector<DebugSphereMessage> sphereDrawMessages;
-
-			if (debugRenderMode == 1)
+			octree->DrawWireFrameOctrees();
+		}
+		else if (debugRenderMode == 2)
+		{
+			for (PhysicsNode* node : physicsNodes)
 			{
-				octree->DrawWireFrameOctrees(cubeDrawMessages);
+				node->GetCollisionShape()->DebugDraw();
 			}
-			else if (debugRenderMode == 2)
+		}
+		else if (debugRenderMode == 3)
+		{
+			for (Manifold* m : manifolds)
 			{
-				for (PhysicsNode* node : physicsNodes)
-				{
-					node->GetCollisionShape()->DebugDraw(cubeDrawMessages, sphereDrawMessages);
-				}
+				m->DebugDraw();
 			}
-			else if (debugRenderMode == 3)
-			{
-				for (Manifold* m : manifolds)
-				{
-					m->DebugDraw(cubeDrawMessages, sphereDrawMessages);
-				}
-			}
+		}
+	}
 
-			cubeDrawMessageSender.SetMessageGroup(cubeDrawMessages);
-			sphereDrawMessageSender.SetMessageGroup(sphereDrawMessages);
-
-			cubeDrawMessageSender.SendMessageGroup();
-			sphereDrawMessageSender.SendMessageGroup();
+	for (PhysicsNode* physicsNode : physicsNodes)
+	{
+		GameObject* gameObject = physicsNode->GetParent();
+		if (gameObject->GetSceneNode() && physicsNode->movedSinceLastBroadPhase)
+		{
+			NCLMatrix4 newTransform = physicsNode->GetWorldSpaceTransform();
+			newTransform = newTransform * NCLMatrix4::Scale(gameObject->GetScale());
+			AbsoluteTransformMessage transformMessage("RenderingSystem", gameObject->GetName(), newTransform);
+			DeliverySystem::GetPostman()->InsertMessage(transformMessage);
 		}
 	}
 

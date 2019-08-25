@@ -44,7 +44,7 @@ public:
 	float GetHalfDepth()	const { return halfDims.z; }
 
 	// Debug Collision Shape
-	virtual void DebugDraw(std::vector<DebugLineMessage>& lineMessages, std::vector<DebugSphereMessage>& sphereMessages) const override;
+	virtual void DebugDraw() const override;
 
 
 	// Build Inertia Matrix for rotational mass

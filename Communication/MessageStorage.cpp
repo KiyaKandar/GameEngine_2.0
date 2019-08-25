@@ -17,9 +17,9 @@ void MessageStorage::AddMessageBuffer(const std::string& bufferName)
 	activeMessageBuffers.insert(std::pair<std::string, MessageDeliveryBuffer*>(bufferName, new MessageDeliveryBuffer()));
 }
 
-void MessageStorage::DeliverMessage(Message* message, unsigned int threadId)
+void MessageStorage::DeliverMessage(Message* message)
 {
-	activeMessageBuffers.at(message->GetDestination())->Push(message, threadId);
+	activeMessageBuffers.at(message->GetDestination())->Push(message);
 }
 
 MessageDeliveryBuffer* MessageStorage::GetMessageBufferByName(const std::string& bufferName)

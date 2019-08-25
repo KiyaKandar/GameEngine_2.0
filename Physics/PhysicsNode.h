@@ -12,7 +12,6 @@
 #include "SphereCollisionShape.h"
 #include "CuboidCollisionShape.h"
 
-#include "../Communication/MessageSenders/TrackedMessageSender.h"
 #include "../Communication/Messages/CollisionMessage.h"
 
 class PhysicsNode;
@@ -273,8 +272,6 @@ public:
 	bool constantAcceleration = false;
 
 	std::string collisionShapeType;
-
-	TrackedMessageSender<CollisionMessage> collisionMessageSender;
 
 	std::vector<CollisionShape*> collisionShapes;
 protected:

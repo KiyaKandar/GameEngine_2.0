@@ -1,6 +1,7 @@
 #include "Hull.h"
 
 #include <algorithm>
+#include "../Communication/DeliverySystem.h"
 
 Hull::Hull()
 {
@@ -217,12 +218,12 @@ void Hull::GetMinMaxVerticesInAxis(const NCLVector3& local_axis, int* out_min_ve
 }
 
 
-void Hull::DebugDraw(std::vector<DebugLineMessage>& messages, const NCLMatrix4& transform)
+void Hull::DebugDraw(const NCLMatrix4& transform)
 {
 	//Draw all Hull Edges
 	for (HullEdge& edge : m_vEdges)
 	{
-		messages.push_back(DebugLineMessage("RenderingSystem", transform * m_vVertices[edge._vStart]._pos, 
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem", transform * m_vVertices[edge._vStart]._pos, 
 			transform * m_vVertices[edge._vEnd]._pos, NCLVector3(0.5, 0.5, 1)));
 	}
 }

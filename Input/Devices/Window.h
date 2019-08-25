@@ -28,6 +28,7 @@ public:
 	HWND GetHandle();
 
 	bool HasInitialised();
+	bool WillForceQuit() const;
 
 	void LockMouseToWindow(bool lock);
 	void ShowOsPointer(bool show);

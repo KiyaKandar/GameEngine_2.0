@@ -55,7 +55,7 @@ TimedGameplayAction ActionBuilder::BuildTimedAction(Node* node)
 	{
 		if (timer >= interval)
 		{
-			timer = 0.0f;
+			timer = FLT_EPSILON;
 
 			for (Executable executable : executables)
 			{

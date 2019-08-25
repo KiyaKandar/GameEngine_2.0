@@ -20,7 +20,7 @@ public:
 	PersistentProcessScheduler();
 	~PersistentProcessScheduler() = default;
 
-	void InitialiseWorkers() override {}
+	void InitialiseWorkers(Window* window) override {}
 
 	void RegisterProcess(const Process& process, const std::string debugName) override;
 	void AttachMainThreadProcess(const Process& process, const std::string debugName) override;

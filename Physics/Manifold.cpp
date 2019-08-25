@@ -192,7 +192,7 @@ void Manifold::AddContact(const NCLVector3& globalOnA, const NCLVector3& globalO
 	//   more pointless than a passthrough function.. perhaps I should just stop typ
 }
 
-void Manifold::DebugDraw(std::vector<DebugLineMessage>& lineMessages, std::vector<DebugSphereMessage>& sphereMessages) const
+void Manifold::DebugDraw() const
 {
 	if (contactPoints.size() > 0)
 	{
@@ -202,13 +202,13 @@ void Manifold::DebugDraw(std::vector<DebugLineMessage>& lineMessages, std::vecto
 		{
 			NCLVector3 globalOnA2 = pnodeA->GetPosition() + contact.relPosA;
 			NCLVector3 globalOnB = pnodeB->GetPosition() + contact.relPosB;
-
+			
 			//Draw line to form area given by all contact points
-			lineMessages.push_back(DebugLineMessage("RenderingSystem", globalOnA1, globalOnA2, NCLVector3(0.0f, 1.0f, 0.0f)));
+			DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem", globalOnA1, globalOnA2, NCLVector3(0.0f, 1.0f, 0.0f)));
 
 			//Draw descriptors for indivdual contact point
-			sphereMessages.push_back(DebugSphereMessage("RenderingSystem", globalOnA2, 0.05f, NCLVector3(0.0f, 0.5f, 0.0f)));
-			lineMessages.push_back(DebugLineMessage("RenderingSystem", globalOnB, globalOnA2, NCLVector3(1.0f, 0.0f, 1.0f)));
+			DeliverySystem::GetPostman()->InsertMessage(DebugSphereMessage("RenderingSystem", globalOnA2, 0.05f, NCLVector3(0.0f, 0.5f, 0.0f)));
+			DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem", globalOnB, globalOnA2, NCLVector3(1.0f, 0.0f, 1.0f)));
 
 			globalOnA1 = globalOnA2;
 		}

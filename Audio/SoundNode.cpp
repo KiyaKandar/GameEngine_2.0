@@ -166,6 +166,9 @@ void SoundNode::PauseSound()
 
 void SoundNode::UnpauseSound()
 {
-	state = SoundState::PLAYING;
-	alSourcePlay(oalSource->source);
+	if (oalSource)
+	{
+		state = SoundState::PLAYING;
+		alSourcePlay(oalSource->source);
+	}
 }

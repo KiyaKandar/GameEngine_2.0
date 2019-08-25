@@ -335,3 +335,4 @@ ASALocalRun/
 *.diagsession
 /Output-DiagnosticsHub.txt
 /Launch/SchedulerPerformanceLog.txt
+/Launch/new 6

@@ -2,8 +2,6 @@
 
 #include "../Systems/Subsystem.h"
 #include "../Input/Devices/Keyboard.h"
-#include "../../Communication/MessageSenders/TrackedGroupMessageSender.h"
-#include "../../Communication/MessageSenders/TrackedMessageSender.h"
 #include "MemoryWatcher.h"
 
 #include <string>
@@ -65,8 +63,6 @@ private:
 	NCLVector4 defaultColour = NCLVector4(1, 1, 1, 1);
 	NCLVector2 defaultSize = NCLVector2(16, 16);
 	float nextLine = 0.0f;
-
-	TrackedGroupMessageSender<TextMeshMessage> profilerTextSender;
 	bool timersDisplayed = true;
 
 	SinglePressKeyListener f4Listener;

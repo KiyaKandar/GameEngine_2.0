@@ -90,17 +90,17 @@ public:
 			quarterDimensions));
 	}
 
-	static void DrawPartitionAndChildren(const Partition& partition, std::vector<DebugLineMessage>& lineMessages)
+	static void DrawPartitionAndChildren(const Partition& partition)
 	{
-		DrawPartition(partition, lineMessages);
+		DrawPartition(partition);
 
 		for (const Partition& child : partition.childPartitions)
 		{
-			DrawPartitionAndChildren(child, lineMessages);
+			DrawPartitionAndChildren(child);
 		}
 	}
 
-	static void DrawPartition(const Partition& partition, std::vector<DebugLineMessage>& lineMessages)
+	static void DrawPartition(const Partition& partition)
 	{
 		NCLVector3 colour = NCLVector3(1.0, 0.0f, 0.0f);
 
@@ -109,51 +109,51 @@ public:
 			colour = NCLVector3(0.0, 0.0f, 1.0f);
 		}
 
-		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem",
 			partition.minPoint, NCLVector3(partition.minPoint.x, partition.maxPoint.y, partition.minPoint.z),
 			colour));
-		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem",
 			NCLVector3(partition.maxPoint.x, partition.minPoint.y, partition.maxPoint.z), partition.maxPoint,
 			colour));
 
-		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem",
 			NCLVector3(partition.minPoint.x, partition.minPoint.y, partition.maxPoint.z), 
 			NCLVector3(partition.minPoint.x, partition.maxPoint.y, partition.maxPoint.z),
 			colour));
-		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem",
 			NCLVector3(partition.maxPoint.x, partition.minPoint.y, partition.minPoint.z),
 			NCLVector3(partition.maxPoint.x, partition.maxPoint.y, partition.minPoint.z),
 			colour));
 
-		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem",
 			partition.minPoint, NCLVector3(partition.maxPoint.x, partition.minPoint.y, partition.minPoint.z),
 			colour));
-		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem",
 			NCLVector3(partition.minPoint.x, partition.maxPoint.y, partition.minPoint.z), 
 			NCLVector3(partition.maxPoint.x, partition.maxPoint.y, partition.minPoint.z),
 			colour));
 
-		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem",
 			partition.maxPoint, NCLVector3(partition.minPoint.x, partition.maxPoint.y, partition.maxPoint.z),
 			colour));
-		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem",
 			NCLVector3(partition.maxPoint.x, partition.minPoint.y, partition.maxPoint.z), 
 			NCLVector3(partition.minPoint.x, partition.minPoint.y, partition.maxPoint.z),
 			colour));
 
-		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem",
 			partition.minPoint, NCLVector3(partition.minPoint.x, partition.minPoint.y, partition.maxPoint.z),
 			colour));
-		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem",
 			NCLVector3(partition.minPoint.x, partition.maxPoint.y, partition.minPoint.z), 
 			NCLVector3(partition.minPoint.x, partition.maxPoint.y, partition.maxPoint.z),
 			colour));
 
-		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem",
 			NCLVector3(partition.maxPoint.x, partition.minPoint.y, partition.minPoint.z), 
 			NCLVector3(partition.maxPoint.x, partition.minPoint.y, partition.maxPoint.z),
 			colour));
-		lineMessages.push_back(DebugLineMessage("RenderingSystem",
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem",
 			NCLVector3(partition.maxPoint.x, partition.maxPoint.y, partition.minPoint.z), partition.maxPoint,
 			colour));
 	}

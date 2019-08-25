@@ -57,9 +57,8 @@
     </SendMessage>
   </Timed>
 
-  <Timed interval="0.001">
+  <Timed interval="0.0">
     <SendMessage type="TEXT_MESH">
-      <Tracked/>
       <destination>RenderingSystem</destination>
       <hasBackground>True</hasBackground>
       <orthographic>True</orthographic>
@@ -81,7 +80,6 @@
       </colour>
     </SendMessage>
     <SendMessage type="TEXT_MESH">
-      <Tracked/>
       <destination>RenderingSystem</destination>
       <hasBackground>True</hasBackground>
       <orthographic>True</orthographic>
@@ -104,7 +102,6 @@
     </SendMessage>
 
     <SendMessage type="TEXT_MESH">
-      <Tracked/>
       <destination>RenderingSystem</destination>
       <hasBackground>False</hasBackground>
       <orthographic>True</orthographic>

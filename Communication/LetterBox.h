@@ -21,7 +21,6 @@
 #include "LockFreeThreadSafeMessageBuffer.h"
 #include "Messages/DebugLineMessage.h"
 #include "Messages/UIQuadBatchMessage.h"
-#include "MessageSenders/TrackedMessageSender.h"
 
 class LetterBox : public MessagingService
 {
@@ -33,12 +32,6 @@ public:
 	MessageDeliveryBuffer* GetDeliveryPoint(const std::string& bufferName) override;
 
 	REGISTER_ALL_MESSAGES()
-	REGISTER_ALL_TRACKED_SENDERS()
-
-	void DeliverAllMessages() override
-	{
-		REGISTER_ALL_SENDER()
-	}
 
 	void ClearAllMessages()
 	{
@@ -53,11 +46,6 @@ public:
 	void CancelDeliveredMessages()
 	{
 		messageStorage->ClearMessageStorage();
-	}
-
-	void DeleteAllTrackedSenders()
-	{
-		REGISTER_ALL_TRACKED_SENDERS_DELETION()
 	}
 
 private:

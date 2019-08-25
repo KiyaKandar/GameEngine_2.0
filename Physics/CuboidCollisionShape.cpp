@@ -207,11 +207,11 @@ void CuboidCollisionShape::GetIncidentReferencePolygon(
 }
 
 
-void CuboidCollisionShape::DebugDraw(std::vector<DebugLineMessage>& lineMessages, std::vector<DebugSphereMessage>& sphereMessages) const
+void CuboidCollisionShape::DebugDraw() const
 {
 	// Just draw the cuboid hull-mesh at the position of our PhysicsNode
 	NCLMatrix4 transform = Parent()->GetWorldSpaceTransform() * NCLMatrix4::Scale(halfDims);
-	cubeHull.DebugDraw(lineMessages,transform);
+	cubeHull.DebugDraw(transform);
 }
 
 void CuboidCollisionShape::ConstructCubeHull()

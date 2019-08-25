@@ -6,7 +6,6 @@
 #include "Players/Player.h"
 #include "InputControl.h"
 #include "../Input/Devices/Window.h"
-#include "../Communication/MessageSenders/TrackedGroupMessageSender.h"
 
 
 class InputManager : public Subsystem
@@ -34,5 +33,4 @@ private:
 	std::vector<std::pair<std::string, int>> blockedKeysForEachPlayer;
 
 	bool blocked;
-	TrackedGroupMessageSender<PlayerInputMessage> inputMessageSender;
 };

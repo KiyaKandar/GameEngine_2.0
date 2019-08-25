@@ -2,6 +2,7 @@
 
 #include "Message.h"
 #include "Launch/Threading/Scheduler/ProcessScheduler.h"
+#include "LockFreeQueue.h"
 
 #include <deque>
 #include <mutex>
@@ -11,63 +12,28 @@ class MessageDeliveryBuffer
 public:
 	MessageDeliveryBuffer()
 	{
-		unsigned int numThreads = ProcessScheduler::Retrieve()->GetTotalNumberOfThreads();
-		buffer = new std::deque<Message*>[numThreads];
-		locks = new std::mutex[numThreads];
+		buffer = moodycamel::ConcurrentQueue<Message*>(maxNumMessages);
 	}
 
-	~MessageDeliveryBuffer()
+	void Push(Message* message)
 	{
-		delete[] buffer;
-		delete[] locks;
-	}
-
-	void Push(Message* message, const unsigned int threadId)
-	{
-		std::lock_guard<std::mutex> guard(locks[threadId]);
-		buffer[threadId].push_back(message);
-	}
-
-	Message* Read(const unsigned int threadId, const unsigned int bufferIndex)
-	{
-		std::lock_guard<std::mutex> guard(locks[threadId]);
-		return buffer[threadId][bufferIndex];
-	}
-
-	unsigned int Count(const unsigned int threadId)
-	{
-		std::lock_guard<std::mutex> guard(locks[threadId]);
-		return buffer[threadId].size();
-	}
-
-	void Clear(const unsigned int numToPopOffFront, unsigned int threadId)
-	{
-		std::lock_guard<std::mutex> guard(locks[threadId]);
-		for (int i = 0; i < numToPopOffFront; ++i)
+		if (!buffer.try_enqueue(message))
 		{
-			buffer[threadId].pop_front();
+			message->processed = true;
 		}
 	}
 
 	void ClearAll()
 	{
-		unsigned int numThreads = ProcessScheduler::Retrieve()->GetTotalNumberOfThreads();
+		const size_t approximateNumCurrentlyReceivedMessages = buffer.size_approx();
 
-		for (int threadId = 0; threadId < numThreads; ++threadId)
+		for (size_t i = 0; i < approximateNumCurrentlyReceivedMessages; ++i)
 		{
-			for (int i = 0; i < buffer[threadId].size(); ++i)
-			{
-				if (buffer[threadId][i]->senderAvailable != nullptr)
-				{
-					*buffer[threadId][i]->senderAvailable = true;
-				}
-			}
-
-			buffer[threadId].clear();
+			Message* message;
+			buffer.try_dequeue(message);
 		}
 	}
 
-private:
-	std::mutex* locks;
-	std::deque<Message*>* buffer;
+	const size_t maxNumMessages = 5000;
+	moodycamel::ConcurrentQueue<Message*> buffer;
 };

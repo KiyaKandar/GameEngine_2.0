@@ -41,9 +41,7 @@ public:
 
 	REGISTER_PURE_VIRTUAL_SERVICE()
 
-	virtual void DeliverAllMessages() = 0;
 	virtual void ClearAllMessages() = 0;
 	virtual void CancelOutgoingMessages() = 0;
 	virtual void CancelDeliveredMessages() = 0;
-	virtual void DeleteAllTrackedSenders() = 0;
 };

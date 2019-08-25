@@ -22,7 +22,6 @@ public:
 	void ProcessMessagesInBuffer();
 
 private:
-	void GetReceivedMessagesFromDeliveryBuffer(std::vector<Message*>& receivedMessages);
 	void ProcessMessageByPerformingAssignedActions(Message* message);
 
 	MessageDeliveryBuffer* subsystemMessageBuffer;

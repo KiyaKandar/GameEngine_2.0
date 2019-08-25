@@ -118,11 +118,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="LockFreeQueue.h" />
     <ClInclude Include="LockFreeThreadSafeMessageBuffer.h" />
     <ClInclude Include="MessageDeliveryBuffer.h" />
     <ClInclude Include="MessageRegistry.h" />
-    <ClInclude Include="MessageSenders\TrackedGroupMessageSender.h" />
-    <ClInclude Include="MessageSenders\TrackedMessageSender.h" />
     <ClInclude Include="Messages\DebugSphereMessage.h" />
     <ClInclude Include="Messages\DebugLineMessage.h" />
     <ClInclude Include="Messages\ToggleGameObjectMessage.h" />

@@ -18,14 +18,14 @@ SubsystemScheduler::~SubsystemScheduler()
 	delete mainThreadWorker;
 }
 
-void SubsystemScheduler::InitialiseWorkers()
+void SubsystemScheduler::InitialiseWorkers(Window* window)
 {
 	const unsigned int numWorkers = Worker::GetTotalNumberOfThreads() - 1;
 	workers = std::vector<Worker>(numWorkers);
 	mainThreadWorker = new Worker();
 
 	schedulerClock = new SchedulerSystemClock(1, &workers, mainThreadWorker, 
-		&registeredProcesses, &registeredProcessesLockedToMainThread);
+		&registeredProcesses, &registeredProcessesLockedToMainThread, window);
 
 	for (int i = 0; i < numWorkers; ++i)
 	{

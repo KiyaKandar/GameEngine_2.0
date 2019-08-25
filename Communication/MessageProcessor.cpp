@@ -25,35 +25,21 @@ void MessageProcessor::AddActionToExecuteOnMessage(const MessageType& typeOfMess
 
 void MessageProcessor::ProcessMessagesInBuffer()
 {
-	std::vector<Message*> receivedMessages;
-	GetReceivedMessagesFromDeliveryBuffer(receivedMessages);
+	const size_t approximateNumCurrentlyReceivedMessages = subsystemMessageBuffer->buffer.size_approx();
 
-	for (Message* message : receivedMessages)
+	for (size_t i = 0; i < approximateNumCurrentlyReceivedMessages; ++i)
 	{
-		ProcessMessageByPerformingAssignedActions(message);
-	}
-	
-	receivedMessages.clear();
-}
+		Message* message;
+		subsystemMessageBuffer->buffer.try_dequeue(message);
 
-void MessageProcessor::GetReceivedMessagesFromDeliveryBuffer(std::vector<Message*>& receivedMessages)
-{
-	unsigned int numberOfThreadSenders = ProcessScheduler::Retrieve()->GetTotalNumberOfThreads();
-
-	for (int threadId = 0; threadId < numberOfThreadSenders; ++threadId)
-	{
-		const unsigned int numberOfMessagesReceivedFromThread = subsystemMessageBuffer->Count(threadId);
-
-		for (int messageNum = 0; messageNum < numberOfMessagesReceivedFromThread; ++messageNum)
+		if (message)
 		{
-			receivedMessages.push_back(subsystemMessageBuffer->Read(threadId, messageNum));
+			ProcessMessageByPerformingAssignedActions(message);
 		}
-
-		subsystemMessageBuffer->Clear(numberOfMessagesReceivedFromThread, threadId);
 	}
 }
 
-void MessageProcessor::ProcessMessageByPerformingAssignedActions(Message * message)
+void MessageProcessor::ProcessMessageByPerformingAssignedActions(Message* message)
 {
 	std::vector<Action>& actionsForMessageType = *actionsToExecute.at(message->GetMessageType());
 

@@ -13,7 +13,6 @@ UserInterface::UserInterface(Keyboard* keyboard, NCLVector2 resolution) : Subsys
 	std::vector<MessageType> types = { MessageType::TEXT };
 
 	incomingMessages = MessageProcessor(types, DeliverySystem::GetPostman()->GetDeliveryPoint("UserInterface"));
-	DeliverySystem::GetPostman()->InsertMessage(TextMessage("InputManager", "RegisterInputUser UserInterface"));
 
 	incomingMessages.AddActionToExecuteOnMessage(MessageType::TEXT, [&blocked = blocked, this](Message* message)
 	{
@@ -30,7 +29,6 @@ UserInterface::UserInterface(Keyboard* keyboard, NCLVector2 resolution) : Subsys
 	});
 
 	menu = nullptr;
-	DeliverySystem::GetPostman()->InsertMessage(TextMessage("InputManager", "BlockAllInputs UserInterface"));
 
 	escapeListener = SinglePressKeyListener(KEYBOARD_ESCAPE, keyboard);
 	downListener = SinglePressKeyListener(KEYBOARD_DOWN, keyboard);
@@ -51,6 +49,9 @@ void UserInterface::SetMenuFile(std::string newMenuFile)
 
 void UserInterface::Initialise(Database* database)
 {
+	DeliverySystem::GetPostman()->InsertMessage(TextMessage("InputManager", "RegisterInputUser UserInterface"));
+	DeliverySystem::GetPostman()->InsertMessage(TextMessage("InputManager", "BlockAllInputs UserInterface"));
+
 	if (menu != nullptr)
 	{
 		delete menu;

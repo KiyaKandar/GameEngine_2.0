@@ -120,16 +120,13 @@
     <ClInclude Include="LockFreeThreadSafeMessageBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MessageSenders\TrackedMessageSender.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MessageSenders\TrackedGroupMessageSender.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MessageDeliveryBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Messages\UIQuadBatchMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LockFreeQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

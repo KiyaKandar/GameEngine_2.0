@@ -220,13 +220,13 @@ void Profiler::UpdateTimers()
 
 void Profiler::DisplayChildTimers()
 {
-	if (profilerTextSender.ReadyToSendNextMessageGroup())
+	for (TextMeshMessage& message : messages)
 	{
-		profilerTextSender.SetMessageGroup(messages);
-		profilerTextSender.SendMessageGroup();
-		timersDisplayed = true;
-		externalText.clear();
+		DeliverySystem::GetPostman()->InsertMessage(message);
 	}
+
+	timersDisplayed = true;
+	externalText.clear();
 }
 
 void Profiler::SaveProfilingInfo(GameTimer* parentTimer, int currentDepth, float parentXOffset)

@@ -42,7 +42,6 @@ GameLoop::GameLoop(System* gameSystem, Database* database, Startup* startup)
 			engine->SynchroniseAndStopConcurrentSubsystems();
 			DeliverySystem::GetPostman()->CancelOutgoingMessages();
 			DeliverySystem::GetPostman()->CancelDeliveredMessages();
-			DeliverySystem::GetPostman()->DeleteAllTrackedSenders();
 
 			SchedulerPerformanceLog::Retrieve()->LogAverageFrameTimeToFile();
 			SchedulerPerformanceLog::Retrieve()->EndLoggedSection();
@@ -94,7 +93,7 @@ void GameLoop::PrepareGameLoop()
 
 void GameLoop::ExecuteGameLoop()
 {
-	if (window->UpdateWindow() && !quit)
+	if (!window->WillForceQuit() && !quit)
 	{
 		engine->UpdateNextSystemFrame();
 		incomingMessages.ProcessMessagesInBuffer();

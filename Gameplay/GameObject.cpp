@@ -53,11 +53,6 @@ void GameObject::Update(float dt)
 			stats.timer = 0.f;
 		}
 	}
-	position = physicsNode->GetPosition();
-	NCLMatrix4 newTransform = this->physicsNode->GetWorldSpaceTransform();
-	newTransform = newTransform * NCLMatrix4::Scale(scale);
-
-	this->sceneNode->SetTransform(newTransform);
 }
 
 void GameObject::SetPosition(NCLVector3 position)

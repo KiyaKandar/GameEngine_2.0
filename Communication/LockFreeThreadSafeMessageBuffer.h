@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MessageStorage.h"
+#include "LockFreeQueue.h"
 
 #include <queue>
 #include <utility>
@@ -14,43 +15,26 @@ public:
 	{
 		numberOfMessageSenders = ProcessScheduler::Retrieve()->GetTotalNumberOfThreads();
 		outgoingMessages = new std::queue<MessageType>[numberOfMessageSenders];
-		sentMessages = new std::queue<MessageType>[numberOfMessageSenders];
 	}
 
 	~LockFreeThreadSafeMessageBuffer()
 	{
 		delete[] outgoingMessages;
-		delete[] sentMessages;
 	}
 
-	void InsertOutgoingMessage(MessageType message)
-	{
-		outgoingMessages[ProcessScheduler::Retrieve()->GetLocalThreadId()].push(message);
-	}
-
-	void SendMessages(MessageStorage* messageStorage)
+	void InsertOutgoingMessage(MessageType message, MessageStorage* messageStorage)
 	{
 		unsigned int localThreadId = ProcessScheduler::Retrieve()->GetLocalThreadId();
-
-		std::queue<MessageType>& outgoingQueue = outgoingMessages[localThreadId];
-
-		while (!outgoingQueue.empty())
-		{
-			MessageType message = outgoingQueue.front();
-			outgoingQueue.pop();
-
-			sentMessages[localThreadId].push(message);
-			messageStorage->DeliverMessage(&sentMessages[localThreadId].back(), localThreadId);
-		}
+		outgoingMessages[localThreadId].push(message);
+		messageStorage->DeliverMessage(&outgoingMessages[localThreadId].back());
 	}
 
 	void ClearSentMessages()
 	{
 		unsigned int localThreadId = ProcessScheduler::Retrieve()->GetLocalThreadId();
-
-		while (!sentMessages[localThreadId].empty() && sentMessages[localThreadId].front().processed)
+		while (!outgoingMessages[localThreadId].empty() && outgoingMessages[localThreadId].front().processed)
 		{
-			sentMessages[localThreadId].pop();
+			outgoingMessages[localThreadId].pop();
 		}
 	}
 
@@ -75,6 +59,5 @@ public:
 private:
 	unsigned int numberOfMessageSenders = 0;
 	std::queue<MessageType>* outgoingMessages;
-	std::queue<MessageType>* sentMessages;
 };
 

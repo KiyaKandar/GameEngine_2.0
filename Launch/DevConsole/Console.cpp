@@ -281,13 +281,9 @@ void Console::DisplayText()
 		displayLine += " ";
 	}
 
-	if (consoleViewMessage.ReadyToSendNextMessage())
-	{
-		consoleViewMessage.SetMessage(TextMeshMessage("RenderingSystem", displayLine,
-			NCLVector3(-620.0f, -320, 0), NCLVector3(12.9f, 12.9f, 12.9f),
-			NCLVector3(0, 1, 0), true, true));
-		consoleViewMessage.SendTrackedMessage();
-	}
+	DeliverySystem::GetPostman()->InsertMessage(TextMeshMessage("RenderingSystem", displayLine,
+		NCLVector3(-620.0f, -320, 0), NCLVector3(12.9f, 12.9f, 12.9f),
+		NCLVector3(0, 1, 0), true, true));
 }
 
 void Console::MoveCamera()

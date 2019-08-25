@@ -75,7 +75,6 @@ void Worker::PerformWork()
 	currentWorkloadSize = frameWorkload;
 
 	DeliverySystem::GetPostman()->ClearAllMessages();
-	DeliverySystem::GetPostman()->DeliverAllMessages();
 }
 
 void Worker::WaitUntilHasActivity()

@@ -32,7 +32,6 @@
 
 #include "../Launch/Systems/Subsystem.h"
 #include "../Resource Management/Database/Database.h"
-#include "../Communication/MessageSenders/TrackedGroupMessageSender.h"
 
 #include "PhysicsNode.h"
 #include "Constraint.h"
@@ -107,6 +106,4 @@ protected:
 	OctreePartitioning* octree;
 
 	int debugRenderMode = 0;
-	TrackedGroupMessageSender<DebugLineMessage> cubeDrawMessageSender;
-	TrackedGroupMessageSender<DebugSphereMessage> sphereDrawMessageSender;
 };

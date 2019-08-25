@@ -15,7 +15,7 @@ public:
 	void AddMessageBuffer(const std::string& bufferName);
 	MessageDeliveryBuffer* GetMessageBufferByName(const std::string& bufferName);
 
-	void DeliverMessage(Message* message, unsigned int threadId);
+	void DeliverMessage(Message* message);
 	void ClearMessageStorage();
 
 private:

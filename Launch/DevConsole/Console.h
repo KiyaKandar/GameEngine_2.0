@@ -2,7 +2,6 @@
 
 #include "../Systems/Subsystem.h"
 #include "../../Input/Devices/Keyboard.h"
-#include "../../Communication/MessageSenders/TrackedMessageSender.h"
 
 class Mouse;
 class Camera;
@@ -43,8 +42,6 @@ private:
 
 	std::deque<std::string> previousInputs;
 	std::unordered_map<int, std::string> keyMapping;
-
-	TrackedMessageSender<TextMeshMessage> consoleViewMessage;
 
 	SinglePressKeyListener f7Listener;
 	SinglePressKeyListener returnListener;

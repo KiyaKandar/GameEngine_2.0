@@ -6,6 +6,7 @@
 
 #include "../Communication/Messages/DebugLineMessage.h"
 #include "../Communication/Messages/DebugSphereMessage.h"
+#include "../Communication/DeliverySystem.h"
 
 SphereCollisionShape::SphereCollisionShape()
 {
@@ -89,7 +90,7 @@ void SphereCollisionShape::GetIncidentReferencePolygon(
 	out_normal = axis;	
 }
 
-void SphereCollisionShape::DebugDraw(std::vector<DebugLineMessage>& lineMessages, std::vector<DebugSphereMessage>& sphereMessages) const
+void SphereCollisionShape::DebugDraw() const
 {
 	NCLVector3 pos = Parent()->GetPosition();
 
@@ -111,9 +112,9 @@ void SphereCollisionShape::DebugDraw(std::vector<DebugLineMessage>& lineMessages
 		NCLVector3 newY = pos + NCLVector3(alpha, 0.0f, beta);
 		NCLVector3 newZ = pos + NCLVector3(alpha, beta, 0.0f);
 
-		lineMessages.push_back(DebugLineMessage("RenderingSystem", lastX, newX, NCLVector3(1.0f, 0.3f, 1.0f)));
-		lineMessages.push_back(DebugLineMessage("RenderingSystem", lastY, newY, NCLVector3(1.0f, 0.3f, 1.0f)));
-		lineMessages.push_back(DebugLineMessage("RenderingSystem", lastZ, newZ, NCLVector3(1.0f, 0.3f, 1.0f)));
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem", lastX, newX, NCLVector3(1.0f, 0.3f, 1.0f)));
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem", lastY, newY, NCLVector3(1.0f, 0.3f, 1.0f)));
+		DeliverySystem::GetPostman()->InsertMessage(DebugLineMessage("RenderingSystem", lastZ, newZ, NCLVector3(1.0f, 0.3f, 1.0f)));
 
 		lastX = newX;
 		lastY = newY;

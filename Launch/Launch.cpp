@@ -29,8 +29,6 @@ int main()
 	DeliverySystem::Provide(new LetterBox());
 	SendMessageActionBuilder::InitialiseBuilders();
 
-	ProcessScheduler::Retrieve()->InitialiseWorkers();
-
 	Startup startup;
 	bool loadedSubsystems = false;
 	startup.InitialiseRenderingSystem();

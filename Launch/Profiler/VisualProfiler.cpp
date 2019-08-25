@@ -2,6 +2,8 @@
 
 #include <iomanip>
 #include <sstream>
+#include "Communication/Messages/TextMeshMessage.h"
+#include "Communication/DeliverySystem.h"
 
 const NCLVector3 SCREEN_POSITION = NCLVector3(-370.0f, -170.0f, 0.0f);
 const NCLVector3 DARK_GREY = NCLVector3(0.75f, 0.75f, 0.75f);
@@ -61,12 +63,8 @@ void VisualProfiler::DisplayVisualTimers()
 	}
 	else if (clearUIOnNextUpdate)
 	{
-		if (quadSender.ReadyToSendNextMessage())
-		{
-			quadSender.SetMessage(UIQuadBatchMessage("RenderingSystem", &emptyUI));
-			quadSender.SendTrackedMessage();
-			clearUIOnNextUpdate = false;
-		}
+		DeliverySystem::GetPostman()->InsertMessage(UIQuadBatchMessage("RenderingSystem", &emptyUI));
+		clearUIOnNextUpdate = false;
 	}
 }
 
@@ -87,24 +85,20 @@ void VisualProfiler::TogglePrecisionMode()
 
 void VisualProfiler::DisplayTimerBars(const float deltaTime)
 {
-	if (quadSender.ReadyToSendNextMessage())
+	int visualTimerIndex = 0;
+	for (int i = numGeneratedMarkers + 1; i < timerBars.size(); i += 2)
 	{
-		int visualTimerIndex = 0;
-		for (int i = numGeneratedMarkers + 1; i < timerBars.size(); i += 2)
-		{
-			const float timeTaken = visualTimers[visualTimerIndex].second->GetTimeTakenForSection();
-			const float timeDifference = (timeTaken * TIMER_BAR_SCALE.x) - timerBars[i].scale.x;
+		const float timeTaken = visualTimers[visualTimerIndex].second->GetTimeTakenForSection();
+		const float timeDifference = (timeTaken * TIMER_BAR_SCALE.x) - timerBars[i].scale.x;
 
-			const float yCoordinate = float(visualTimerIndex) * (-TIMER_BAR_SCALE.y * 2.0f);
-			const float xAxisFrameMovement = CalculateTimerBarXAxisScale(deltaTime, timeDifference, timerBars[i].scale.x);
+		const float yCoordinate = float(visualTimerIndex) * (-TIMER_BAR_SCALE.y * 2.0f);
+		const float xAxisFrameMovement = CalculateTimerBarXAxisScale(deltaTime, timeDifference, timerBars[i].scale.x);
 
-			UpdateBarWidth(timerBars[i], timerBars[i - 1], xAxisFrameMovement, yCoordinate);
-			++visualTimerIndex;
-		}
-
-		quadSender.SetMessage(UIQuadBatchMessage("RenderingSystem", &timerBars));
-		quadSender.SendTrackedMessage();
+		UpdateBarWidth(timerBars[i], timerBars[i - 1], xAxisFrameMovement, yCoordinate);
+		++visualTimerIndex;
 	}
+
+	DeliverySystem::GetPostman()->InsertMessage(UIQuadBatchMessage("RenderingSystem", &timerBars));
 }
 
 float VisualProfiler::CalculateTimerBarXAxisScale(const float deltaTime, const float timerDifference, const float currentTimerBarValue)
@@ -155,55 +149,41 @@ void VisualProfiler::UpdateBarWidth(UIQuad& timerBar, UIQuad& backgroundBar,
 
 void VisualProfiler::DisplayTimerBarNames()
 {
-	if (timerNameTextSender.ReadyToSendNextMessageGroup())
+	int visualTimerIndex = 0;
+	for (int i = numGeneratedMarkers + 1; i < timerBars.size(); i += 2)
 	{
-		std::vector<TextMeshMessage> timerNames;
+		const float timerBarLeftHandSidePositionOnXAxis = timerBars[i].screenPosition.x - timerBars[i].scale.x;
 
-		int visualTimerIndex = 0;
-		for (int i = numGeneratedMarkers + 1; i < timerBars.size(); i += 2)
-		{
-			const float timerBarLeftHandSidePositionOnXAxis = timerBars[i].screenPosition.x - timerBars[i].scale.x;
+		const NCLVector3 textPosition(timerBarLeftHandSidePositionOnXAxis - TEXT_X_AXIS_OFFSET, timerBars[i].screenPosition.y + TIMER_BAR_SCALE.y, 1.0f);
 
-			const NCLVector3 textPosition(timerBarLeftHandSidePositionOnXAxis - TEXT_X_AXIS_OFFSET, timerBars[i].screenPosition.y + TIMER_BAR_SCALE.y, 1.0f);
+		DeliverySystem::GetPostman()->InsertMessage(TextMeshMessage("RenderingSystem", visualTimers[visualTimerIndex].first,
+			textPosition, NCLVector3(TIMER_BAR_SCALE.x, TIMER_BAR_SCALE.y * 2.0f, 20.0f), TEXT_COLOUR, true, true));
 
-			timerNames.push_back(TextMeshMessage("RenderingSystem", visualTimers[visualTimerIndex].first,
-				textPosition, NCLVector3(TIMER_BAR_SCALE.x, TIMER_BAR_SCALE.y * 2.0f, 20.0f), TEXT_COLOUR, true, true));
-
-			++visualTimerIndex;
-		}
-
-		timerNameTextSender.SetMessageGroup(timerNames);
-		timerNameTextSender.SendMessageGroup();
+		++visualTimerIndex;
 	}
 }
 
 void VisualProfiler::DisplayMarkerLabels()
 {
-	if (markerLabelTextSender.ReadyToSendNextMessageGroup())
+	std::vector<TextMeshMessage> labels;
+
+	for (int i = 0; i < numGeneratedMarkers; i +=2)
 	{
-		std::vector<TextMeshMessage> labels;
+		const float millisecondMarker = float(i) * MARKER_SPACING;
+		NCLVector3 textPosition = timerBars[i].screenPosition;
+		textPosition.y -= timerBars[i].scale.y;
 
-		for (int i = 0; i < numGeneratedMarkers; i +=2)
+		if (millisecondMarker < 10.0f)
 		{
-			const float millisecondMarker = float(i) * MARKER_SPACING;
-			NCLVector3 textPosition = timerBars[i].screenPosition;
-			textPosition.y -= timerBars[i].scale.y;
-
-			if (millisecondMarker < 10.0f)
-			{
-				textPosition -= NCLVector3(4.0f, 0.0f, 0.0f);
-			}
-			else
-			{
-				textPosition -= NCLVector3(8.0f, 0.0f, 0.0f);
-			}
-
-			labels.push_back(TextMeshMessage("RenderingSystem", to_string(int(millisecondMarker)),
-				textPosition, NCLVector3(8.0f, 12.0f, 7.0f), TEXT_COLOUR, true, false));
+			textPosition -= NCLVector3(4.0f, 0.0f, 0.0f);
+		}
+		else
+		{
+			textPosition -= NCLVector3(8.0f, 0.0f, 0.0f);
 		}
 
-		markerLabelTextSender.SetMessageGroup(labels);
-		markerLabelTextSender.SendMessageGroup();
+		DeliverySystem::GetPostman()->InsertMessage(TextMeshMessage("RenderingSystem", to_string(int(millisecondMarker)),
+			textPosition, NCLVector3(8.0f, 12.0f, 7.0f), TEXT_COLOUR, true, false));
 	}
 }
 

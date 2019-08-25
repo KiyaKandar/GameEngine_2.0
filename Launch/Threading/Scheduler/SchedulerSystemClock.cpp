@@ -4,11 +4,12 @@
 #include "SubsystemScheduler.h"
 #include "ThreadPackingLayer.h"
 #include "Launch/Profiler/SchedulerPerformanceLog.h"
+#include "../../Input/Devices/Window.h"
 
 const int REDISTRIBUTE_WORKLOAD_FRAME_DELAY = 2;
 
 SchedulerSystemClock::SchedulerSystemClock(const int activeThreadCount, std::vector<Worker>* workers, Worker* mainThreadWorker,
-	std::vector<SubsystemWorkload*>* processes, std::vector<SubsystemWorkload*>* mainThreadProcesses)
+	std::vector<SubsystemWorkload*>* processes, std::vector<SubsystemWorkload*>* mainThreadProcesses, Window* window)
 {
 	numThreadsToWaitFor = activeThreadCount;
 	numActiveThreads = activeThreadCount;
@@ -19,6 +20,13 @@ SchedulerSystemClock::SchedulerSystemClock(const int activeThreadCount, std::vec
 
 	this->processes = processes;
 	this->mainThreadProcesses = mainThreadProcesses;
+
+	this->window = window;
+}
+
+SchedulerSystemClock::~SchedulerSystemClock()
+{
+
 }
 
 void SchedulerSystemClock::WaitForSynchronisedLaunch()
@@ -66,6 +74,9 @@ void SchedulerSystemClock::CompleteFrameAsLastFinishedThread()
 
 	RescheduleWorkloadIfFrameCountDelayElapsed();
 	MarkLaunchEndTime();
+
+	window->UpdateWindow();
+
 	MarkLaunchStartTime();
 	RelaunchThreadsAtThreadBarrier();
 }

@@ -60,7 +60,7 @@ public:
 	Hull();
 	~Hull();
 
-	void DebugDraw(std::vector<DebugLineMessage>& messages, const NCLMatrix4& transform);
+	void DebugDraw(const NCLMatrix4& transform);
 	void Clear();
 
 

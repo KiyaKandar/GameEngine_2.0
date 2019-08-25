@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../Communication/MessageSenders/TrackedMessageSender.h"
-#include "../Communication/MessageSenders/TrackedGroupMessageSender.h"
 #include "../Communication/Messages/UIQuadBatchMessage.h"
 #include "../Utilities/GameTimer.h"
 
@@ -37,10 +35,6 @@ private:
 	std::vector<VisualTimer> visualTimers;
 	std::vector<UIQuad> timerBars;
 	std::vector<UIQuad> emptyUI;
-
-	TrackedMessageSender<UIQuadBatchMessage> quadSender;
-	TrackedGroupMessageSender<TextMeshMessage> timerNameTextSender;
-	TrackedGroupMessageSender<TextMeshMessage> markerLabelTextSender;
 	GameTimer updateTimer;
 
 	bool switchBackgroundColour = false;

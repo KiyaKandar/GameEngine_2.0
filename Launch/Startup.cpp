@@ -81,6 +81,8 @@ void Startup::InitialiseRenderingSystem()
 	bool fullScreen = node->children[1]->value == "Enabled";
 
 	window = new Window("Game Window", (int)resolution.x, (int)resolution.y, fullScreen);
+
+	ProcessScheduler::Retrieve()->InitialiseWorkers(window);
 	window->LockMouseToWindow(true);
 	window->ShowOsPointer(false);
 
