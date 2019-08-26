@@ -1,0 +1,13 @@
+<GameplayScript>
+  <OnStart>
+    <SendMessage type="TEXT">
+      <destination>Gameplay</destination>
+      <text>setmaxtime false</text>
+    </SendMessage>
+  </OnStart>
+	<Timed interval="Random 0.0 1.0 6000">
+		<SendMessage type="DUMMY_WORK">
+			<duration>300</duration>
+		</SendMessage>
+	</Timed>
+</GameplayScript>

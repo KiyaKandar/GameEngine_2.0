@@ -1,0 +1,7 @@
+<LevelSounds>
+	<SoundObjects name="bounce">../Data/Resources/SoundFiles/bounce.wav</sound>
+	<SoundObjects name="overtheedge">../Data/Resources/SoundFiles/overtheedge.wav</sound>
+	<SoundObjects name="vega">../Data/Resources/SoundFiles/vega.wav</sound>
+	<SoundObjects name="smack1">../Data/Resources/SoundFiles/smack1.wav</sound>
+	<SoundObjects name="punch1">../Data/Resources/SoundFiles/punch1.wav</sound>
+</LevelSounds>

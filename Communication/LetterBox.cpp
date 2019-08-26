@@ -15,10 +15,16 @@ LetterBox::~LetterBox()
 
 void LetterBox::AddDeliveryPoint(const std::string& bufferName)
 {
-	messageStorage->AddMessageBuffer(bufferName);
+	messageStorage->addMessageBuffer(bufferName);
+	deliveryPoints.push_back(bufferName);
 }
 
 MessageDeliveryBuffer* LetterBox::GetDeliveryPoint(const std::string& bufferName)
 {
 	return messageStorage->GetMessageBufferByName(bufferName);
+}
+
+const std::vector<std::string>& LetterBox::getAllDeliveryPoints() const
+{
+	return deliveryPoints;
 }

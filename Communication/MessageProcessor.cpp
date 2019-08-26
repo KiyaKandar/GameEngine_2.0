@@ -1,4 +1,5 @@
 #include "MessageProcessor.h"
+#include "Messages/DummyWorkMessage.h"
 
 #include "MessageDeliveryBuffer.h"
 
@@ -11,6 +12,8 @@ MessageProcessor::MessageProcessor(std::vector<MessageType> typeOfMessagesToList
 	{
 		actionsToExecute[messageType] = new std::vector<Action>();
 	}
+
+	AddDefaultMessageActions();
 }
 
 MessageProcessor::~MessageProcessor()
@@ -68,4 +71,14 @@ void MessageProcessor::ProcessMessageByPerformingAssignedActions(Message * messa
 	{
 		*message->senderAvailable = true;
 	}
+}
+
+void MessageProcessor::AddDefaultMessageActions()
+{
+	actionsToExecute[DUMMY_WORK] = new std::vector<Action>();
+	actionsToExecute.at(DUMMY_WORK)->push_back([](Message* message)
+	{
+		DummyWorkMessage* dummyWorkMessage = static_cast<DummyWorkMessage*>(message);
+		dummyWorkMessage->DoDummyWork();
+	});
 }

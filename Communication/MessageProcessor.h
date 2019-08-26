@@ -24,6 +24,7 @@ public:
 private:
 	void GetReceivedMessagesFromDeliveryBuffer(std::vector<Message*>& receivedMessages);
 	void ProcessMessageByPerformingAssignedActions(Message* message);
+	void AddDefaultMessageActions();
 
 	MessageDeliveryBuffer* subsystemMessageBuffer;
 	std::unordered_map<int, std::vector<Action>*> actionsToExecute;

@@ -31,6 +31,7 @@ public:
 
 	void AddDeliveryPoint(const std::string& bufferName) override;
 	MessageDeliveryBuffer* GetDeliveryPoint(const std::string& bufferName) override;
+	const std::vector<std::string>& GetAllDeliveryPoints() const override;
 
 	REGISTER_ALL_MESSAGES()
 	REGISTER_ALL_TRACKED_SENDERS()
@@ -62,4 +63,5 @@ public:
 
 private:
 	MessageStorage* messageStorage;
+	std::vector<std::string> deliveryPoints;
 };
