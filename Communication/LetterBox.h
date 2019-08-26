@@ -29,6 +29,7 @@ public:
 
 	void addDeliveryPoint(const std::string& bufferName) override;
 	std::queue<Message*>* getDeliveryPoint(const std::string& bufferName) override;
+	const std::vector<std::string>& getAllDeliveryPoints() const override;
 
 	REGISTER_ALL_MESSAGES()
 
@@ -49,4 +50,5 @@ public:
 
 private:
 	MessageStorage* messageStorage;
+	std::vector<std::string> deliveryPoints;
 };

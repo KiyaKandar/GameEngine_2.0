@@ -19,6 +19,7 @@ public:
 	void processMessagesInBuffer();
 
 private:
+	void AddDefaultMessageActions();
 	std::queue<Message*>* subsystemMessageBuffer;
 	std::unordered_map<int, std::vector<Action>*> actionsToExecute;
 };

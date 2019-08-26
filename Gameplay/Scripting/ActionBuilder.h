@@ -21,11 +21,19 @@ public:
 	static Executable compileActionSectionWithoutCondition(Node* section);
 
 	static void setExecutableBuilder(std::function<Executable(Node*)> executableBuilder);
+	static std::vector<float> randomIntervals;
+
 private:
 	static GameplayAction buildFinalActionWithCondition(std::vector<Condition>& conditions, std::vector<Executable>& executables);
 	static GameplayAction buildFinalAction(std::vector<Executable>& executables);
 
 	static Condition buildIfStatement(Node* node);
+
+	static float generateRandomInterval(const float minInterval, const float maxInterval);
+	static TimedGameplayAction buildTimedActionWithStaticInterval(const float interval, const std::vector<Executable>& executables);
+	static TimedGameplayAction buildTimedActionWithRandomisedInterval(const int quantity, const float minInterval, const float maxInterval,
+		const std::vector<Executable>& executables);
+
 	static std::function<Executable(Node*)> executableBuilder;
 };
 

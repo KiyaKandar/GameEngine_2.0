@@ -27,6 +27,7 @@
 #include "Messages/PlayAnimationMessage.h"
 #include "Messages/DebugLineMessage.h"
 #include "Messages/DebugSphereMessage.h"
+#include "Messages/DummyWorkMessage.h"
 #include "MessageRegistry.h"
 
 //exposed interface
@@ -35,6 +36,7 @@ class MessagingService
 public:
 	virtual void addDeliveryPoint(const std::string& bufferName) = 0;
 	virtual std::queue<Message*>* getDeliveryPoint(const std::string& bufferName) = 0;
+	virtual const std::vector<std::string>& getAllDeliveryPoints() const = 0;
 
 	REGISTER_PURE_VIRTUAL_SERVICE()
 

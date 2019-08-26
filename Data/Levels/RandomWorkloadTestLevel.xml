@@ -1,0 +1,12 @@
+<Level>
+	<File>RandomWorkloadTestLevel/Meshes.xml</File>
+	<File>RandomWorkloadTestLevel/Details.xml</File>
+	<File>RandomWorkloadTestLevel/Sounds.xml</File>
+	<File>RandomWorkloadTestLevel/Lights.xml</File>
+	<UI>
+		<File>../Data/UserInterface/InGameMenu.xml</File>
+	</UI>
+	<GamePlay>
+		<File>RandomWorkloadTestLevel/script.xml</File>
+	</GamePlay>
+</Level>

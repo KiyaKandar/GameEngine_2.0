@@ -26,10 +26,10 @@ public:
 
 	auto Complete()
 	{
-		//if (tFuture.valid())
-		//{
+		if (tFuture.valid())
+		{
 			return tFuture.get();
-		//}
+		}
 	}
 
 	TaskFuture& operator=(TaskFuture&& other) = default;

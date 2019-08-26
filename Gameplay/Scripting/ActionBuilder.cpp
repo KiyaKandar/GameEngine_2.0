@@ -14,11 +14,16 @@
 #include "../../Communication/SendMessageActionBuilder.h"
 #include "../../Communication/Messages/PlaySoundMessage.h"
 
+#include <iostream>
+#include <string>
+
 const std::string CONDITIONAL_STATEMENT = "Condition";
 const std::string SEND_MESSAGE_STATEMENT = "SendMessage";
 
 std::function<Executable(Node*)> ActionBuilder::executableBuilder
 	= [](Node*) {return []() {}; };
+
+std::vector<float> ActionBuilder::randomIntervals;
 
 GameplayAction ActionBuilder::buildAction(Node* node)
 {
@@ -49,20 +54,28 @@ TimedGameplayAction ActionBuilder::buildTimedAction(Node* node)
 		executables.push_back(compileActionSectionWithoutCondition(section));
 	}
 
-	float interval = std::stof(node->name);
+	std::istringstream iss(node->name); 
+	vector<string> tokens{ istream_iterator<string>{iss},
+		istream_iterator<string>{} };
 
-	return [interval, executables](float& timer)
+	if (tokens.size() > 1)
 	{
-		if (timer >= interval)
-		{
-			timer = 0.0f;
+		const float minInterval = stof(tokens[1]);
+		const float maxInterval = stof(tokens[2]);
+		int quantity = 1;
 
-			for (Executable executable : executables)
-			{
-				executable();
-			}
+		if (tokens.size() == 4)
+		{
+			quantity = stoi(tokens[3]);
 		}
-	};
+
+		return buildTimedActionWithRandomisedInterval(quantity, minInterval, maxInterval, executables);
+	}
+	else
+	{
+		const float interval = std::stof(node->name);
+		return buildTimedActionWithStaticInterval(interval, executables);
+	}
 }
 
 GameplayAction ActionBuilder::buildFinalActionWithCondition(std::vector<Condition>& conditions, std::vector<Executable>& executables)
@@ -133,4 +146,51 @@ Condition ActionBuilder::buildIfStatement(Node* node)
 	{
 		return ConditionalStatementBuilder::buildSingleIfCondition(node);
 	}
+}
+
+float ActionBuilder::generateRandomInterval(const float minInterval, const float maxInterval)
+{
+	const float random = ((float)rand()) / (float)RAND_MAX;
+	const float range = maxInterval - minInterval;
+	return (random * range) + minInterval;
+}
+
+TimedGameplayAction ActionBuilder::buildTimedActionWithStaticInterval(const float interval,
+	const std::vector<Executable>& executables)
+{
+	return [interval, executables](float& timer)
+	{
+		if (timer >= interval)
+		{
+			timer = 0.0f;
+
+			for (Executable executable : executables)
+			{
+				executable();
+			}
+		}
+	};
+}
+
+TimedGameplayAction ActionBuilder::buildTimedActionWithRandomisedInterval(const int quantity, const float minInterval,
+	const float maxInterval, const std::vector<Executable>& executables)
+{
+	randomIntervals.push_back(ActionBuilder::generateRandomInterval(minInterval, maxInterval));
+
+	return[quantity, minInterval, maxInterval, executables, storedInterval = &randomIntervals.back()](float& timer)
+	{
+		for (int i = 0; i < quantity; ++i)
+		{
+			if (timer >= *storedInterval)
+			{
+				timer = 0.0f;
+				*storedInterval = ActionBuilder::generateRandomInterval(minInterval, maxInterval);
+
+				for (Executable executable : executables)
+				{
+					executable();
+				}
+			}
+		}
+	};
 }
