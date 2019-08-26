@@ -18,7 +18,7 @@ void DummyWorkMessage::RandomiseDestination()
 {
 	if (randomiseDestination)
 	{
-		const std::vector<std::string>& deliveryPoints = DeliverySystem::getPostman()->getAllDeliveryPoints();
+		const std::vector<std::string>& deliveryPoints = DeliverySystem::GetPostman()->GetAllDeliveryPoints();
 		destination = deliveryPoints[rand() % (deliveryPoints.size() - 1)];
 	}
 }
