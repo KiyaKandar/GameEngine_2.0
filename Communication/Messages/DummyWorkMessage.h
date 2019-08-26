@@ -7,6 +7,7 @@ struct Node;
 class DummyWorkMessage : public Message
 {
 public:
+	DummyWorkMessage() {}
 	DummyWorkMessage(const std::string& destination, const int workloadDurationMicroseconds, bool randomiseDestination);
 	~DummyWorkMessage();
 

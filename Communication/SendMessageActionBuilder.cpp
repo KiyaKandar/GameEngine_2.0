@@ -141,7 +141,7 @@ void SendMessageActionBuilder::InitialiseNodeBuilders()
 			return [message = message]() mutable
 			{
 				message.RandomiseDestination();
-				DeliverySystem::getPostman()->insertMessage(message);
+				DeliverySystem::GetPostman()->InsertMessage(message);
 			};
 		} });
 }
