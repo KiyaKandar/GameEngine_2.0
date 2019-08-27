@@ -31,7 +31,8 @@ enum MessageType
 	TOGGLE_PLAYER_INPUT,
 	DEBUG_LINE,
 	DEBUG_SPHERE,
-	UIQUAD
+	UIQUAD,
+	DUMMY_WORK
 };
 
 class Message

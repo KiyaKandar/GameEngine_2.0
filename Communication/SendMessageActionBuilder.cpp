@@ -133,6 +133,17 @@ void SendMessageActionBuilder::InitialiseNodeBuilders()
 	{
 		return BuildExecutable<TextMeshMessage>(node);
 	} });
+
+	builders.insert({ "DUMMY_WORK" , [](Node* node)
+		{
+			DummyWorkMessage message = DummyWorkMessage::Builder(node);
+
+			return [message = message]() mutable
+			{
+				message.RandomiseDestination();
+				DeliverySystem::GetPostman()->InsertMessage(message);
+			};
+		} });
 }
 
 void SendMessageActionBuilder::InitialiseDevConsoleBuilders()

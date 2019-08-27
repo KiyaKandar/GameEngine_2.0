@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Message.h"
 #include "Launch/Threading/Scheduler/ProcessScheduler.h"
 #include "LockFreeQueue.h"
 
 #include <deque>
 #include <mutex>
+
+class Message;
 
 class MessageDeliveryBuffer
 {

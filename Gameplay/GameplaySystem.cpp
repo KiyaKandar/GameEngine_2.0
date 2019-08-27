@@ -129,6 +129,7 @@ void GameplaySystem::ConnectPlayerbase(PlayerBase* playerBase)
 
 void GameplaySystem::CompileGameplayScript(std::string levelScript)
 {
+	ActionBuilder::randomIntervals.clear();
 	ActionBuilder::SetExecutableBuilder([](Node* node)
 	{
 		return SendMessageActionBuilder::BuildSendMessageAction(node);

@@ -332,7 +332,6 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
-*.diagsession
-/Output-DiagnosticsHub.txt
-/Launch/SchedulerPerformanceLog.txt
 /Launch/new 6
+/Launch/SchedulerPerformanceLog.txt
+/Output-DiagnosticsHub.txt

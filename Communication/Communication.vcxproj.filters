@@ -129,6 +129,9 @@
     <ClInclude Include="LockFreeQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Messages\DummyWorkMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Message.cpp">
@@ -222,6 +225,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Messages\UIQuadBatchMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Messages\DummyWorkMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

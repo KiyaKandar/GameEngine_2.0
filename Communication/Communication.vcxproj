@@ -121,6 +121,7 @@
     <ClInclude Include="LockFreeQueue.h" />
     <ClInclude Include="LockFreeThreadSafeMessageBuffer.h" />
     <ClInclude Include="MessageDeliveryBuffer.h" />
+    <ClInclude Include="Messages\DummyWorkMessage.h" />
     <ClInclude Include="MessageRegistry.h" />
     <ClInclude Include="Messages\DebugSphereMessage.h" />
     <ClInclude Include="Messages\DebugLineMessage.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Messages\UIQuadBatchMessage.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Messages\DummyWorkMessage.cpp" />
     <ClCompile Include="Messages\DebugSphereMessage.cpp" />
     <ClCompile Include="Messages\DebugLineMessage.cpp" />
     <ClCompile Include="Messages\ToggleGameObjectMessage.cpp" />

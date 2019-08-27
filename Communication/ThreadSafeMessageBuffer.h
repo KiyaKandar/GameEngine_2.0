@@ -20,16 +20,19 @@ public:
 
 	void SendMessages(MessageStorage* messageStorage)
 	{
+		std::unique_lock<std::mutex> lock(bufferLock);
 		messageBuffer.sendMessages(messageStorage);
 	}
 
 	void ClearSentMessages()
 	{
+		std::unique_lock<std::mutex> lock(bufferLock);
 		messageBuffer.clearSentMessages();
 	}
 
 	void ClearOutgoingMessages()
 	{
+		std::unique_lock<std::mutex> lock(bufferLock);
 		messageBuffer.clearOutgoingMessages();
 	}
 

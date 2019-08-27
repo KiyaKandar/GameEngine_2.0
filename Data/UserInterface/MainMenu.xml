@@ -109,6 +109,29 @@
       <text>AnimTest</text>
       <mesh>UIQuad</mesh>
     </Button>
+	
+	<Button name="Start Random Workload Test Level">
+      <colour>
+        <r>0.0</r>
+        <g>0.0</g>
+        <b>1.0</b>
+        <a>0.5</a>
+      </colour>
+      <position>
+        <x>-120</x>
+        <y>100</y>
+      </position>
+      <scale>
+        <x>50.0</x>
+        <y>20.0</y>
+      </scale>
+      <action type="Start">
+        <Online>False</Online>
+        <Level>RandomWorkloadTestLevel.xml</Level>
+      </action>
+      <text>RndWork</text>
+      <mesh>UIQuad</mesh>
+    </Button>
   </Button>
 
   <Button name="Start Online">

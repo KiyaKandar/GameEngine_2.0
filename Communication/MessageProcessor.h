@@ -23,6 +23,7 @@ public:
 
 private:
 	void ProcessMessageByPerformingAssignedActions(Message* message);
+	void AddDefaultMessageActions();
 
 	MessageDeliveryBuffer* subsystemMessageBuffer;
 	std::unordered_map<int, std::vector<Action>*> actionsToExecute;
