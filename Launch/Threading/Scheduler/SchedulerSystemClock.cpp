@@ -40,13 +40,11 @@ void SchedulerSystemClock::WaitForSynchronisedLaunch()
 
 void SchedulerSystemClock::RegisterActiveThread()
 {
-	std::lock_guard<std::mutex> lock(registrationMutex);
 	++numThreadsToWaitFor;
 }
 
 void SchedulerSystemClock::UnregisterActiveThread()
 {
-	std::lock_guard<std::mutex> lock(registrationMutex);
 	--numThreadsToWaitFor;
 }
 
@@ -75,7 +73,8 @@ void SchedulerSystemClock::RescheduleWorkloadIfFrameCountDelayElapsed()
 	++frameCount;
 	if (frameCount == REDISTRIBUTE_WORKLOAD_FRAME_DELAY)
 	{
-		ThreadPackingLayer::DistributeWorkloadAmongWorkerThreads(*workers, mainThreadWorker,
+		numThreadsToWaitFor = 0;
+		ThreadPackingLayer::DistributeWorkloadAmongWorkerThreads(this, *workers, mainThreadWorker,
 			*processes, *mainThreadProcesses);
 		frameCount = 0;
 	}

@@ -19,7 +19,7 @@ public:
 		scheduler = newScheduler;
 	}
 
-	virtual void InitialiseWorkers(Window* window) = 0;
+	virtual void InitialiseWorkers() = 0;
 
 	virtual void RegisterProcess(const Process& process, const std::string debugName) = 0;
 	virtual void AttachMainThreadProcess(const Process& process, const std::string debugName) = 0;

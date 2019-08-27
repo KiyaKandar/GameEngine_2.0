@@ -48,10 +48,6 @@ void Worker::Run(const unsigned int threadId)
 	{
 		WaitUntilHasWorkload();
 	}
-	else if (threadId != 0)
-	{
-		schedulerClock->RegisterActiveThread();
-	}
 
 	while (SubsystemScheduler::workersRunning)
 	{
@@ -83,7 +79,6 @@ void Worker::WaitUntilHasActivity()
 	if (assignedWorkload.empty())
 	{
 		currentWorkloadSize = 0.0f;
-		schedulerClock->UnregisterActiveThread();
 		WaitUntilHasWorkload();
 	}
 	else
@@ -95,13 +90,10 @@ void Worker::WaitUntilHasActivity()
 void Worker::WaitUntilHasWorkload()
 {
 	std::unique_lock<std::mutex> workloadLock(waitForWorkload);
-	std::cout << "Thread " << SubsystemThreadIds::LOCAL_THREAD_ID << " waiting for work." << std::endl;
 	hasWork.wait(workloadLock, [&assignedWorkload = assignedWorkload]
 	{
 		return !assignedWorkload.empty() || !SubsystemScheduler::workersRunning;
 	});
-
-	schedulerClock->RegisterActiveThread();
 }
 
 void Worker::CalculateWorkerInstability()

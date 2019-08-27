@@ -3,11 +3,12 @@
 #include "SubsystemWorkload.h"
 
 struct Worker;
+class SchedulerSystemClock;
 
 class ThreadPackingLayer
 {
 public:
-	static void DistributeWorkloadAmongWorkerThreads(std::vector<Worker>& workers, Worker* mainThreadWorker, 
+	static void DistributeWorkloadAmongWorkerThreads(SchedulerSystemClock* scheduler, std::vector<Worker>& workers, Worker* mainThreadWorker,
 		std::vector<SubsystemWorkload*>& processes, std::vector<SubsystemWorkload*>& mainThreadProcesses);
 
 private:
@@ -17,7 +18,7 @@ private:
 	static void ScheduleProcessesAmongWorkers(std::vector<Worker>& workers, Worker* mainThreadWorker,
 		std::vector<SubsystemWorkload*>& processes);
 	static Worker* GetWorkerWithSmallestAllocatedWorkload(std::vector<Worker>& workers, Worker* mainThreadWorker);
-	static void PrepareWorkers(std::vector<Worker>& workers, Worker* mainThreadWorker);
+	static void PrepareWorkers(SchedulerSystemClock* scheduler, std::vector<Worker>& workers, Worker* mainThreadWorker);
 
 	static float CalculateTotalSystemInstability(const Worker* workers, const Worker* mainThreadWorker);
 };

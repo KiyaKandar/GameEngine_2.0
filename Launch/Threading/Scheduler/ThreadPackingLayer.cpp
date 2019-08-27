@@ -2,17 +2,18 @@
 
 #include "ProcessScheduler.h"
 #include "SubsystemWorkload.h"
+#include "SchedulerSystemClock.h"
 
 const float INSTABILITY_UPDATE_THRESHOLD = 0.5f;
 
-void ThreadPackingLayer::DistributeWorkloadAmongWorkerThreads(std::vector<Worker>& workers, Worker* mainThreadWorker,
+void ThreadPackingLayer::DistributeWorkloadAmongWorkerThreads(SchedulerSystemClock* scheduler, std::vector<Worker>& workers, Worker* mainThreadWorker,
 	std::vector<SubsystemWorkload*>& processes, std::vector<SubsystemWorkload*>& mainThreadProcesses)
 {
 	ClearCurrentWorkload(workers, mainThreadWorker);
 	AssignForcedMainThreadWorkToMainThread(mainThreadWorker, mainThreadProcesses);
 	SortWorkloadByDescendingSize(processes);
 	ScheduleProcessesAmongWorkers(workers, mainThreadWorker, processes);
-	PrepareWorkers(workers, mainThreadWorker);
+	PrepareWorkers(scheduler, workers, mainThreadWorker);
 }
 
 void ThreadPackingLayer::ClearCurrentWorkload(std::vector<Worker>& workers, Worker* mainThreadWorker)
@@ -73,14 +74,23 @@ Worker* ThreadPackingLayer::GetWorkerWithSmallestAllocatedWorkload(std::vector<W
 	return bestWorker;
 }
 
-void ThreadPackingLayer::PrepareWorkers(std::vector<Worker>& workers, Worker* mainThreadWorker)
+void ThreadPackingLayer::PrepareWorkers(SchedulerSystemClock* scheduler, std::vector<Worker>& workers, Worker* mainThreadWorker)
 {
 	for (Worker& worker : workers)
 	{
 		worker.currentWorkloadSize = 0.0f;
+
+		if (!worker.assignedWorkload.empty())
+		{
+			scheduler->RegisterActiveThread();
+		}
 	}
 
 	mainThreadWorker->currentWorkloadSize = 0.0f;
+	if (!mainThreadWorker->assignedWorkload.empty())
+	{
+		scheduler->RegisterActiveThread();
+	}
 }
 
 float ThreadPackingLayer::CalculateTotalSystemInstability(const Worker* workers, const Worker* mainThreadWorker)

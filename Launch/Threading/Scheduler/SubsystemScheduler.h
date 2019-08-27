@@ -22,7 +22,7 @@ public:
 	SubsystemScheduler();
 	~SubsystemScheduler();
 
-	void InitialiseWorkers(Window* window) override;
+	void InitialiseWorkers() override;
 
 	void RegisterProcess(const Process& process, const std::string debugName) override;
 	void AttachMainThreadProcess(const Process& process, const std::string debugName) override;
