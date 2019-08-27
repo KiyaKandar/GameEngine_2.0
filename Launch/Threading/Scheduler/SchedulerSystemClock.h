@@ -25,6 +25,9 @@ public:
 	void MarkLaunchStartTime();
 	void MarkLaunchEndTime();
 
+	std::size_t numThreadsToWaitFor;
+	std::size_t numActiveThreads;
+
 private:
 	void CompleteFrameAsLastFinishedThread();
 	void RescheduleWorkloadIfFrameCountDelayElapsed();
@@ -36,8 +39,6 @@ private:
 	std::mutex syncMutex;
 	std::mutex registrationMutex;
 
-	std::size_t numThreadsToWaitFor;
-	std::size_t numActiveThreads;
 	std::size_t syncGeneration;
 	std::condition_variable launchCondition;
 

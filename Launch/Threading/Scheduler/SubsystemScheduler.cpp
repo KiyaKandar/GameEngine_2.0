@@ -24,7 +24,7 @@ void SubsystemScheduler::InitialiseWorkers(Window* window)
 	workers = std::vector<Worker>(numWorkers);
 	mainThreadWorker = new Worker();
 
-	schedulerClock = new SchedulerSystemClock(1, &workers, mainThreadWorker, 
+	schedulerClock = new SchedulerSystemClock(0, &workers, mainThreadWorker, 
 		&registeredProcesses, &registeredProcessesLockedToMainThread, window);
 
 	for (int i = 0; i < numWorkers; ++i)
@@ -49,8 +49,12 @@ void SubsystemScheduler::BeginWorkerProcesses()
 {
 	unsigned int numThreads = Worker::GetTotalNumberOfThreads();
 
-	ThreadPackingLayer::DistributeWorkloadAmongWorkerThreads(workers, mainThreadWorker,
+	schedulerClock->numThreadsToWaitFor = 0;
+	schedulerClock->numActiveThreads = 0;
+	ThreadPackingLayer::DistributeWorkloadAmongWorkerThreads(schedulerClock, workers, mainThreadWorker,
 		registeredProcesses, registeredProcessesLockedToMainThread);
+
+	schedulerClock->numActiveThreads = schedulerClock->numThreadsToWaitFor;
 
 	workersRunning = true;
 	schedulerClock->MarkLaunchStartTime();
